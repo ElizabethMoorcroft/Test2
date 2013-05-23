@@ -8,6 +8,7 @@
 
 #include "HomeRange.h"
 #include "RandNum.h"
+#include "Parameters.h"
 #include <iostream>
 #include <cstdio>
 #include <math.h>

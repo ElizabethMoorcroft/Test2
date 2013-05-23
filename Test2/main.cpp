@@ -18,56 +18,8 @@
 #include "RandNum.h"
 #include "HomeRange.h"
 #include "CameraTraps.h"
+#include "Parameters.h"
 
-
-//Simulation values - #Animals, #Steps, #HR, #CT
-#define NoAnimal 20
-#define LengthMonitoring 100 //Length of monitoring in seconds
-#define AverageSizeHR 5
-#define SpeedCamera 2.4 // m/s = 0.06 * KM/h
-#define NoRunIn 10
-
-//Range of animal start locations if no HR boudaries
-#define Sq_MinX 0
-#define Sq_MaxX 100
-#define Sq_MinY 0
-#define Sq_MaxY 100
-
-// Centre of the camera circle
-#define Cir_CntX 50
-#define Cir_CntY 50
-
-
-// Range of animal start locations if HR boudaries - and cicular camera formulations
-#define Cir_MinRng 5
-#define Cir_MaxRng 50
-
-//HR set up values
-#define HR_AverageRadius 1000
-#define HR_SolidBoundaries 1 // Solid boundaries for HR --- 1 =Yes 0 = No
-
-//Radom number seed
-#define Seed 1
-#define LengthStream 10
-
-//Movement parameters
-#define StepLength 10 //Length of each step in seconds
-
-//Animal parameters
-#define AnimalSpeed 5 // ms^-1
-
-
-//Call parameters
-#define CallAmp 45          //Call_amp
-#define CallFreq 10         // Call_freq = p;
-#define Call_halfwidth 45   //Call_halfwidth
-
-//For the attenuation of sound
-#define temp 25
-#define hum 30
-#define freq 50
-#define I0 127 //Amplitude
-#define It 0
 
 
 std::string make_filename( const std::string& basename, int index, const std::string& ext )

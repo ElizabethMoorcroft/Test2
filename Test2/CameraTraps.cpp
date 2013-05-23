@@ -7,6 +7,7 @@
 //
 
 #include "CameraTraps.h"
+#include "Parameters.h"
 #include <stdio.h>
 #include <math.h>
 
