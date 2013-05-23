@@ -50,8 +50,7 @@ int main(){
     double b1 = 0.1068*exp(-3352/T)/(frN+pow(freq,2)/frN);
     double b2 = 0.01275*exp(-2239.1/T)/(fr0+pow(freq,2)/fr0);
     double alpha = 8.686*pow(freq,2)*pow(taur,0.5)*(1.84*pow(10,-11)/1+pow(taur,-3)*(b1+b2));
-    double alphatotal = alpha + 6; // # spherical spreading.
-    double Attenuation = alphatotal;
+    double Attenuation = alpha + 6; // # spherical spreading.
     double Radius = (I0-It)/Attenuation;
     
     
@@ -257,7 +256,8 @@ int main(){
         // To choose a start angle, sets up a random number class
         // Uses a radom number from stream RandomNumberStreamAnimal2 for a random seed
         RandNum Number1;
-        double CurrentAngleTemp = Number1.AtoRangeBUnif(RandomNumberStreamAnimal2[i],0,(2*M_PI));
+        double CurrentAngleTemp = Number1.AtoBUnif(RandomNumberStreamAnimal2[i],0,(2*M_PI));
+        std::cout <<CurrentAngleTemp <<std::endl;
         
         AllAnimals[i] =new Animal(i                     // identifier
                                   ,HrId                 // HomeRange_id
@@ -265,7 +265,7 @@ int main(){
                                   ,1                    // Movement_type
                                   ,1                    // Move_state = e;
                                   ,AnimalSpeed          // Move_speed = f;
-                                  ,60                   // Move_maxangle = g;
+                                  ,M_PI/2                   // Move_maxangle = g;
                                   ,xlocation            // Current_x = i;
                                   ,ylocation            // Current_y = j;
                                   ,CurrentAngleTemp     // Current_angle = k;

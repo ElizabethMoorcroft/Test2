@@ -101,7 +101,7 @@ long double RandNum::AtoRangeBUnif (double a,double b,double c){
     v1 = v1+b;    
     
     //If the angle is greater than 360 - recal to be in [0,360]
-    if(v1>360){v1=v1-360;}
+    //if(v1>360){v1=v1-360;}
     
     //returns value
     return v1;

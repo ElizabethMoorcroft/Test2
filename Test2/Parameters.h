@@ -15,17 +15,17 @@
 //////////////////////////////////////////////////
 
 //Simulation values - #Animals, #Steps, #HR, #CT
-const int NoAnimal = 20;
-const int LengthMonitoring = 100; //Length of monitoring in seconds
+const int NoAnimal = 10;
+const int LengthMonitoring = 12; //Length of monitoring in seconds
 const int AverageSizeHR = 5;
 const int SpeedCamera  = 2.4; // m/s = 0.06 * KM/h
 const int NoRunIn = 10;
 
 //Range of animal start locations if no HR boudaries
-const int Sq_MinX = -10000;
-const int Sq_MaxX = 10000;
-const int Sq_MinY = -10000;
-const int Sq_MaxY = 10000;
+const int Sq_MinX = 0;
+const int Sq_MaxX = 100;
+const int Sq_MinY = 0;
+const int Sq_MaxY = 100;
 
 // Centre of the camera circle
 const int Cir_CntX = 0;
@@ -37,14 +37,14 @@ const int Cir_MaxRng = 50;
 
 //HR set up values
 const int HR_AverageRadius = 1000;
-const int HR_SolidBoundaries = 1; // Solid boundaries for HR --- 1 =Yes 0 = No
+const int HR_SolidBoundaries = 0; // Solid boundaries for HR --- 1 =Yes 0 = No
 
 //Radom number seed
 const int Seed = 1;
 const int LengthStream = 10;
 
 //Movement parameters
-const int StepLength = 10; //Length of each step in seconds
+const int StepLength = 2; //Length of each step in seconds
 
 //Animal parameters
 const int AnimalSpeed = 5; // ms^-1
