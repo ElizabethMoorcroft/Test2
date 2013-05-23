@@ -21,7 +21,7 @@
 #include "Parameters.h"
 
 
-
+// Function for creating a dynamic file names
 std::string make_filename( const std::string& basename, int index, const std::string& ext )
 {
     std::ostringstream result;
@@ -37,14 +37,13 @@ int main(){
     
     
 
-    
+    //Tim's code for calucalting the attentuation of sound in order to calucalte the 
+    // maximum distance, here refered to as Radius, that the detector can detect a bat call
     double T = 273.15+temp ; //Convert celsius to kelvin
     double T01 = 273.16;
     double T0 = 293.15;
     double psat_ps0 = pow(10,-6.8346*pow(T01/T,1.261)+4.6151); // saturation pressure ratio from ISO
     double h = hum*psat_ps0/1;
-    // double c0 = 331; // reference sound speed
-    // double c_iso = (1+0.16*h)*c0*sqrt(T/T01);
     double taur = T/T0;
     double fr0 = (24+40400*h*(0.02+h)/(0.391+h));
     double frN = pow(taur,-1/2)*(9+280*h*exp(-4.17*(pow(taur,-1/3)-1)));

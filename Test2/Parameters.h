@@ -10,6 +10,10 @@
 #define Test2_Parameters_h
 
 
+//////////////////////////////////////////////////
+/// Constant parameters used in the simulation ///
+//////////////////////////////////////////////////
+
 //Simulation values - #Animals, #Steps, #HR, #CT
 const int NoAnimal = 20;
 const int LengthMonitoring = 100; //Length of monitoring in seconds

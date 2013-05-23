@@ -151,6 +151,22 @@ void Animal::UpdateLocation (double a, double b){ // a is the number of seconds 
             if(TempDistToHR<Home_r){ i=i+1;}
             
         } //while (TempDistToHR > Home_r);
+        
+        // rewrite current locaion
+        Current_x = TempX;
+        Current_y = TempY;
+        Current_angle = TempAngle;
+        Current_distance = Current_distance + TempDist;
+        
+        //Add to the all locations
+        std::vector<double> mylocationvector;
+        mylocationvector.push_back (identifier);
+        mylocationvector.push_back (step_number);
+        mylocationvector.push_back (TempX);
+        mylocationvector.push_back (TempY);
+        mylocationvector.push_back (TempAngle);
+        mylocationvector.push_back (Current_distance);
+        All_locations.push_back (mylocationvector);
     }
     
     
@@ -158,13 +174,45 @@ void Animal::UpdateLocation (double a, double b){ // a is the number of seconds 
     /// HR NOT bounding movement ///
     ////////////////////////////////
     if(Home_state==0){
-        TempX=0;
-        TempY=0;
-        TempAngle=0;
-        TempDistToHR=0;
-        TempDist=0;
-        i=0;
         
+        // Gas movmeent there is no change in the angle of movemnet
+        TempAngle=Current_angle;
+        
+        TempDistToHR=0;
+        
+        
+        // Calculate a distance value
+        TempDist = Number1.PositiveNormal (RandomNumberUpdateMovement[count],Dist,Dist/10);
+        
+        
+        //Based on polar coordinates updates the temp x/y location
+        TempX = Current_x + TempDist*sin(TempAngle);
+        TempY = Current_y + TempDist*cos(TempAngle);
+        
+        // If the movement finishes inside the environment
+        if(TempX < Sq_MaxX && TempX > Sq_MinX && TempY < Sq_MaxY && TempY > Sq_MinY){
+            //Can save the temp location as the current location
+            // rewrite current locaion
+            Current_x = TempX;
+            Current_y = TempY;
+            Current_angle = TempAngle;
+            Current_distance = Current_distance + TempDist;
+            
+            //Add to the all locations
+            std::vector<double> mylocationvector;
+            mylocationvector.push_back (identifier);
+            mylocationvector.push_back (step_number);
+            mylocationvector.push_back (TempX);
+            mylocationvector.push_back (TempY);
+            mylocationvector.push_back (TempAngle);
+            mylocationvector.push_back (Current_distance);
+            All_locations.push_back (mylocationvector);
+        }
+        //
+        else {
+        
+        
+        }
         /*
          ENTRE PERIODIC BOUNDARY MOVEMENT 
         */
@@ -180,22 +228,9 @@ void Animal::UpdateLocation (double a, double b){ // a is the number of seconds 
     std::cout << TempDist <<std::endl;
     */
     
-    // rewrite current locaion
-    Current_x = TempX;
-    Current_y = TempY;
-    Current_angle = TempAngle;
-    Current_distance = Current_distance + TempDist;
     
     
-    //Add to the all locations
-    std::vector<double> mylocationvector;
-    mylocationvector.push_back (identifier);
-    mylocationvector.push_back (step_number);
-    mylocationvector.push_back (TempX);
-    mylocationvector.push_back (TempY);
-    mylocationvector.push_back (TempAngle);
-    mylocationvector.push_back (Current_distance);   
-    All_locations.push_back (mylocationvector);
+
 
     
     step_number =step_number+1;
