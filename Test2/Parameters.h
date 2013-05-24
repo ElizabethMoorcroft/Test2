@@ -31,6 +31,8 @@ const int Sq_MaxY = 100;
 const int Cir_CntX = 0;
 const int Cir_CntY = 0;
 
+const int CameraWidth = M_PI/3;
+
 // Range of animal start locations if HR boudaries - and cicular camera formulations
 const int Cir_MinRng = 5;
 const int Cir_MaxRng = 50;

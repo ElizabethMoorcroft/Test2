@@ -30,7 +30,7 @@ class Animal {
     double Current_angle;
     double Current_distance;
 
-    int Home_state;  // HR = 1=Y or 0=N
+    int SolidHomeRangeBoundary;  // HR = 1=Y or 0=N
     double Home_x;
     double Home_y;
     double Home_r;
@@ -50,6 +50,7 @@ public:
             int,  double, double, double);
     void Set_MoveValue (double,double);
     void Set_HRValues (int, int, double, double, double );
+    void NewLocation(double, double);
     void UpdateLocation (double, double);
     
     void setHomeX(double a){Home_x = a;};

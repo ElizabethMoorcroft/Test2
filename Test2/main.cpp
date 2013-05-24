@@ -274,7 +274,7 @@ int main(){
                                   ,10                   // Call_amp = o;
                                   ,10                   // Call_freq = p;
                                   ,45                   // Call_halfwidth = q;
-                                  ,HR_SolidBoundaries   // Home_state = r ;  // HR = 1=Y or 0=N  (HR Boundary Type)
+                                  ,HR_SolidBoundaries   // SolidHomeRangeBoundary = r ;  // HR = 1=Y or 0=N
                                   ,xlocation            // Home_x = t;
                                   ,ylocation            // Home_y = u;
                                   ,Radius     // Home_r = v;
@@ -362,8 +362,8 @@ int main(){
                                    , Cir_CntX //Cntre of circle x
                                    , Cir_CntY // Centre of circle y
                                    , AngleBetweenCameras //Angle between cameras
-                                   ,100.0 //radius
-                                   ,60.0 //half angle
+                                   , Radius //radius
+                                   , CameraWidth //half angle
                                    );
         
         //Saves the locations and the angle of the camera
