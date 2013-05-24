@@ -106,7 +106,8 @@ int main(){
         "," << "Xlocation" <<
         "," << "Ylocation" <<
         "," << "Angle" <<
-        "," << "Total distance" <<
+        "," << "TotalDistance" <<
+        "," << "Re-enterWorld" <<
         "\n";
     
     Captures << "AnimalNumber" <<
@@ -117,20 +118,20 @@ int main(){
     Cameras << "ID" <<
         "," << "X location" <<
         "," << "Y location" <<
-        "," << "Centre Angle" <<
-        "," << "Half width angle" <<
+        "," << "CentreAngle" <<
+        "," << "HalfWidthAngle" <<
         "\n";
     
     Animals << "ID" <<
         "," << "HomeRangeID" <<
-        "," << "X location" <<
-        "," << "Y location" <<
+        "," << "XLocation" <<
+        "," << "YLocation" <<
         "," << "Speed" <<
         "\n";
 
     HomeRangefile <<"HomeRangeID" <<
-        "," << "X location" <<
-        "," << "Y location" <<
+        "," << "XLocation" <<
+        "," << "YLocation" <<
         "\n";
     
     
@@ -321,7 +322,8 @@ int main(){
                     "," << TempAllLocations[stepcounter][3] << //...
                     "," << TempAllLocations[stepcounter][4] << //...
                     "," << TempAllLocations[stepcounter][5] << //5th column, row "stepcounter"
-                    "\n";                                      // New line
+                    "," << TempAllLocations[stepcounter][6] << //6th column, row "stepcounter"
+                "\n";                                      // New line
             };
             
         

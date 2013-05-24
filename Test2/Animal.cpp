@@ -59,6 +59,7 @@ Animal::Animal( int a, int b, int c, int d,
     mylocationvector.push_back (Current_y);
     mylocationvector.push_back (Current_angle);
     mylocationvector.push_back (Current_distance);
+    mylocationvector.push_back (0);
     All_locations.push_back (mylocationvector);
                 }
 
@@ -184,6 +185,7 @@ void Animal::UpdateLocation (double a, double b){ // a is the number of seconds 
         mylocationvector.push_back (TempY);
         mylocationvector.push_back (TempAngle);
         mylocationvector.push_back (Current_distance);
+        mylocationvector.push_back (0);
         All_locations.push_back (mylocationvector);
     }
     
@@ -227,6 +229,7 @@ void Animal::UpdateLocation (double a, double b){ // a is the number of seconds 
                 mylocationvector.push_back (TempY);
                 mylocationvector.push_back (TempAngle);
                 mylocationvector.push_back (Current_distance);
+                mylocationvector.push_back (0);
                 All_locations.push_back (mylocationvector);
                 
                 //Ends the while loop by achieving the condition
@@ -271,6 +274,8 @@ void Animal::UpdateLocation (double a, double b){ // a is the number of seconds 
                         mylocationvector.push_back (tempExitsY);
                         mylocationvector.push_back (TempAngle);
                         mylocationvector.push_back (Current_distance);
+                        mylocationvector.push_back (0);
+
                         All_locations.push_back (mylocationvector);
                         
                         // The distance left to travel
@@ -289,10 +294,11 @@ void Animal::UpdateLocation (double a, double b){ // a is the number of seconds 
                         std::vector<double> mylocationvector1;
                         mylocationvector1.push_back (identifier);
                         mylocationvector1.push_back (step_number);
-                        mylocationvector1.push_back (TempX);
-                        mylocationvector1.push_back (TempY);
+                        mylocationvector1.push_back (Current_x);
+                        mylocationvector1.push_back (Current_y);
                         mylocationvector1.push_back (TempAngle);
                         mylocationvector1.push_back (Current_distance);
+                        mylocationvector1.push_back (1);
                         All_locations.push_back (mylocationvector1);
                         
                         
@@ -319,6 +325,7 @@ void Animal::UpdateLocation (double a, double b){ // a is the number of seconds 
                         mylocationvector.push_back (tempExitsY);
                         mylocationvector.push_back (TempAngle);
                         mylocationvector.push_back (Current_distance);
+                        mylocationvector.push_back (0);
                         All_locations.push_back (mylocationvector);
                         
                         // The distance left to travel
@@ -339,10 +346,11 @@ void Animal::UpdateLocation (double a, double b){ // a is the number of seconds 
                         std::vector<double> mylocationvector1;
                         mylocationvector1.push_back (identifier);
                         mylocationvector1.push_back (step_number);
-                        mylocationvector1.push_back (TempX);
-                        mylocationvector1.push_back (TempY);
+                        mylocationvector1.push_back (Current_x);
+                        mylocationvector1.push_back (Current_y);
                         mylocationvector1.push_back (TempAngle);
                         mylocationvector1.push_back (Current_distance);
+                        mylocationvector1.push_back (1);
                         All_locations.push_back (mylocationvector1);
                         
                     }; //End of ELSE IF
@@ -362,8 +370,8 @@ void Animal::UpdateLocation (double a, double b){ // a is the number of seconds 
                     double tempDistToRight = Sq_MaxX - Current_x;
                     
                     // Calculates the distnace the animal travels to the boudary
-                    double tempDistToBottomBoundary = std::abs(cos(Current_angle)/tempDistToBottom);
-                    double tempDistToRightBoundary = std::abs(sin(Current_angle)/tempDistToRight);
+                    double tempDistToBottomBoundary = std::abs(tempDistToBottom/cos(Current_angle));
+                    double tempDistToRightBoundary = std::abs(tempDistToRight/sin(Current_angle));
                     // IF the hits the top boundary first
                     
                     if(tempDistToRightBoundary>tempDistToBottomBoundary){
@@ -383,6 +391,7 @@ void Animal::UpdateLocation (double a, double b){ // a is the number of seconds 
                         mylocationvector.push_back (tempExitsY);
                         mylocationvector.push_back (TempAngle);
                         mylocationvector.push_back (Current_distance);
+                        mylocationvector.push_back (0);
                         All_locations.push_back (mylocationvector);
                         
                         // The distance left to travel
@@ -404,20 +413,21 @@ void Animal::UpdateLocation (double a, double b){ // a is the number of seconds 
                         std::vector<double> mylocationvector1;
                         mylocationvector1.push_back (identifier);
                         mylocationvector1.push_back (step_number);
-                        mylocationvector1.push_back (TempX);
-                        mylocationvector1.push_back (TempY);
+                        mylocationvector1.push_back (Current_x);
+                        mylocationvector1.push_back (Current_y);
                         mylocationvector1.push_back (TempAngle);
                         mylocationvector1.push_back (Current_distance);
+                        mylocationvector1.push_back (1);
                         All_locations.push_back (mylocationvector1);
                         
                         
                     } //End of IF
                     
                     else if(tempDistToRightBoundary<tempDistToBottomBoundary){
-                        
+                        // Hits the Right boundary first
                         //This means that it exits the world at minimum value of x and at the corresponding y value
                         double tempExitsX = Sq_MaxX;
-                        double tempExitsY = Current_x +tempDistToRightBoundary*sin(Current_angle);
+                        double tempExitsY = Current_y +tempDistToRightBoundary*cos(Current_angle);
                         // The current distance travelled
                         Current_distance = Current_distance + tempDistToRightBoundary;
                         // The distance left to travel
@@ -431,6 +441,7 @@ void Animal::UpdateLocation (double a, double b){ // a is the number of seconds 
                         mylocationvector.push_back (tempExitsY);
                         mylocationvector.push_back (TempAngle);
                         mylocationvector.push_back (Current_distance);
+                        mylocationvector.push_back (0);
                         All_locations.push_back (mylocationvector);
                         
                         // The distance left to travel
@@ -451,10 +462,11 @@ void Animal::UpdateLocation (double a, double b){ // a is the number of seconds 
                         std::vector<double> mylocationvector1;
                         mylocationvector1.push_back (identifier);
                         mylocationvector1.push_back (step_number);
-                        mylocationvector1.push_back (TempX);
-                        mylocationvector1.push_back (TempY);
+                        mylocationvector1.push_back (Current_x);
+                        mylocationvector1.push_back (Current_y);
                         mylocationvector1.push_back (TempAngle);
                         mylocationvector1.push_back (Current_distance);
+                        mylocationvector1.push_back (1);
                         All_locations.push_back (mylocationvector1);
                         
                     }; //End of ELSE IF
@@ -481,8 +493,8 @@ void Animal::UpdateLocation (double a, double b){ // a is the number of seconds 
                     double tempDistToLeft = Current_x - Sq_MinX;
                     
                     // Calculates the distnace the animal travels to the boudary
-                    double tempDistToBottomBoundary = std::abs(cos(Current_angle)*tempDistToBottom);
-                    double tempDistToLeftBoundary = std::abs(sin(Current_angle)*tempDistToLeft);
+                    double tempDistToBottomBoundary = std::abs(tempDistToBottom/cos(Current_angle));
+                    double tempDistToLeftBoundary = std::abs(tempDistToLeft/sin(Current_angle));
                     // IF the hits the top boundary first
                     
                     if(tempDistToLeftBoundary>tempDistToBottomBoundary){
@@ -509,28 +521,13 @@ void Animal::UpdateLocation (double a, double b){ // a is the number of seconds 
                         mylocationvector.push_back (tempExitsY);
                         mylocationvector.push_back (TempAngle);
                         mylocationvector.push_back (Current_distance);
+                        mylocationvector.push_back (0);
                         All_locations.push_back (mylocationvector);
-                        
-                        /*
-                        if(TempDist<0){ std::cout<< "Before"<< std::endl;
-                            
-                        };
-                        
-                         
+                          
                         // The distance left to travel
-                        std::cout<< "Dist left Before: "<< TempDist<< std::endl;
-                        */
                          TempDist = TempDist - tempDistToBottomBoundary;
-                        /*
-                        std::cout<< "Dist aft Before: "<< TempDist<< std::endl;
-                        
-                        if(TempDist<0){ std::cout<< "After"<< std::endl;
-                            
-                        };
-                        
-                        std::cout<< "Current x: "<< Current_x<< std::endl;
-                        std::cout<< "Current y: "<< Current_y<< std::endl;
-                        */
+  
+     
                         //New starting position
                         Current_y = Sq_MaxY;
                         Current_x = tempExitsX;
@@ -544,15 +541,17 @@ void Animal::UpdateLocation (double a, double b){ // a is the number of seconds 
                         std::vector<double> mylocationvector1;
                         mylocationvector1.push_back (identifier);
                         mylocationvector1.push_back (step_number);
-                        mylocationvector1.push_back (TempX);
-                        mylocationvector1.push_back (TempY);
+                        mylocationvector1.push_back (Current_x);
+                        mylocationvector1.push_back (Current_y);
                         mylocationvector1.push_back (TempAngle);
                         mylocationvector1.push_back (Current_distance);
+                        mylocationvector1.push_back (1);
                         All_locations.push_back (mylocationvector1);
                         
                     } //End of IF
                     
                     else if(tempDistToLeftBoundary<tempDistToBottomBoundary){
+                        //Hits the left boundary first
                         /*
                         std::cout <<"Left"<<std::endl;
                         std::cout <<"Current x: "<<Current_x<<std::endl;
@@ -561,7 +560,7 @@ void Animal::UpdateLocation (double a, double b){ // a is the number of seconds 
                          */
                         //This means that it exits the world at minimum value of x and at the corresponding y value
                         double tempExitsX = Sq_MinX;
-                        double tempExitsY = Current_x +tempDistToLeftBoundary*sin(Current_angle);
+                        double tempExitsY = Current_y + tempDistToLeftBoundary*cos(Current_angle);
                         // The current distance travelled
                         Current_distance = Current_distance + tempDistToLeftBoundary;
 
@@ -574,6 +573,7 @@ void Animal::UpdateLocation (double a, double b){ // a is the number of seconds 
                         mylocationvector.push_back (tempExitsY);
                         mylocationvector.push_back (TempAngle);
                         mylocationvector.push_back (Current_distance);
+                        mylocationvector.push_back (0);
                         All_locations.push_back (mylocationvector);
                         
                         //std::cout<< "Dist Left B4: "<< TempDist<< std::endl;
@@ -599,10 +599,11 @@ void Animal::UpdateLocation (double a, double b){ // a is the number of seconds 
                         std::vector<double> mylocationvector1;
                         mylocationvector1.push_back (identifier);
                         mylocationvector1.push_back (step_number);
-                        mylocationvector1.push_back (TempX);
-                        mylocationvector1.push_back (TempY);
+                        mylocationvector1.push_back (Current_x);
+                        mylocationvector1.push_back (Current_y);
                         mylocationvector1.push_back (TempAngle);
                         mylocationvector1.push_back (Current_distance);
+                        mylocationvector1.push_back (1);
                         All_locations.push_back (mylocationvector1);
                         
                     }; //End of ELSE IF
@@ -620,14 +621,15 @@ void Animal::UpdateLocation (double a, double b){ // a is the number of seconds 
                     //std::cout <<"270-360"<<std::endl;
                     // Caculate the V & H distances to the boudaries
                     double tempDistToTop = Sq_MaxY-Current_y;
-                    double tempDistToLeft = Sq_MaxX-Current_x;
+                    double tempDistToLeft = Current_x-Sq_MinX;
                     
                     // Calculates the distnace the animal travels to the boudary
-                    double tempDistToTopBoundary = std::abs(cos(Current_angle)*tempDistToTop);
-                    double tempDistToLeftBoundary = std::abs(sin(Current_angle)*tempDistToLeft);
+                    double tempDistToTopBoundary = std::abs(tempDistToTop/cos(Current_angle));
+                    double tempDistToLeftBoundary = std::abs(tempDistToLeft/sin(Current_angle));
                     
                     // IF the hits the top boundary first
                     if(tempDistToLeftBoundary>tempDistToTopBoundary){
+                        //Hits the Top boundary
                         //This means that it exits the world at maximum value of y and at the corresponding x value
                         double tempExitsY = Sq_MaxY;
                         double tempExitsX = Current_x+tempDistToTopBoundary*sin(Current_angle);
@@ -643,6 +645,7 @@ void Animal::UpdateLocation (double a, double b){ // a is the number of seconds 
                         mylocationvector.push_back (tempExitsY);
                         mylocationvector.push_back (TempAngle);
                         mylocationvector.push_back (Current_distance);
+                        mylocationvector.push_back (0);
                         All_locations.push_back (mylocationvector);
                         
                         // The distance left to travel
@@ -661,18 +664,20 @@ void Animal::UpdateLocation (double a, double b){ // a is the number of seconds 
                         std::vector<double> mylocationvector1;
                         mylocationvector1.push_back (identifier);
                         mylocationvector1.push_back (step_number);
-                        mylocationvector1.push_back (TempX);
-                        mylocationvector1.push_back (TempY);
+                        mylocationvector1.push_back (Current_x);
+                        mylocationvector1.push_back (Current_y);
                         mylocationvector1.push_back (TempAngle);
                         mylocationvector1.push_back (Current_distance);
+                        mylocationvector1.push_back (1);
                         All_locations.push_back (mylocationvector1);
                         
                         
                     } //End of IF
                     
                     else if(tempDistToLeftBoundary<tempDistToTopBoundary){
+                        //Hits the left boundary
                         //This means that it exits the world at maximum value of x and at the corresponding y value
-                        double tempExitsX = Sq_MaxX;
+                        double tempExitsX = Sq_MinX;
                         double tempExitsY = Current_y+tempDistToLeftBoundary*cos(Current_angle);
                         
                         // The current distance travelled
@@ -689,13 +694,15 @@ void Animal::UpdateLocation (double a, double b){ // a is the number of seconds 
                         mylocationvector.push_back (tempExitsY);
                         mylocationvector.push_back (TempAngle);
                         mylocationvector.push_back (Current_distance);
+                        mylocationvector.push_back (0);
+
                         All_locations.push_back (mylocationvector);
                         
                         // The distance left to travel
                         TempDist = TempDist - tempDistToLeftBoundary;
                         
                         //New starting position
-                        Current_x = Sq_MinX;
+                        Current_x = Sq_MaxX;
                         Current_y = tempExitsY;
                         
                         //New end locations
@@ -707,10 +714,11 @@ void Animal::UpdateLocation (double a, double b){ // a is the number of seconds 
                         std::vector<double> mylocationvector1;
                         mylocationvector1.push_back (identifier);
                         mylocationvector1.push_back (step_number);
-                        mylocationvector1.push_back (TempX);
-                        mylocationvector1.push_back (TempY);
+                        mylocationvector1.push_back (Current_x);
+                        mylocationvector1.push_back (Current_y);
                         mylocationvector1.push_back (TempAngle);
                         mylocationvector1.push_back (Current_distance);
+                        mylocationvector1.push_back (1);
                         All_locations.push_back (mylocationvector1);
                         
                     }; //End of ELSE IF

@@ -8,11 +8,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "Test2/main.cpp"
-         timestampString = "390994871.765829"
+         timestampString = "391076613.533318"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "145"
-         endingLineNumber = "145"
+         startingLineNumber = "146"
+         endingLineNumber = "146"
          landmarkName = "main()"
          landmarkType = "7">
       </FileBreakpoint>
@@ -21,11 +21,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "Test2/main.cpp"
-         timestampString = "390994871.765829"
+         timestampString = "391076613.533318"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "147"
-         endingLineNumber = "147"
+         startingLineNumber = "148"
+         endingLineNumber = "148"
          landmarkName = "main()"
          landmarkType = "7">
       </FileBreakpoint>
@@ -60,11 +60,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "Test2/main.cpp"
-         timestampString = "390995226.812739"
+         timestampString = "391076613.533318"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "351"
-         endingLineNumber = "351"
+         startingLineNumber = "353"
+         endingLineNumber = "353"
          landmarkName = "main()"
          landmarkType = "7">
       </FileBreakpoint>
@@ -73,11 +73,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "Test2/main.cpp"
-         timestampString = "390995226.812739"
+         timestampString = "391076613.533318"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "312"
-         endingLineNumber = "312"
+         startingLineNumber = "313"
+         endingLineNumber = "313"
          landmarkName = "main()"
          landmarkType = "7">
       </FileBreakpoint>
@@ -106,58 +106,6 @@
          endingLineNumber = "42"
          landmarkName = "main()"
          landmarkType = "7">
-      </FileBreakpoint>
-      <FileBreakpoint
-         shouldBeEnabled = "No"
-         ignoreCount = "0"
-         continueAfterRunningActions = "No"
-         filePath = "Test2/Animal.cpp"
-         timestampString = "391018194.921025"
-         startingColumnNumber = "9223372036854775807"
-         endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "527"
-         endingLineNumber = "527"
-         landmarkName = "Animal::UpdateLocation (double a, double b)"
-         landmarkType = "5">
-      </FileBreakpoint>
-      <FileBreakpoint
-         shouldBeEnabled = "No"
-         ignoreCount = "0"
-         continueAfterRunningActions = "No"
-         filePath = "Test2/Animal.cpp"
-         timestampString = "391018194.921025"
-         startingColumnNumber = "9223372036854775807"
-         endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "528"
-         endingLineNumber = "528"
-         landmarkName = "Animal::UpdateLocation (double a, double b)"
-         landmarkType = "5">
-      </FileBreakpoint>
-      <FileBreakpoint
-         shouldBeEnabled = "No"
-         ignoreCount = "0"
-         continueAfterRunningActions = "No"
-         filePath = "Test2/Animal.cpp"
-         timestampString = "391018194.921025"
-         startingColumnNumber = "9223372036854775807"
-         endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "516"
-         endingLineNumber = "516"
-         landmarkName = "Animal::UpdateLocation (double a, double b)"
-         landmarkType = "5">
-      </FileBreakpoint>
-      <FileBreakpoint
-         shouldBeEnabled = "No"
-         ignoreCount = "0"
-         continueAfterRunningActions = "No"
-         filePath = "Test2/Animal.cpp"
-         timestampString = "391018194.921025"
-         startingColumnNumber = "9223372036854775807"
-         endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "515"
-         endingLineNumber = "515"
-         landmarkName = "Animal::UpdateLocation (double a, double b)"
-         landmarkType = "5">
       </FileBreakpoint>
    </FileBreakpoints>
 </Bucket>
