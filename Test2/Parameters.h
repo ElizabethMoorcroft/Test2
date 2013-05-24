@@ -8,7 +8,7 @@
 
 #ifndef Test2_Parameters_h
 #define Test2_Parameters_h
-
+#include <math.h>
 
 //////////////////////////////////////////////////
 /// Constant parameters used in the simulation ///
@@ -16,7 +16,7 @@
 
 //Simulation values - #Animals, #Steps, #HR, #CT
 const int NoAnimal = 10;
-const int LengthMonitoring = 12; //Length of monitoring in seconds
+const int LengthMonitoring = 500; //Length of monitoring in seconds
 const int AverageSizeHR = 5;
 const int SpeedCamera  = 2.4; // m/s = 0.06 * KM/h
 const int NoRunIn = 10;
@@ -50,7 +50,8 @@ const int StepLength = 2; //Length of each step in seconds
 
 //Animal parameters
 const int AnimalSpeed = 5; // ms^-1
-
+const int MovementType =2;
+const int ProbChangeMoveState = 0.1;//Probability of switching from coorelated to non-correlated
 
 //Call parameters
 const int CallFreq = 10;        // Call_freq = p;

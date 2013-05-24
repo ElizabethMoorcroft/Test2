@@ -21,14 +21,19 @@ class Animal {
     int step_number;
     int Movement_type;
     
-    int Move_state;
+    int Move_NonCorr;
     double Move_speed;
     double Move_maxangle;
-    
+        
     double Current_x;
     double Current_y;
     double Current_angle;
     double Current_distance;
+    
+    double NextX;
+    double NextY;
+    double NextAngle;
+    double NextDist;
 
     int SolidHomeRangeBoundary;  // HR = 1=Y or 0=N
     double Home_x;
@@ -40,6 +45,7 @@ class Animal {
     double Call_width;
     
     std::vector<std::vector<double>> All_locations;
+    std::vector<std::vector<double>> EndStep_locations;
 
 public:
     Animal();
@@ -50,7 +56,12 @@ public:
             int,  double, double, double);
     void Set_MoveValue (double,double);
     void Set_HRValues (int, int, double, double, double );
-    void NewLocation(double, double);
+    void NewLocationMT0(double, double);
+    void NewLocationMT1(double, double,double);
+    void NewLocationMT2(double, double,double);
+
+    void NewLocation(double, double,double);
+    void LeaveEnterWorld(double , double ,double , double );
     void UpdateLocation (double, double);
     
     void setHomeX(double a){Home_x = a;};
@@ -64,6 +75,7 @@ public:
     double getCallWidth(){return Call_width;};
     
     std::vector<std::vector<double>> getAllLocations(){return All_locations;};
+    std::vector<std::vector<double>> getEndStepLocations(){return EndStep_locations;};
     
     
 };

@@ -31,7 +31,7 @@ Animal::Animal( int a, int b, int c, int d,
     step_number = c;
     Movement_type = d;
     
-    Move_state = e;
+    Move_NonCorr = e;
     Move_speed = f;
     Move_maxangle = g;
     
@@ -53,14 +53,16 @@ Animal::Animal( int a, int b, int c, int d,
     
     //Records the movement
     std::vector<double> mylocationvector;
-    mylocationvector.push_back (identifier);
-    mylocationvector.push_back (step_number);
-    mylocationvector.push_back (Current_x);
-    mylocationvector.push_back (Current_y);
-    mylocationvector.push_back (Current_angle);
-    mylocationvector.push_back (Current_distance);
-    mylocationvector.push_back (0);
+    mylocationvector.resize(7);
+    mylocationvector[0] = identifier;
+    mylocationvector[1] = step_number;
+    mylocationvector[2] = Current_x;
+    mylocationvector[3] = Current_y;
+    mylocationvector[4] = Current_angle;
+    mylocationvector[5] = Current_distance;
+    mylocationvector[6] = 0;
     All_locations.push_back (mylocationvector);
+    EndStep_locations.push_back (mylocationvector);
                 }
 
 
@@ -82,73 +84,206 @@ void Animal::Set_HRValues (int a, int b, double c, double d, double e) {
 }
 
 
-///////////////////////
-/// UPDATE LOCATION ///
-///////////////////////
+/////////////////////
+/// NEW LOCATION  ///
+/////////////////////
 
-void Animal::NewLocation (double a, double b){
+void Animal::NewLocationMT0 (double a, double b){
+    
+    double seed=a;
+    double Dist=b;
+    //set up a random number
+    RandNum Number1;
+    
+    // Gas movmeent there is no change in the angle of movemnet
+    NextAngle=Current_angle;
+
+    // Calculate a distance value
+    NextDist = Number1.PositiveNormal (seed,Dist,Dist/10);
+    //std::cout <<TempDist<<std::endl;
+
+    //Based on polar coordinates updates the temp x/y location
+    NextX = Current_x + NextDist*sin(NextAngle);
+    NextY = Current_y + NextDist*cos(NextAngle);
+}
+
+void Animal::NewLocationMT1 (double a, double b, double c){
+    
+    double seed=a;
+    double seed2=b;
+    double Dist=c;
+    //set up a random number
+    RandNum Number1;
+    //Correlated random walk
+    // Calculate a distance value
+    NextDist = Number1.PositiveNormal (seed,Dist,Dist/10);
+
+    //calculates a new random angle of movement
+    NextAngle = Number1.AtoRangeBUnif(seed2,Current_angle,Move_maxangle);
+    //Sometimes the angle becomes greater than 360 or less than 0
+    //Recalculates so that the angle between 0 and 360
+    if(NextAngle<0){NextAngle=NextAngle+2*M_PI;}else if(NextAngle>2*M_PI){NextAngle=NextAngle-2*M_PI;};
+
+    //Based on polar coordinates updates the temp x/y location
+    NextX = Current_x + NextDist*sin(NextAngle);
+    NextY = Current_y + NextDist*cos(NextAngle);
+    //Current_angle = NextAngle;
+}
+
+
+
+void Animal::NewLocationMT2 (double a, double b, double c){
+    
+    double seed=a;
+    double seed2=b;
+    double Dist=c;
+    
+    if(Move_NonCorr==1){//ENTRE CODE IF THE MOVEMENT IS NOT_CORRELATED
+        
+        //set up a random number
+        RandNum Number1;
+        //Correlated random walk
+        // Calculate a distance value
+        NextDist = Number1.PositiveNormal (seed,Dist,Dist/10);
+        
+        //calculates a new random angle of movement
+        NextAngle = Number1.AtoBUnif(seed2,0,2*M_PI);
+
+        
+        //Based on polar coordinates updates the temp x/y location
+        NextX = Current_x + NextDist*sin(NextAngle);
+        NextY = Current_y + NextDist*cos(NextAngle);
+        
+        
+        }
+    else if(Move_NonCorr==0){
+        //If MOVEMENT IS CORRELATED THEN CALUCLATE THE MOVEMENT FROM THE MOVETYPE1 CORR-RANDOM WALK
+        NewLocationMT1(seed,seed2,Dist);
+    }
+    
+ 
+}
+
+
+void Animal::NewLocation (double a, double b, double c){
     
     //Renames variables
     double StepLength = a;
     double seed = b;
+    double seed2 = c;
     //std::cout<< seed <<std::endl;
-    
-    //List of random number
-    srand(seed);
-    std::vector<double> RandomNumberUpdateMovement;
-    for(int i=0; i<100000; i++){ //Do I need to increase the max value??
-        double myrandomnumber =  rand();
-        RandomNumberUpdateMovement.push_back(myrandomnumber);
-    };
-    
-    //set up a random number
-    RandNum Number1;
-    
-    //Sets up temporary X and Y values
-    double TempX;
-    double TempY;
-    double TempAngle;
-    double TempDist;
-    double TempDistToHR = Home_r+1;
-    int count = 0; // Number of times the loop has been looped through
-    
+
     
     //calculates a new random step distance
     double Dist = Move_speed*StepLength;
     
     if(Movement_type==0){
-        // Gas movmeent there is no change in the angle of movemnet
-        TempAngle=Current_angle;
         
-        TempDistToHR=0;
-        
-        // Calculate a distance value
-        TempDist = Number1.PositiveNormal (RandomNumberUpdateMovement[count],Dist,Dist/10);
-        //std::cout <<TempDist<<std::endl;
-        
-        //Based on polar coordinates updates the temp x/y location
-        TempX = Current_x + TempDist*sin(TempAngle);
-        TempY = Current_y + TempDist*cos(TempAngle);
+        NewLocationMT0(seed,Dist);
         
     } else if (Movement_type==1){
+        NewLocationMT1(seed,seed2,Dist);
         
-        // Calculate a distance value
-        TempDist = Number1.PositiveNormal (RandomNumberUpdateMovement[count],Dist,Dist/10);
+    } else if (Movement_type==2){
+        NewLocationMT2(seed,seed2,Dist);
         
-        //calculates a new random angle of movement
-        TempAngle = Number1.AtoRangeBUnif(RandomNumberUpdateMovement[count+99],Current_angle,Move_maxangle);
-        //Sometimes the angle becomes greater than 360 or less than 0
-        //Recalculates so that the angle between 0 and 360
-        if(TempAngle<0){TempAngle=TempAngle+2*M_PI;}else if(TempAngle>2*M_PI){TempAngle=TempAngle-2*M_PI;};
-        
-        //Based on polar coordinates updates the temp x/y location
-        TempX = Current_x + TempDist*sin(TempAngle);
-        TempY = Current_y + TempDist*cos(TempAngle);
-        
-        //Current_angle = TempAngle;
-        
-    };
+    }
+    
 }
+
+
+//////////////////////////
+/// PERIODIC BOUNDARY  ///
+//////////////////////////
+
+
+void Animal::LeaveEnterWorld(double a, double b , double c, double d){
+    
+    double YBoundExit =a;
+    double XBoundExit =b;
+    double YBoundEnter =c;
+    double XBoundEnter =d;
+    
+
+    // Caculate the V & H distances to the boudaries
+    double tempDistToTop = std::abs(YBoundExit-Current_y);
+    double tempDistToSide = std::abs(XBoundExit-Current_x);
+    
+    // Calculates the distnace the animal travels to the boudary
+    double tempDistToTopBoundary = std::abs(tempDistToTop/cos(NextAngle));
+    double tempDistToSideBoundary = std::abs(tempDistToSide/sin(NextAngle));
+    
+    double tempExitsY =0;
+    double tempExitsX =0;
+    
+    if(tempDistToSideBoundary>tempDistToTopBoundary | tempDistToSideBoundary ==0 ){
+    
+        std::cout <<"Top"<<std::endl;
+        //This means that it exits the world at maximum value of y and at the corresponding x value
+        tempExitsY = YBoundExit;
+        tempExitsX = Current_x+tempDistToTopBoundary*sin(NextAngle);
+        
+        //New starting position
+        Current_y = YBoundEnter;
+        Current_x = tempExitsX;
+        
+        // The distance left to travel
+        NextDist = NextDist - tempDistToTopBoundary;
+    } else{
+        std::cout <<"Side"<<std::endl;
+        //This means that it exits the world at maximum value of y and at the corresponding x value
+        tempExitsX = XBoundExit;
+        tempExitsY = Current_y+tempDistToSideBoundary*cos(NextAngle);
+        
+        //New starting position
+        Current_y = tempExitsY;
+        Current_x = XBoundEnter;
+        Current_angle = NextAngle;
+        
+        // The distance left to travel
+        NextDist = NextDist - tempDistToSideBoundary;
+    
+    }
+
+    
+    
+        // The current distance travelled
+        Current_distance = Current_distance + tempDistToTopBoundary;
+    
+    
+        //Records exit of the world
+        std::vector<double> mylocationvector;
+        mylocationvector.resize(7);
+        mylocationvector[0] = identifier;
+        mylocationvector[1] = step_number;
+        mylocationvector[2] = tempExitsX;
+        mylocationvector[3] = tempExitsY;
+        mylocationvector[4] = NextAngle;
+        mylocationvector[5] = Current_distance;
+        mylocationvector[6] = 0;
+        All_locations.push_back (mylocationvector);
+    
+    
+        //New end locations
+        //Based on polar coordinates updates the temp x/y location
+        NextX = Current_x + NextDist*sin(NextAngle);
+        NextY = Current_y + NextDist*cos(NextAngle);
+    
+        //Records the etring of the world
+        std::vector<double> mylocationvector1;
+        mylocationvector1.resize(7);
+        mylocationvector1[0] = identifier;
+        mylocationvector1[1] = step_number;
+        mylocationvector1[2] = Current_x;
+        mylocationvector1[3] = Current_y;
+        mylocationvector1[4] = NextAngle;
+        mylocationvector1[5] = Current_distance;
+        mylocationvector1[6] = 1;
+        All_locations.push_back (mylocationvector1);
+    
+}
+
+
 
 ///////////////////////
 /// UPDATE LOCATION ///
@@ -156,91 +291,85 @@ void Animal::NewLocation (double a, double b){
 
 void Animal::UpdateLocation (double a, double b){ // a is the number of seconds per step, b is the random seed
     
-    //Renames variables
     double StepLength = a;
     double seed = b;
-    //std::cout<< seed <<std::endl;
     
     //List of random number
     srand(seed);
+    std::vector<double> RandomNumberMovement;
+    for(int i=0; i<101; i++){ //Do I need to increase the max value??
+        double myrandomnumber =  rand();
+        RandomNumberMovement.push_back(myrandomnumber);
+    };
+    
+    
+    //List of random number
+    srand(RandomNumberMovement[0]);
     std::vector<double> RandomNumberUpdateMovement;
     for(int i=0; i<100000; i++){ //Do I need to increase the max value??
         double myrandomnumber =  rand();
         RandomNumberUpdateMovement.push_back(myrandomnumber);
     };
     
-    //set up a random number
-    RandNum Number1;
-    
-    //Sets up temporary X and Y values
-    double TempX;
-    double TempY;
-    double TempAngle;
-    double TempDist;
-    double TempDistToHR = Home_r+1;
-    int i = 0; //index is the value within side the desired range
-    int count = 0; // Number of times the loop has been looped through
-    
-    
-    //calculates a new random step distance
-    double Dist = Move_speed*StepLength;
+
     
     ////////////////////////////
     /// HR bounding movement ///
     ////////////////////////////
     if(SolidHomeRangeBoundary==1){
+        
+        int i=0;
+        int count=0;
+
         std::cout<<"Solid"<<std::endl;
         while(i==0){
+            if(count<10000){
+                NewLocation(StepLength, RandomNumberUpdateMovement[count], RandomNumberUpdateMovement[count+100]);
             
-            // Calculate a distance value
-            TempDist = Number1.PositiveNormal (RandomNumberUpdateMovement[count],Dist,Dist/10);
-        
-            //calculates a new random angle of movement
-            TempAngle = Number1.AtoRangeBUnif(RandomNumberUpdateMovement[count+99],Current_angle,Move_maxangle);
+                // Distance from centre of hr to animal
+                double TempDistToHR =sqrt(pow(NextX-Home_x,2)+pow(NextY-Home_y,2));
             
-            //Sometimes the angle becomes greater than 360 or less than 0
-            //Recalculates so that the angle between 0 and 360
-            if(TempAngle<0){TempAngle=TempAngle+2*M_PI;}else if(TempAngle>2*M_PI){TempAngle=TempAngle-2*M_PI;};
+                count = count +1;
             
-            //Based on polar coordinates updates the temp x/y location
-            TempX = Current_x + TempDist*sin(TempAngle);
-            TempY = Current_y + TempDist*cos(TempAngle);
-        
-            //**
-            //Need to include a Formal Test new location inside the HR??
-            //**
-            
-            // Distance from centre of hr to animal
-            double TempDistToHR =sqrt(pow(TempX-Home_x,2)+pow(TempX-Home_x,2));
-            
-            count = count +1;
-            
-            //While loop wasn't working
-            //if new location is inside the home range then let 
-            if(TempDistToHR<Home_r){ i=i+1;}
-            
-        } //while (TempDistToHR > Home_r);
+                //While loop wasn't working
+                //if new location is inside the home range then let
+                if(TempDistToHR<Home_r){ i=i+1;}
+            }
+            else {
+                NewLocationMT0(Move_speed*StepLength, RandomNumberUpdateMovement[count]);
+                
+                double TempDistToHR =sqrt(pow(NextX-Home_x,2)+pow(NextY-Home_y,2));
+                
+                count = count +1;
+                
+                //While loop wasn't working
+                //if new location is inside the home range then let
+                if(TempDistToHR<Home_r){ i=i+1;}
+            }
+        } //End of While loop
         
         // rewrite current locaion
-        Current_x = TempX;
-        Current_y = TempY;
-        Current_angle = TempAngle;
-        Current_distance = Current_distance + TempDist;
+        Current_x = NextX;
+        Current_y = NextY;
+        Current_angle = NextAngle;
+        Current_distance = Current_distance + NextDist;
         
         //std::cout<<Current_angle <<std::endl;
 
         
         //Add to the all locations
         std::vector<double> mylocationvector;
-        mylocationvector.push_back (identifier);
-        mylocationvector.push_back (step_number);
-        mylocationvector.push_back (TempX);
-        mylocationvector.push_back (TempY);
-        mylocationvector.push_back (TempAngle);
-        mylocationvector.push_back (Current_distance);
-        mylocationvector.push_back (0);
+        mylocationvector.resize(7);
+        mylocationvector[0] =identifier;
+        mylocationvector[1] =step_number;
+        mylocationvector[2] =Current_x;
+        mylocationvector[3] =Current_y;
+        mylocationvector[4] =NextAngle;
+        mylocationvector[5] =Current_distance;
+        mylocationvector[6] =0;
         All_locations.push_back (mylocationvector);
-    }
+        EndStep_locations.push_back (mylocationvector);
+    } //END OF SOLID BOUNDARIES
     
     
     ////////////////////////////////
@@ -249,61 +378,33 @@ void Animal::UpdateLocation (double a, double b){ // a is the number of seconds 
     if(SolidHomeRangeBoundary==0){
         
         std::cout<<"NoSolid"<<std::endl;
-        if(Movement_type==0){
-            // Gas movmeent there is no change in the angle of movemnet
-            TempAngle=Current_angle;
         
-            TempDistToHR=0;
-        
-            // Calculate a distance value
-            TempDist = Number1.PositiveNormal (RandomNumberUpdateMovement[count],Dist,Dist/10);
-            //std::cout <<TempDist<<std::endl;
-        
-            //Based on polar coordinates updates the temp x/y location
-            TempX = Current_x + TempDist*sin(TempAngle);
-            TempY = Current_y + TempDist*cos(TempAngle);
-            
-        } else if (Movement_type==1){
-                
-            // Calculate a distance value
-            TempDist = Number1.PositiveNormal (RandomNumberUpdateMovement[count],Dist,Dist/10);
-                
-            //calculates a new random angle of movement
-            TempAngle = Number1.AtoRangeBUnif(RandomNumberUpdateMovement[count+99],Current_angle,Move_maxangle);
-            //Sometimes the angle becomes greater than 360 or less than 0
-            //Recalculates so that the angle between 0 and 360
-            if(TempAngle<0){TempAngle=TempAngle+2*M_PI;}else if(TempAngle>2*M_PI){TempAngle=TempAngle-2*M_PI;};
-            
-            //Based on polar coordinates updates the temp x/y location
-            TempX = Current_x + TempDist*sin(TempAngle);
-            TempY = Current_y + TempDist*cos(TempAngle);
-            
-            Current_angle = TempAngle;
-            
-        };
+            NewLocation(StepLength, RandomNumberUpdateMovement[0], RandomNumberUpdateMovement[100]);
         
         int tempcounter = 0;
         //std::cout<< "ENTER WHILE" << std::endl;
         while(tempcounter<1){
             // If the movement finishes inside the environment
-            if(TempX < Sq_MaxX && TempX > Sq_MinX && TempY < Sq_MaxY && TempY > Sq_MinY){
+            if(NextX < Sq_MaxX && NextX > Sq_MinX && NextY < Sq_MaxY && NextY > Sq_MinY){
                 //Can save the temp location as the current location
                 // rewrite current locaion
-                Current_x = TempX;
-                Current_y = TempY;
-                Current_angle = TempAngle;
-                Current_distance = Current_distance + TempDist;
+                Current_x = NextX;
+                Current_y = NextY;
+                Current_angle = NextAngle;
+                Current_distance = Current_distance + NextDist;
                 
                 //Add to the all locations
                 std::vector<double> mylocationvector;
-                mylocationvector.push_back (identifier);
-                mylocationvector.push_back (step_number);
-                mylocationvector.push_back (TempX);
-                mylocationvector.push_back (TempY);
-                mylocationvector.push_back (TempAngle);
-                mylocationvector.push_back (Current_distance);
-                mylocationvector.push_back (0);
+                mylocationvector.resize(7);
+                mylocationvector[0] = identifier;
+                mylocationvector[1] = step_number;
+                mylocationvector[2] = NextX;
+                mylocationvector[3] = NextY;
+                mylocationvector[4] = NextAngle;
+                mylocationvector[5] = Current_distance;
+                mylocationvector[6] = 0;
                 All_locations.push_back (mylocationvector);
+                EndStep_locations.push_back (mylocationvector);
                 
                 //Ends the while loop by achieving the condition
                 tempcounter = 1;
@@ -318,122 +419,15 @@ void Animal::UpdateLocation (double a, double b){ // a is the number of seconds 
                 // If angle between 0 and 90 degrees //
                 ///////////////////////////////////////
                 //If angle between 0 and 90 degrees then will exit either at top or right boundary
-                if(Current_angle>=0 && Current_angle<M_PI/2){
+                if(NextAngle>=0 && NextAngle<M_PI/2){
                     std::cout <<"0-90"<<std::endl;
-                    // Caculate the V & H distances to the boudaries
-                    double tempDistToTop = Sq_MaxY-Current_y;
-                    double tempDistToRight = Sq_MaxX-Current_x;
-                    
-                    // Calculates the distnace the animal travels to the boudary
-                    double tempDistToTopBoundary = tempDistToTop/cos(Current_angle);
-                    double tempDistToRightBoundary = tempDistToRight/sin(Current_angle);
-                    
-                    // IF the hits the top boundary first
-                    if(tempDistToRightBoundary>tempDistToTopBoundary | tempDistToRightBoundary ==0 ){
-                        
-                        std::cout <<"Top"<<std::endl;
-                        //This means that it exits the world at maximum value of y and at the corresponding x value
-                        double tempExitsY = Sq_MaxY;
-                        double tempExitsX = Current_x+tempDistToTopBoundary*sin(Current_angle);
-                        // The current distance travelled
-                        Current_distance = Current_distance + tempDistToTopBoundary;
-
-                        
-                        //Records the movement 
-                        std::vector<double> mylocationvector;
-                        mylocationvector.push_back (identifier);
-                        mylocationvector.push_back (step_number);
-                        mylocationvector.push_back (tempExitsX);
-                        mylocationvector.push_back (tempExitsY);
-                        mylocationvector.push_back (TempAngle);
-                        mylocationvector.push_back (Current_distance);
-                        mylocationvector.push_back (0);
-
-                        All_locations.push_back (mylocationvector);
-                        
-                        std::cout<<"tempDistToTopBoundary"<<tempDistToTopBoundary<<std::endl;
-                        std::cout<<"tempDistToRightBoundary"<<tempDistToRightBoundary<<std::endl;
-                        std::cout<<"tempDistToTop "<<tempDistToTop<<std::endl;
-                        std::cout<<"tempDistToRight "<<tempDistToRight<<std::endl;
-                        std::cout<<"cuurentangle"<<cos(Current_angle)<<std::endl;
-                        std::cout<<"cuurentx"<<Current_x<<std::endl;
-                        std::cout<<"cuurenty"<<Current_y<<std::endl;
-                        std::cout<<"TempDist"<<TempDist<<std::endl;
-
-                        // The distance left to travel
-                        TempDist = TempDist - tempDistToTopBoundary;
-                        
-                        //New starting position
-                        Current_y = Sq_MinY;
-                        Current_x = tempExitsX;
-                        
-                        //New end locations
-                        //Based on polar coordinates updates the temp x/y location
-                        TempX = Current_x + TempDist*sin(TempAngle);
-                        TempY = Current_y + TempDist*cos(TempAngle);
-                        
-                        //Records the movement
-                        std::vector<double> mylocationvector1;
-                        mylocationvector1.push_back (identifier);
-                        mylocationvector1.push_back (step_number);
-                        mylocationvector1.push_back (Current_x);
-                        mylocationvector1.push_back (Current_y);
-                        mylocationvector1.push_back (TempAngle);
-                        mylocationvector1.push_back (Current_distance);
-                        mylocationvector1.push_back (1);
-                        All_locations.push_back (mylocationvector1);
-                        
-                        
-                        } //End of IF
-                    
-                    else if(tempDistToRightBoundary<tempDistToTopBoundary){
-                        
-                        std::cout << "right "<< std::endl;
-                        //This means that it exits the world at maximum value of x and at the corresponding y value
-                        double tempExitsX = Sq_MaxX;
-                        double tempExitsY = Current_y+tempDistToRightBoundary*cos(Current_angle);
-                        
-                        // The current distance travelled
-                        Current_distance = Current_distance + tempDistToRightBoundary;
-                        
-                                
-                        //Records the movement
-                        std::vector<double> mylocationvector;
-                        mylocationvector.push_back (identifier);
-                        mylocationvector.push_back (step_number);
-                        mylocationvector.push_back (tempExitsX);
-                        mylocationvector.push_back (tempExitsY);
-                        mylocationvector.push_back (TempAngle);
-                        mylocationvector.push_back (Current_distance);
-                        mylocationvector.push_back (0);
-                        All_locations.push_back (mylocationvector);
-                        
-                        // The distance left to travel
-                        TempDist = TempDist - tempDistToRightBoundary;
-                        std::cout<<TempDist<<std::endl;
-                        
-                        //New starting position
-                        Current_x = Sq_MinX;
-                        Current_y = tempExitsY;
-                        
-                        //New end locations
-                        //Based on polar coordinates updates the temp x/y location
-                        TempX = Current_x + TempDist*sin(TempAngle);
-                        TempY = Current_y + TempDist*cos(TempAngle);
-                        
-                        
-                        //Records the movement
-                        std::vector<double> mylocationvector1;
-                        mylocationvector1.push_back (identifier);
-                        mylocationvector1.push_back (step_number);
-                        mylocationvector1.push_back (Current_x);
-                        mylocationvector1.push_back (Current_y);
-                        mylocationvector1.push_back (TempAngle);
-                        mylocationvector1.push_back (Current_distance);
-                        mylocationvector1.push_back (1);
-                        All_locations.push_back (mylocationvector1);
-                        
-                    }; //End of ELSE IF
+                    /*
+                    double YBound =a;
+                    double XBound =b;
+                    double YBoundEnter =c;
+                    double XBoundEnter =d;
+                     */
+                    LeaveEnterWorld(Sq_MaxY, Sq_MaxX ,Sq_MinY, Sq_MinX);
                 } //END OF 0 to 90 degrees IF STATEMENT
                 
                 
@@ -442,376 +436,42 @@ void Animal::UpdateLocation (double a, double b){ // a is the number of seconds 
                 /////////////////////////////////////////
                 //then will exit either at Bottom or right boundary
                 
-                else if(Current_angle>=M_PI/2 && Current_angle<M_PI){
+                else if(NextAngle>=M_PI/2 && NextAngle<M_PI){
                     std::cout <<"90-180"<<std::endl;
+                    LeaveEnterWorld(Sq_MinY, Sq_MaxX ,Sq_MaxY, Sq_MinX);
                     
-                    // Caculate the V & H distances to the boudaries
-                    double tempDistToBottom = Current_y - Sq_MinY;
-                    double tempDistToRight = Sq_MaxX - Current_x;
-                    
-                    // Calculates the distnace the animal travels to the boudary
-                    double tempDistToBottomBoundary = std::abs(tempDistToBottom/cos(Current_angle));
-                    double tempDistToRightBoundary = std::abs(tempDistToRight/sin(Current_angle));
-                    // IF the hits the top boundary first
-                    
-                    if(tempDistToRightBoundary>tempDistToBottomBoundary){
-                        std::cout<<"Bottom"<<std::endl;
-                        //The bat exits the environemnt by the bottom of the world
-                        //This means that it exits the world at minimum value of y and at the corresponding x value
-                        double tempExitsY = Sq_MinY;
-                        double tempExitsX = Current_x + tempDistToBottomBoundary*sin(Current_angle);
-                        // The current distance travelled
-                        Current_distance = Current_distance + tempDistToBottomBoundary;
-                        
-                        
-                        //Records the movement
-                        std::vector<double> mylocationvector;
-                        mylocationvector.push_back (identifier);
-                        mylocationvector.push_back (step_number);
-                        mylocationvector.push_back (tempExitsX);
-                        mylocationvector.push_back (tempExitsY);
-                        mylocationvector.push_back (TempAngle);
-                        mylocationvector.push_back (Current_distance);
-                        mylocationvector.push_back (0);
-                        All_locations.push_back (mylocationvector);
-                        
-                        // The distance left to travel
-                        TempDist = TempDist - tempDistToBottomBoundary;
-                        //std::cout<< "tempDistToBottomBoundary" << tempDistToBottomBoundary<<std::endl;
-                        //std::cout<< "Temp dist" << TempDist<<std::endl;
-                        
-                        
-                        //New starting position
-                        Current_y = Sq_MaxY;
-                        Current_x = tempExitsX;
-                        
-                        //New end locations
-                        //Based on polar coordinates updates the temp x/y location
-                        TempX = Current_x + TempDist*sin(TempAngle);
-                        TempY = Current_y + TempDist*cos(TempAngle);
-                        
-                        //Records the movement
-                        std::vector<double> mylocationvector1;
-                        mylocationvector1.push_back (identifier);
-                        mylocationvector1.push_back (step_number);
-                        mylocationvector1.push_back (Current_x);
-                        mylocationvector1.push_back (Current_y);
-                        mylocationvector1.push_back (TempAngle);
-                        mylocationvector1.push_back (Current_distance);
-                        mylocationvector1.push_back (1);
-                        All_locations.push_back (mylocationvector1);
-                        
-                        
-                    } //End of IF
-                    
-                    else if(tempDistToRightBoundary<tempDistToBottomBoundary){
-                        // Hits the Right boundary first
-                        //This means that it exits the world at minimum value of x and at the corresponding y value
-                        double tempExitsX = Sq_MaxX;
-                        double tempExitsY = Current_y +tempDistToRightBoundary*cos(Current_angle);
-                        // The current distance travelled
-                        Current_distance = Current_distance + tempDistToRightBoundary;
-                        
-                        //Records the movement
-                        std::vector<double> mylocationvector;
-                        mylocationvector.push_back (identifier);
-                        mylocationvector.push_back (step_number);
-                        mylocationvector.push_back (tempExitsX);
-                        mylocationvector.push_back (tempExitsY);
-                        mylocationvector.push_back (TempAngle);
-                        mylocationvector.push_back (Current_distance);
-                        mylocationvector.push_back (0);
-                        All_locations.push_back (mylocationvector);
-                        
-                        std::cout<< "tempDistToRightBoundary" << tempDistToRightBoundary<<std::endl;
-                        std::cout<< "Temp dist" << TempDist<<std::endl;
-                        
-                        // The distance left to travel
-                        TempDist = TempDist - tempDistToRightBoundary;
- 
-                        
-                        //New starting position
-                        Current_x = Sq_MinX;
-                        Current_y = tempExitsY;
-                        
-                        //New end locations
-                        //Based on polar coordinates updates the temp x/y location
-                        TempX = Current_x + TempDist*sin(TempAngle);
-                        TempY = Current_y + TempDist*cos(TempAngle);
-                        
-                        //Records the movement
-                        std::vector<double> mylocationvector1;
-                        mylocationvector1.push_back (identifier);
-                        mylocationvector1.push_back (step_number);
-                        mylocationvector1.push_back (Current_x);
-                        mylocationvector1.push_back (Current_y);
-                        mylocationvector1.push_back (TempAngle);
-                        mylocationvector1.push_back (Current_distance);
-                        mylocationvector1.push_back (1);
-                        All_locations.push_back (mylocationvector1);
-                        
-                    }; //End of ELSE IF
-                
-                
                 }//END OF 90 to 180 degrees IF STATEMENT
-                
-                
-                //////////////////////////////////////////
+
+                /////////////////////////////////////////
                 // If angle between 180 and 270 degrees //
-                //////////////////////////////////////////
-                // then will exit either at bottom or left boundary
-                else if(Current_angle>=M_PI && Current_angle<1.5*M_PI){
-                   
-                    /*
-                    std::cout <<"ID:" <<identifier <<std::endl;
-                    std::cout <<"Step Number:" <<step_number<<std::endl;
+                /////////////////////////////////////////
+                //then will exit either at Bottom or right boundary
+                
+                else if(NextAngle>=M_PI && NextAngle<1.5*M_PI){
                     std::cout <<"180-270"<<std::endl;
-                    std::cout<< "Start Loop Dist left: "<< TempDist<< std::endl;
-                    */
+                    LeaveEnterWorld(Sq_MinY, Sq_MinX ,Sq_MaxY, Sq_MaxX);
                     
-                    // Caculate the V & H distances to the boudaries
-                    double tempDistToBottom = Current_y - Sq_MinY;
-                    double tempDistToLeft = Current_x - Sq_MinX;
-                    
-                    // Calculates the distnace the animal travels to the boudary
-                    double tempDistToBottomBoundary = std::abs(tempDistToBottom/cos(Current_angle));
-                    double tempDistToLeftBoundary = std::abs(tempDistToLeft/sin(Current_angle));
-                    // IF the hits the top boundary first
-                    
-                    if(tempDistToLeftBoundary>tempDistToBottomBoundary){
-                        /*
-                        std::cout <<"Bottom"<<std::endl;
-                         std::cout<< "Start BT Loop Dist left: "<< TempDist<< std::endl;
-                        std::cout<< "Dist Left: "<< TempDist<< std::endl;
-                        std::cout<< "Dist to Bottom: "<< tempDistToBottomBoundary<< std::endl;
-                        std::cout<< "Dist to Left: "<< tempDistToLeftBoundary<< std::endl;
-                        */
-                        
-                        //This means that it exits the world at minimum value of y and at the corresponding x value
-                        double tempExitsY = Sq_MinY;
-                        double tempExitsX = Current_x +tempDistToBottomBoundary*sin(Current_angle);
-                        // The current distance travelled
-                        Current_distance = Current_distance + tempDistToBottomBoundary;
-                        
-                        
-                        //Records the movement
-                        std::vector<double> mylocationvector;
-                        mylocationvector.push_back (identifier);
-                        mylocationvector.push_back (step_number);
-                        mylocationvector.push_back (tempExitsX);
-                        mylocationvector.push_back (tempExitsY);
-                        mylocationvector.push_back (TempAngle);
-                        mylocationvector.push_back (Current_distance);
-                        mylocationvector.push_back (0);
-                        All_locations.push_back (mylocationvector);
-                          
-                        // The distance left to travel
-                         TempDist = TempDist - tempDistToBottomBoundary;
-  
-     
-                        //New starting position
-                        Current_y = Sq_MaxY;
-                        Current_x = tempExitsX;
-                        
-                        //New end locations
-                        //Based on polar coordinates updates the temp x/y location
-                        TempX = Current_x + TempDist*sin(TempAngle);
-                        TempY = Current_y + TempDist*cos(TempAngle);
- 
-                        //Records the movement
-                        std::vector<double> mylocationvector1;
-                        mylocationvector1.push_back (identifier);
-                        mylocationvector1.push_back (step_number);
-                        mylocationvector1.push_back (Current_x);
-                        mylocationvector1.push_back (Current_y);
-                        mylocationvector1.push_back (TempAngle);
-                        mylocationvector1.push_back (Current_distance);
-                        mylocationvector1.push_back (1);
-                        All_locations.push_back (mylocationvector1);
-                        
-                    } //End of IF
-                    
-                    else if(tempDistToLeftBoundary<tempDistToBottomBoundary){
-                        //Hits the left boundary first
-                        /*
-                        std::cout <<"Left"<<std::endl;
-                        std::cout <<"Current x: "<<Current_x<<std::endl;
-                        std::cout <<"Current angle: "<<Current_angle<<std::endl;
-                        std::cout <<TempDist<<std::endl;
-                         */
-                        //This means that it exits the world at minimum value of x and at the corresponding y value
-                        double tempExitsX = Sq_MinX;
-                        double tempExitsY = Current_y + tempDistToLeftBoundary*cos(Current_angle);
-                        // The current distance travelled
-                        Current_distance = Current_distance + tempDistToLeftBoundary;
-
-                        
-                        //Records the movement
-                        std::vector<double> mylocationvector;
-                        mylocationvector.push_back (identifier);
-                        mylocationvector.push_back (step_number);
-                        mylocationvector.push_back (tempExitsX);
-                        mylocationvector.push_back (tempExitsY);
-                        mylocationvector.push_back (TempAngle);
-                        mylocationvector.push_back (Current_distance);
-                        mylocationvector.push_back (0);
-                        All_locations.push_back (mylocationvector);
-                        
-                        //std::cout<< "Dist Left B4: "<< TempDist<< std::endl;
-                        
-                        // The distance left to travel
-                        TempDist = TempDist - tempDistToLeftBoundary;
-                        
-                        //std::cout<< "Dist Left Aft: "<< TempDist<< std::endl;
-
-                        //std::cout<< "Dist to Left: "<< tempDistToLeftBoundary<< std::endl;
-
-                        
-                        //New starting position
-                        Current_x = Sq_MaxX;
-                        Current_y = tempExitsY;
-                        
-                        //New end locations
-                        //Based on polar coordinates updates the temp x/y location
-                        TempX = Current_x + TempDist*sin(TempAngle);
-                        TempY = Current_y + TempDist*cos(TempAngle);
-                        
-                        //Records the movement
-                        std::vector<double> mylocationvector1;
-                        mylocationvector1.push_back (identifier);
-                        mylocationvector1.push_back (step_number);
-                        mylocationvector1.push_back (Current_x);
-                        mylocationvector1.push_back (Current_y);
-                        mylocationvector1.push_back (TempAngle);
-                        mylocationvector1.push_back (Current_distance);
-                        mylocationvector1.push_back (1);
-                        All_locations.push_back (mylocationvector1);
-                        
-                    }; //End of ELSE IF
-                    
-                }//END OF 90 to 180 degrees IF STATEMENT
+                }//END OF 180 to 270 degrees IF STATEMENT
                 
-                
-                //////////////////////////////////////////
+                /////////////////////////////////////////
                 // If angle between 270 and 360 degrees //
-                //////////////////////////////////////////
+                /////////////////////////////////////////
+                //then will exit either at Bottom or right boundary
                 
-                
-                //If angle between 270 and 360 degrees then will exit either at top or left boundary
-                else if(Current_angle>=1.5*M_PI && Current_angle<2*M_PI){
+                else if(NextAngle>=1.5*M_PI && NextAngle<2*M_PI){
                     std::cout <<"270-360"<<std::endl;
-                    // Caculate the V & H distances to the boudaries
-                    double tempDistToTop = Sq_MaxY-Current_y;
-                    double tempDistToLeft = Current_x-Sq_MinX;
-                    
-                    // Calculates the distnace the animal travels to the boudary
-                    double tempDistToTopBoundary = std::abs(tempDistToTop/cos(Current_angle));
-                    double tempDistToLeftBoundary = std::abs(tempDistToLeft/sin(Current_angle));
-                    
-                    // IF the hits the top boundary first
-                    if(tempDistToLeftBoundary>tempDistToTopBoundary){
-                        std::cout<<"Top"<<std::endl;
-                        //Hits the Top boundary
-                        //This means that it exits the world at maximum value of y and at the corresponding x value
-                        double tempExitsY = Sq_MaxY;
-                        double tempExitsX = Current_x+tempDistToTopBoundary*sin(Current_angle);
-                        // The current distance travelled
-                        Current_distance = Current_distance + tempDistToTopBoundary;
-                        
-                        
-                        //Records the movement
-                        std::vector<double> mylocationvector;
-                        mylocationvector.push_back (identifier);
-                        mylocationvector.push_back (step_number);
-                        mylocationvector.push_back (tempExitsX);
-                        mylocationvector.push_back (tempExitsY);
-                        mylocationvector.push_back (TempAngle);
-                        mylocationvector.push_back (Current_distance);
-                        mylocationvector.push_back (0);
-                        All_locations.push_back (mylocationvector);
-                        
-                        // The distance left to travel
-                        TempDist = TempDist - tempDistToTopBoundary;
-                        
-                        //New starting position
-                        Current_y = Sq_MinY;
-                        Current_x = tempExitsX;
-                        
-                        //New end locations
-                        //Based on polar coordinates updates the temp x/y location
-                        TempX = Current_x + TempDist*sin(TempAngle);
-                        TempY = Current_y + TempDist*cos(TempAngle);
-                        
-                        //Records the movement
-                        std::vector<double> mylocationvector1;
-                        mylocationvector1.push_back (identifier);
-                        mylocationvector1.push_back (step_number);
-                        mylocationvector1.push_back (Current_x);
-                        mylocationvector1.push_back (Current_y);
-                        mylocationvector1.push_back (TempAngle);
-                        mylocationvector1.push_back (Current_distance);
-                        mylocationvector1.push_back (1);
-                        All_locations.push_back (mylocationvector1);
-                        
-                        
-                    } //End of IF
-                    
-                    else if(tempDistToLeftBoundary<tempDistToTopBoundary){
-                        //Hits the left boundary
-                        //This means that it exits the world at maximum value of x and at the corresponding y value
-                        double tempExitsX = Sq_MinX;
-                        double tempExitsY = Current_y+tempDistToLeftBoundary*cos(Current_angle);
-                        
-                        // The current distance travelled
-                        Current_distance = Current_distance + tempDistToLeftBoundary;
-                        
-                        // The distance left to travel
-                        TempDist = TempDist - tempDistToLeftBoundary;
-                        
-                        //Records the movement
-                        std::vector<double> mylocationvector;
-                        mylocationvector.push_back (identifier);
-                        mylocationvector.push_back (step_number);
-                        mylocationvector.push_back (tempExitsX);
-                        mylocationvector.push_back (tempExitsY);
-                        mylocationvector.push_back (TempAngle);
-                        mylocationvector.push_back (Current_distance);
-                        mylocationvector.push_back (0);
-
-                        All_locations.push_back (mylocationvector);
-                        
-                        // The distance left to travel
-                        TempDist = TempDist - tempDistToLeftBoundary;
-                        
-                        //New starting position
-                        Current_x = Sq_MaxX;
-                        Current_y = tempExitsY;
-                        
-                        //New end locations
-                        //Based on polar coordinates updates the temp x/y location
-                        TempX = Current_x + TempDist*sin(TempAngle);
-                        TempY = Current_y + TempDist*cos(TempAngle);
-                        
-                        //Records the movement
-                        std::vector<double> mylocationvector1;
-                        mylocationvector1.push_back (identifier);
-                        mylocationvector1.push_back (step_number);
-                        mylocationvector1.push_back (Current_x);
-                        mylocationvector1.push_back (Current_y);
-                        mylocationvector1.push_back (TempAngle);
-                        mylocationvector1.push_back (Current_distance);
-                        mylocationvector1.push_back (1);
-                        All_locations.push_back (mylocationvector1);
-                        
-                    }; //End of ELSE IF
-
+                    LeaveEnterWorld(Sq_MaxY, Sq_MinX ,Sq_MinY, Sq_MaxX);
                 
+                }//END OF 270 to 360 degrees IF STATEMENT
                 
-                }
-                else {std::cout << "ERROR1" <<std::endl;};
-                 if(TempDist<=0) {
-                     std::cout << "ERROR" <<std::endl;
-                     tempcounter=1;};
+                // Produces error is the ANGLE is not between 0 and 360
+                else {std::cout << "ERROR - ANGLE" <<std::endl;};
+                
+                // Produces error if the Next distance is less than zero
+                // But exits loop and continues with the rest of the code
+                 if(NextDist<0) {
+                    std::cout<< "ERROR: Next dist" << NextDist<<std::endl;
+                    tempcounter=1;};
             }; // End of Else loop;
             //std::cout << "END" <<std::endl;
            
@@ -819,20 +479,37 @@ void Animal::UpdateLocation (double a, double b){ // a is the number of seconds 
 
     }; // End of SolidHomeRangeBoundary=0
    
-    //std::cout << "Out of loop "<< TempDistToHR <<std::endl;
-    
-    /*
-    //Print to test values
-    std::cout << TempX <<std::endl;
-    std::cout << TempY <<std::endl;
-    std::cout << TempAngle <<std::endl;
-    std::cout << TempDist <<std::endl;
-    */
-    
-    
-    
-
-
-    
+    //Increases step number by one once the animal finishes moving in the environment
     step_number =step_number+1;
-}
+    
+    if(Movement_type==2){
+    
+        //set up a random number
+        RandNum Number1;
+    
+        //List of random number
+        srand(RandomNumberMovement[1]);
+        std::vector<double> RandomNumberUpdateMovementType;
+        for(int i=0; i<100000; i++){ //Do I need to increase the max value??
+            double myrandomnumber =  rand();
+            RandomNumberUpdateMovementType.push_back(myrandomnumber);
+        };
+        std::cout<<"Random NUmber"<<RandomNumberUpdateMovementType[0]<<std::endl;
+        srand(RandomNumberUpdateMovementType[0]);
+        if(Move_NonCorr==1){
+            //Changes the movement from non-correlated to correlated for the next step
+            double ChangeMoveState = rand()/RAND_MAX;
+            std::cout<<"Random ChangeMoveState"<<ChangeMoveState<<std::endl;
+            if(ChangeMoveState < ProbChangeMoveState){
+                std::cout<<"Change state"<<std::endl;
+                Move_NonCorr=0;}
+        } else {
+            //Changes the movement from correlated to non-correlated for the next step
+            double ChangeMoveState = rand()/RAND_MAX;
+            std::cout<<"Random ChangeMoveState"<<ChangeMoveState<<std::endl;
+            if(ChangeMoveState < ProbChangeMoveState){
+                std::cout<<"Change state"<<std::endl;
+                Move_NonCorr=1;}
+        }
+    }
+}//End of update

@@ -263,10 +263,10 @@ int main(){
         AllAnimals[i] =new Animal(i                     // identifier
                                   ,HrId                 // HomeRange_id
                                   ,0                    // step_number = 0 for start number
-                                  ,1                    // Movement_type
-                                  ,1                    // Move_state = e;
+                                  ,MovementType         // Movement_type
+                                  ,0                    // Move_state = e;
                                   ,AnimalSpeed          // Move_speed = f;
-                                  ,M_PI/2                   // Move_maxangle = g;
+                                  ,M_PI/2               // Move_maxangle = g;
                                   ,xlocation            // Current_x = i;
                                   ,ylocation            // Current_y = j;
                                   ,CurrentAngleTemp     // Current_angle = k;
@@ -346,7 +346,7 @@ int main(){
         double myrandomnumber =  rand();
         RandomNumberStreamCT.push_back(myrandomnumber);
     };
-     */
+     
     
     //Creates a list of pointers to the CTs
     std::vector<CameraTrap*> All_CT(NoCameraTraps);
@@ -387,7 +387,7 @@ int main(){
             
             std::cout<<"Time Step: "<<TimeStepTrap <<std::endl;
             
-            std::vector<std::vector<double>> TempAllLocations = AllAnimals[Individual]->getAllLocations();
+            std::vector<std::vector<double>> TempAllLocations = AllAnimals[Individual]->getEndStepLocations();
             
             double currentid = TempAllLocations[TimeStepTrap][0];
             double currentx = TempAllLocations[TimeStepTrap][2];
@@ -438,7 +438,7 @@ int main(){
     }; //End of NoCT loop
     
      std::cout <<"Finish Camera" <<std::endl;
-    
+    */
     
     
     
@@ -464,11 +464,12 @@ int main(){
         delete AllAnimals[i];
     }
     std::cout <<"Destruct" <<std::endl;
+    /*
      // Destructors For Camera Traps
     for(int i=0; i<NoCameraTraps; i++){
         delete All_CT[i];
     }
-
+     */
     std::cout <<"Destruct" <<std::endl;
     
     //////////////////
