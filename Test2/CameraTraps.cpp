@@ -99,9 +99,10 @@ void CameraTrap::CapturesIndividual(double a,double b, int c, int d, int e, doub
             if(AngleFromBat > Min_batangle && AngleFromBat < Max_batangle){
                 // If it's in the possible angle then record in vector
                 std::vector<int> myvector;
-                myvector.push_back (Individual_ID);
-                myvector.push_back (Time_step);
-                myvector.push_back (CameraID);
+                myvector.resize(3);
+                myvector[1] = Individual_ID;
+                myvector[2] = Time_step;
+                myvector[3] = CameraID;
                 
                 //std::cout<<Individual_ID<<std::endl;
                 

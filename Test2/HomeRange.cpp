@@ -88,9 +88,9 @@ HomeRange::HomeRange(int a//identifier; //The HR id number
         //Positions 0 and 5 are used to create RandNum
         srand(SEED);
         std::vector<double> RandomNumberStreamHRlocationT0;
+        RandomNumberStreamHRlocationT0.resize(6);
         for(int i=0; i<6; i++){
-            double myrandomnumber =  rand();
-            RandomNumberStreamHRlocationT0.push_back(myrandomnumber);
+            RandomNumberStreamHRlocationT0[i] = double(rand());
         };
         
         //Creates x and y locations
@@ -114,9 +114,9 @@ HomeRange::HomeRange(int a//identifier; //The HR id number
         //Positions 0 and 5 and 10 are used to create RandNum
         srand(SEED);
         std::vector<double> RandomNumberStreamHRlocationT1;
+        RandomNumberStreamHRlocationT1.resize(11);
         for(int i=0; i<11; i++){
-            double myrandomnumber =  rand() ;
-            RandomNumberStreamHRlocationT1.push_back(myrandomnumber);
+            RandomNumberStreamHRlocationT1[i] = double(rand());
         };
         
     

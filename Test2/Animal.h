@@ -49,11 +49,9 @@ class Animal {
 
 public:
     Animal();
-    Animal( int, int, int, int,
+    Animal( int, int,  
             double, double , double ,
-            double, double , double , double,
-            double, double , double,
-            int,  double, double, double);
+             double, double);
     void Set_MoveValue (double,double);
     void Set_HRValues (int, int, double, double, double );
     void NewLocationMT0(double, double);

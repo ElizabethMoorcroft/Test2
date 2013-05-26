@@ -21,21 +21,21 @@
 #include "Parameters.h"
 
 
+
 // Function for creating a dynamic file names
-std::string make_filename( const std::string& basename, int index, const std::string& ext )
+std::string make_filename( const std::string& directory, const std::string& basename, int index, const std::string& ext )
 {
     std::ostringstream result;
-    result << basename << index << ext;
+    result << directory << basename << index << ext;
     return result.str();
 }
+std::string SaveDirectory = "/Users/student/Documents/Bats/";
 
 ///////////////////////
 ///Main code starts////
 ///////////////////////
 
 int main(){
-
-    
     
     
     /////////////////////
@@ -44,6 +44,7 @@ int main(){
     
     double area = (Sq_MaxX-Sq_MinX)*(Sq_MaxY-Sq_MinY);
     int NoAnimal = floor(DensityAnimals*area);
+    std::cout<<NoAnimal<<std::endl;
     
     int NoCameraTraps = round(LengthMonitoring/StepLength);
     int NoSteps = NoCameraTraps + NoRunIn;
@@ -62,19 +63,20 @@ int main(){
     // The number of the HR's no of expected HR given the number of animals and the average size of HR
     int NoHR = NoAnimal/AverageSizeHR;
     
+    
     //Tim's code for calucalting the attentuation of sound in order to calucalte the
     // maximum distance, here refered to as Radius, that the detector can detect a bat call
-    double T = 273.15+temp ; //Convert celsius to kelvin
+    double T = 273.15+Temp ; //Convert celsius to kelvin
     double T01 = 273.16;
     double T0 = 293.15;
     double psat_ps0 = pow(10,-6.8346*pow(T01/T,1.261)+4.6151); // saturation pressure ratio from ISO
-    double h = hum*psat_ps0/1;
+    double h = Hum*psat_ps0/1;
     double taur = T/T0;
     double fr0 = (24+40400*h*(0.02+h)/(0.391+h));
     double frN = pow(taur,-1/2)*(9+280*h*exp(-4.17*(pow(taur,-1/3)-1)));
-    double b1 = 0.1068*exp(-3352/T)/(frN+pow(freq,2)/frN);
-    double b2 = 0.01275*exp(-2239.1/T)/(fr0+pow(freq,2)/fr0);
-    double alpha = 8.686*pow(freq,2)*pow(taur,0.5)*(1.84*pow(10,-11)/1+pow(taur,-3)*(b1+b2));
+    double b1 = 0.1068*exp(-3352/T)/(frN+pow(Freq,2)/frN);
+    double b2 = 0.01275*exp(-2239.1/T)/(fr0+pow(Freq,2)/fr0);
+    double alpha = 8.686*pow(Freq,2)*pow(taur,0.5)*(1.84*pow(10,-11)/1+pow(taur,-3)*(b1+b2));
     double Attenuation = alpha + 6; // # spherical spreading.
     double CallRadius = (Amp-It)/Attenuation;
     //
@@ -86,6 +88,7 @@ int main(){
     /// !!! WARNINGS!!! ///
     ///////////////////////
     
+   
     //Number of animals needs to be greater than zero
     if(NoAnimal==0){
         std::cout<<"No of Animals = "<<NoAnimal<< ", Increase density"<< std::endl;
@@ -109,22 +112,40 @@ int main(){
         std::cout<<"Height of area < Height nessecary, Increase Sq_MaxY"<< std::endl;
         exit (EXIT_FAILURE);
     };
-
     
+    
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+    // Starts a loop for the rest of the code                                                       //
+    // This loop "NoOfIterations" number of times                                                   //
+    // Each set of movement traces is saved where the file name ends with the number                //
+    // The seed that starts all each simulation is the number of the simulation                     //
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+
+    std::vector<int> Startseeds;
+    Startseeds.resize(NoOfIterations);
+    for(int iterationnumber=1; iterationnumber<NoOfIterations+1; iterationnumber++){
+        Startseeds[iterationnumber]=iterationnumber;
+        
 
     
     /////////////////////////
     // Create output files //
+    // 
     /////////////////////////
+    std::ofstream Movement;
+    Movement.open(make_filename(SaveDirectory, "Movement",iterationnumber,".csv").c_str());
     
+    std::ofstream Captures;
+    Captures.open(make_filename(SaveDirectory, "Captures",iterationnumber,".csv" ).c_str());
     
+    std::ofstream Cameras;
+    Cameras.open(make_filename(SaveDirectory, "Cameras", iterationnumber, ".csv" ).c_str());
     
-    //Write movement to a file
-    std::ofstream Movement(make_filename( "/Users/student/Documents/Bats/Move", 3, ".csv" ).c_str());
-    std::ofstream Captures("/Users/student/Documents/Bats/Captures.csv");
-    std::ofstream Cameras("/Users/student/Documents/Bats/Cameras.csv");
-    std::ofstream Animals("/Users/student/Documents/Bats/Animals.csv");
-    std::ofstream HomeRangefile("/Users/student/Documents/Bats/HomeRange.csv");
+    std::ofstream Animals;
+    Animals.open(make_filename(SaveDirectory, "Animals",iterationnumber,".csv" ).c_str());
+    
+    std::ofstream HomeRangefile;
+    HomeRangefile.open(make_filename(SaveDirectory, "HomeRange",iterationnumber,".csv").c_str());
 
     
     //Creates a header for the file
@@ -135,6 +156,7 @@ int main(){
         "," << "Ylocation" <<
         "," << "Angle" <<
         "," << "TotalDistance" <<
+        "," << "Speed" <<
         "," << "Re-enterWorld" <<
         "\n";
     
@@ -170,7 +192,7 @@ int main(){
     /////////////////////////////////////////////////////
     
     //List of random number
-    srand(Seed);
+    srand(iterationnumber);
     std::vector<double> RandomNumberStream;
     RandomNumberStream.resize(LengthStream);
     for(int i=0; i<LengthStream; i++){
@@ -249,6 +271,7 @@ int main(){
     
     // Enters data
     for(int i=0; i<NoAnimal; i++){
+        std::cout <<"Animal:" << i <<"/" << NoAnimal << std::endl;
         
         //Sets seed for a random number
         // So that can choose a home range centre at random
@@ -265,26 +288,15 @@ int main(){
         // Uses a radom number from stream RandomNumberStreamAnimal2 for a random seed
         RandNum Number1;
         double CurrentAngleTemp = Number1.AtoBUnif(RandomNumberStreamAnimal2[i],0,(2*M_PI));
-        std::cout <<CurrentAngleTemp <<std::endl;
+        //std::cout <<CurrentAngleTemp <<std::endl;
         
         AllAnimals[i] =new Animal(i                     // identifier
                                   ,HrId                 // HomeRange_id
-                                  ,0                    // step_number = 0 for start number
-                                  ,MovementType         // Movement_type
-                                  ,0                    // Move_state = e;
-                                  ,AnimalSpeed          // Move_speed = f;
-                                  ,CorrWalkMaxAngleChange//Move_maxangle = g;
-                                  ,xlocation            // Current_x = i;
-                                  ,ylocation            // Current_y = j;
-                                  ,CurrentAngleTemp     // Current_angle = k;
-                                  ,0                    // Current_distance = l - start of the sim all animals is 0
-                                  ,10                   // Call_amp = o;
-                                  ,10                   // Call_freq = p;
-                                  ,45                   // Call_halfwidth = q;
-                                  ,HR_SolidBoundaries   // SolidHomeRangeBoundary = r ;  // HR = 1=Y or 0=N
+                                  ,xlocation            // Starts at the roost location
+                                  ,ylocation            // Starts at the roost location
+                                  ,CurrentAngleTemp     // Starts with random angle
                                   ,xlocation            // Home_x = t;
                                   ,ylocation            // Home_y = u;
-                                  ,HR_AverageRadius     // Home_r = v;
                                   );
         
         //Saves each individual animals 
@@ -303,14 +315,14 @@ int main(){
         srand(RandomNumberStreamAnimal3[i]);
         //Random number stream for the movemnet of the animal
         std::vector<double> RandomNumberCurrentAnimal;
-        RandomNumberCurrentAnimal.resize(NoSteps*NoSteps);
-        for(int i=0; i<NoSteps*NoSteps; i++){
+        RandomNumberCurrentAnimal.resize(NoSteps*100);
+        for(int i=0; i<NoSteps*(100); i++){
             RandomNumberCurrentAnimal[i]=  double(rand());
         };
         
             for(int j=0; j<NoSteps; j++){
-                std::cout <<"Step" <<j << std::endl;
-                double count = (j)*NoSteps;
+                //std::cout <<"Step" <<j << std::endl;
+                double count = (j)*100;
                  //std::cout << count << std::endl;
                  //std::cout << RandomNumberCurrentAnimal[count] << std::endl;
                 
@@ -330,6 +342,7 @@ int main(){
                     "," << TempAllLocations[stepcounter][4] << //...
                     "," << TempAllLocations[stepcounter][5] << //5th column, row "stepcounter"
                     "," << TempAllLocations[stepcounter][6] << //6th column, row "stepcounter"
+                    "," << TempAllLocations[stepcounter][7] << //7th column, row "stepcounter"
                 "\n";                                      // New line
             };
             
@@ -389,7 +402,7 @@ int main(){
             
             int TimeStepTrap = NoCT+NoRunIn;
             
-            std::cout<<"Time Step: "<<TimeStepTrap <<std::endl;
+            //std::cout<<"Time Step: "<<TimeStepTrap <<std::endl;
             
             std::vector<std::vector<double>> TempAllLocations = AllAnimals[Individual]->getEndStepLocations();
             
@@ -399,7 +412,7 @@ int main(){
             double currentangle = TempAllLocations[TimeStepTrap][4];
             double callangle = AllAnimals[Individual]->getCallWidth();
             
-            std::cout<<"Current ID: "<< currentid <<std::endl;
+            //std::cout<<"Current ID: "<< currentid <<std::endl;
             
 
             
@@ -463,23 +476,34 @@ int main(){
     /// Destructors ///
     ///////////////////
     
-    // Destructors For Animals 
+    // Destructors For Animals
     for(int i=0; i<NoAnimal; i++){
         delete AllAnimals[i];
     }
     std::cout <<"Destruct" <<std::endl;
     
-     // Destructors For Camera Traps
+    // Destructors For Camera Traps
     for(int i=0; i<NoCameraTraps; i++){
         delete All_CT[i];
+    }
+    
+    std::cout <<"Destruct" <<std::endl;
+        
+        // Destructors For HomeRange
+    for(int i=0; i<NoHR; i++){
+        delete AllHR[i];
     }
      
     std::cout <<"Destruct" <<std::endl;
     
+    
+    };//End of iteration
+    
+    
     //////////////////
     // END OF CODE ///
     //////////////////
-
     return 0;
 };
+
 

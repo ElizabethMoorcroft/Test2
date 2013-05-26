@@ -19,48 +19,53 @@
 // Constructor
 Animal::Animal( ){};
 
-Animal::Animal( int a, int b, int c, int d,
-               double e, double f, double g,
-               double i, double j, double k, double l,
-               double o, double p, double q,
-               int r,  double t, double u, double v
+Animal::Animal( int a, int b,  
+               double i, double j, double k,
+                double t, double u
                ) {
     
     identifier = a;
     HomeRange_id = b;
-    step_number = c;
-    Movement_type = d;
-    
-    Move_NonCorr = e;
-    Move_speed = f;
-    Move_maxangle = g;
-    
     Current_x = i;
     Current_y = j;
     Current_angle = k;
-    Current_distance = l;
     
-    Call_amp = o;
-    Call_freq = p;
-    Call_width = q;
+    //When initialising the step number and the current distance travelled
+    // will always be set to zero
+    step_number = 0;
+    Current_distance = 0;
     
     
-    SolidHomeRangeBoundary = r ;  // HR = 1=Y or 0=N
+    // Variables to do with calls
+    //Set up like this so in the future can be initalized as RV??
+    Call_amp = Amp;
+    Call_freq = Freq;
+    Call_width = Call_halfwidth;
+    
+    // Variables to do with HR
+    SolidHomeRangeBoundary = HR_SolidBoundaries  ;  // HR = 1=Y or 0=N
     Home_x = t;
     Home_y = u;
-    Home_r = v;
+    Home_r = HR_AverageRadius ;
     
+    //Movement variables
+    Movement_type = MovementType;
+    Move_NonCorr = 0  ;// Always starts in a correlated walk (only really of consequence for Movement type 2)
+    //Set up like this so in the future can be initalized as RV??
+    Move_speed =AnimalSpeed        ; // Move_speed = f;
+    Move_maxangle=CorrWalkMaxAngleChange;//Move_maxangle = g;
     
-    //Records the movement
+    //Records the starting locations
     std::vector<double> mylocationvector;
-    mylocationvector.resize(7);
+    mylocationvector.resize(8);
     mylocationvector[0] = identifier;
     mylocationvector[1] = step_number;
     mylocationvector[2] = Current_x;
     mylocationvector[3] = Current_y;
     mylocationvector[4] = Current_angle;
     mylocationvector[5] = Current_distance;
-    mylocationvector[6] = 0;
+    mylocationvector[6] = Move_speed;
+    mylocationvector[7] = 0;
     All_locations.push_back (mylocationvector);
     EndStep_locations.push_back (mylocationvector);
                 }
@@ -264,14 +269,15 @@ void Animal::LeaveEnterWorld(double a, double b , double c, double d){
     
         //Records exit of the world
         std::vector<double> mylocationvector;
-        mylocationvector.resize(7);
+        mylocationvector.resize(8);
         mylocationvector[0] = identifier;
         mylocationvector[1] = step_number;
         mylocationvector[2] = tempExitsX;
         mylocationvector[3] = tempExitsY;
         mylocationvector[4] = NextAngle;
         mylocationvector[5] = Current_distance;
-        mylocationvector[6] = 0;
+        mylocationvector[6] = Move_speed;
+        mylocationvector[7] = 0;
         All_locations.push_back (mylocationvector);
     
     
@@ -282,14 +288,15 @@ void Animal::LeaveEnterWorld(double a, double b , double c, double d){
     
         //Records the etring of the world
         std::vector<double> mylocationvector1;
-        mylocationvector1.resize(7);
+        mylocationvector1.resize(8);
         mylocationvector1[0] = identifier;
         mylocationvector1[1] = step_number;
         mylocationvector1[2] = Current_x;
         mylocationvector1[3] = Current_y;
         mylocationvector1[4] = NextAngle;
         mylocationvector1[5] = Current_distance;
-        mylocationvector1[6] = 1;
+        mylocationvector1[6] = Move_speed;
+        mylocationvector1[7] = 1;
         All_locations.push_back (mylocationvector1);
     
 }
@@ -308,18 +315,18 @@ void Animal::UpdateLocation (double a, double b){ // a is the number of seconds 
     //List of random number
     srand(seed);
     std::vector<double> RandomNumberMovement;
+    RandomNumberMovement.resize(101);
     for(int i=0; i<101; i++){ //Do I need to increase the max value??
-        double myrandomnumber =  rand();
-        RandomNumberMovement.push_back(myrandomnumber);
+        RandomNumberMovement[i] = double(rand());
     };
     
     
     //List of random number
     srand(RandomNumberMovement[0]);
     std::vector<double> RandomNumberUpdateMovement;
-    for(int i=0; i<100000; i++){ //Do I need to increase the max value??
-        double myrandomnumber =  rand();
-        RandomNumberUpdateMovement.push_back(myrandomnumber);
+    RandomNumberUpdateMovement.resize(1000);
+    for(int i=0; i<1000; i++){ //Do I need to increase the max value??
+        RandomNumberUpdateMovement[i] = double(rand());
     };
     
 
@@ -332,10 +339,8 @@ void Animal::UpdateLocation (double a, double b){ // a is the number of seconds 
         int i=0;
         int count=0;
 
-        std::cout<<"Solid"<<std::endl;
         while(i==0){
-            if(count<1000){
-                std::cout<<"Corr" << count<<std::endl;
+            if(count<200){
                 NewLocation(StepLength, RandomNumberUpdateMovement[count], RandomNumberUpdateMovement[count+100]);
             
                 // Distance from centre of hr to animal
@@ -348,7 +353,6 @@ void Animal::UpdateLocation (double a, double b){ // a is the number of seconds 
                 if(TempDistToHR<Home_r){ i=i+1;}
             }
             else {
-                std::cout<<"UnCorr"<< count<<std::endl;
                 NewLocationUnCorr(RandomNumberUpdateMovement[count], RandomNumberUpdateMovement[count+100], Move_speed*StepLength);
                 
                 double TempDistToHR =sqrt(pow(NextX-Home_x,2)+pow(NextY-Home_y,2));
@@ -372,14 +376,15 @@ void Animal::UpdateLocation (double a, double b){ // a is the number of seconds 
         
         //Add to the all locations
         std::vector<double> mylocationvector;
-        mylocationvector.resize(7);
+        mylocationvector.resize(8);
         mylocationvector[0] =identifier;
         mylocationvector[1] =step_number;
         mylocationvector[2] =Current_x;
         mylocationvector[3] =Current_y;
         mylocationvector[4] =NextAngle;
         mylocationvector[5] =Current_distance;
-        mylocationvector[6] =0;
+        mylocationvector[6] = Move_speed;
+        mylocationvector[7] = 0;
         All_locations.push_back (mylocationvector);
         EndStep_locations.push_back (mylocationvector);
     } //END OF SOLID BOUNDARIES
@@ -408,14 +413,15 @@ void Animal::UpdateLocation (double a, double b){ // a is the number of seconds 
                 
                 //Add to the all locations
                 std::vector<double> mylocationvector;
-                mylocationvector.resize(7);
+                mylocationvector.resize(8);
                 mylocationvector[0] = identifier;
                 mylocationvector[1] = step_number;
                 mylocationvector[2] = NextX;
                 mylocationvector[3] = NextY;
                 mylocationvector[4] = NextAngle;
                 mylocationvector[5] = Current_distance;
-                mylocationvector[6] = 0;
+                mylocationvector[6] = Move_speed;
+                mylocationvector[7] = 0;
                 All_locations.push_back (mylocationvector);
                 EndStep_locations.push_back (mylocationvector);
                 

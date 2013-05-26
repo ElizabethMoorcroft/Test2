@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		AD0D145B16D909A60052980A /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AD0D145A16D909A60052980A /* main.cpp */; };
-		AD0D145D16D909A60052980A /* Test2.1 in CopyFiles */ = {isa = PBXBuildFile; fileRef = AD0D145C16D909A60052980A /* Test2.1 */; };
 		AD0D146516D909D70052980A /* Animal.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AD0D146416D909D70052980A /* Animal.cpp */; };
 		AD2402CB17219B8500795C0B /* CameraTraps.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AD2402CA17219B8500795C0B /* CameraTraps.cpp */; };
 		AD95C86116DA861300D1DE25 /* RandNum.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AD95C86016DA861300D1DE25 /* RandNum.cpp */; };
@@ -22,7 +21,6 @@
 			dstPath = /usr/share/man/man1/;
 			dstSubfolderSpec = 0;
 			files = (
-				AD0D145D16D909A60052980A /* Test2.1 in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 1;
 		};
@@ -33,7 +31,6 @@
 		AD0448E117043D0F005A63B8 /* CameraTraps.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CameraTraps.h; sourceTree = "<group>"; };
 		AD0D145716D909A60052980A /* Test2 */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = Test2; sourceTree = BUILT_PRODUCTS_DIR; };
 		AD0D145A16D909A60052980A /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
-		AD0D145C16D909A60052980A /* Test2.1 */ = {isa = PBXFileReference; lastKnownFileType = text.man; path = Test2.1; sourceTree = "<group>"; };
 		AD0D146316D909B80052980A /* Animal.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Animal.h; sourceTree = "<group>"; };
 		AD0D146416D909D70052980A /* Animal.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Animal.cpp; sourceTree = "<group>"; };
 		AD2402CA17219B8500795C0B /* CameraTraps.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CameraTraps.cpp; sourceTree = "<group>"; };
@@ -83,7 +80,6 @@
 				AD95C86316DAA48D00D1DE25 /* HomeRange.cpp */,
 				AD0448E117043D0F005A63B8 /* CameraTraps.h */,
 				AD2402CA17219B8500795C0B /* CameraTraps.cpp */,
-				AD0D145C16D909A60052980A /* Test2.1 */,
 			);
 			path = Test2;
 			sourceTree = "<group>";
