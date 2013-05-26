@@ -15,7 +15,7 @@
 //////////////////////////////////////////////////
 
 //Simulation values - #Animals, #Steps, #HR, #CT
-const int NoAnimal = 10;
+const double DensityAnimals = 0.1*pow(10,-6);
 const int LengthMonitoring = 500; //Length of monitoring in seconds
 const int AverageSizeHR = 5;
 const int SpeedCamera  = 2.4; // m/s = 0.06 * KM/h
@@ -23,13 +23,13 @@ const int NoRunIn = 10;
 
 //Range of animal start locations if no HR boudaries
 const int Sq_MinX = 0;
-const int Sq_MaxX = 100;
+const int Sq_MaxX = 10000;
 const int Sq_MinY = 0;
-const int Sq_MaxY = 100;
+const int Sq_MaxY = 10000;
 
 // Centre of the camera circle
-const int Cir_CntX = 0;
-const int Cir_CntY = 0;
+const int Cir_CntX = (Sq_MaxX-Sq_MinX)/2;
+const int Cir_CntY = (Sq_MaxY-Sq_MinY)/2;
 
 const int CameraWidth = M_PI/3;
 
@@ -39,7 +39,7 @@ const int Cir_MaxRng = 50;
 
 //HR set up values
 const int HR_AverageRadius = 1000;
-const int HR_SolidBoundaries = 0; // Solid boundaries for HR --- 1 =Yes 0 = No
+const int HR_SolidBoundaries = 1; // Solid boundaries for HR --- 1 =Yes 0 = No
 
 //Radom number seed
 const int Seed = 1;
@@ -47,11 +47,12 @@ const int LengthStream = 10;
 
 //Movement parameters
 const int StepLength = 2; //Length of each step in seconds
+const double CorrWalkMaxAngleChange = M_PI/36;
 
 //Animal parameters
 const int AnimalSpeed = 5; // ms^-1
 const int MovementType =2;
-const int ProbChangeMoveState = 0.1;//Probability of switching from coorelated to non-correlated
+const double ProbChangeMoveState = 0.01;//Probability of switching from coorelated to non-correlated
 
 //Call parameters
 const int CallFreq = 10;        // Call_freq = p;
@@ -61,7 +62,7 @@ const int Call_halfwidth = 45;   //Call_halfwidth
 const int temp = 25;
 const int hum = 30;
 const int freq = 50;
-const int I0 = 127; //Amplitude
+const int Amp = 127; //Amplitude
 const int It = 0;
 
 #endif

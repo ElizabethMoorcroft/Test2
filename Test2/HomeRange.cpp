@@ -35,39 +35,18 @@
 
 
 HomeRange::HomeRange(){};
-HomeRange::HomeRange(int a //identifier; //The HR id number
-                     ,int b//type;       //Type of HR, 1=Y 0=N
-                     ,int c//Home_Shape; // Shape of HR, 1=Circle
+HomeRange::HomeRange(int a//identifier; //The HR id number
+                     ,double b
+                     ,double c
                      ){
 
     identifier = a; //The HR id number
-    type =b;       //Type of HR, 1=Y 0=N
-    Home_Shape = c;
-};
 
 
-
-void HomeRange::HRSetValues( double a, double b, double c, double d,
-                            double e, double f, double g, double h,
-                            double i, double j){
-    
-    // Locations of HR if there is no boudaries
-    double Sq_MinX=a;
-    double Sq_MaxX=b;
-    double Sq_MinY=c;
-    double Sq_MaxY=d;
-    
-    // Locations of HR if there is solid boudaries
-    double Cir_CntX=e;
-    double Cir_CntY=f;
-    double Cir_MinRng=g;
-    double Cir_MaxRng =h;
-    
-    // Average radius of HR
-    double Home_AverageSize =i;
     
     //Seed for random numbers
-    double SEED = j;
+    double SEED = b;
+    double RadiusCameraCircle = c;
     
     
     ////////////////////
@@ -78,9 +57,9 @@ void HomeRange::HRSetValues( double a, double b, double c, double d,
     // Position 1 used to seed stream in 
     srand(SEED);
     std::vector<double> RandomNumberStreamHRlocation;
+    RandomNumberStreamHRlocation.resize(7);
     for(int i=0; i<7; i++){
-        double myrandomnumber =  rand();
-        RandomNumberStreamHRlocation.push_back(myrandomnumber);
+        RandomNumberStreamHRlocation[i] =double(rand());
     };
     
     
@@ -102,8 +81,8 @@ void HomeRange::HRSetValues( double a, double b, double c, double d,
     ///No solid HR boundaries ///
     /////////////////////////////
     
-    //If TYPE=0 HRs can be placed anywhere in the range
-    if(type==0){
+    //If HR_SolidBoundaries=0 HRs can be placed anywhere in the range
+    if(HR_SolidBoundaries==0){
         
         //Creates a random number stream
         //Positions 0 and 5 are used to create RandNum
@@ -121,15 +100,15 @@ void HomeRange::HRSetValues( double a, double b, double c, double d,
         // If there are no HR boundaries there is no need to calculate temp_size
         temp_size = 0.0;
         
-    }; //END IF TYPE==0
+    }; //END IF HR_SolidBoundaries==0
     
     
     //////////////////////////
     ///Solid HR boundaries ///
     //////////////////////////
     
-    //Type 1 if the boundaries are solid
-    if(type==1){
+    //HR_SolidBoundaries= 1 if the boundaries are solid
+    if(HR_SolidBoundaries==1){
 
         //Creates a random number stream
         //Positions 0 and 5 and 10 are used to create RandNum
@@ -144,7 +123,10 @@ void HomeRange::HRSetValues( double a, double b, double c, double d,
         //Calculates a random distance from the centre of the trapping circle
         //Calculates a random angle
         //This means that the can simply calculate 2 uniform values rather than recalucalte outside limits
-        double temp_r = Number1.AtoBUnif(RandomNumberStreamHRlocationT1[0], Cir_MinRng, Cir_MaxRng);
+        double MinRadius =0;
+        if(RadiusCameraCircle-HR_AverageRadius>0){MinRadius=RadiusCameraCircle-HR_AverageRadius;};
+        
+        double temp_r = Number1.AtoBUnif(RandomNumberStreamHRlocationT1[0], MinRadius, RadiusCameraCircle+HR_AverageRadius);
         double temp_theta = Number1.AtoBUnif(RandomNumberStreamHRlocationT1[5], 0, 2*M_PI);
         
         //Tempory x and y locations
@@ -157,9 +139,9 @@ void HomeRange::HRSetValues( double a, double b, double c, double d,
         temp_y = Cir_CntY +temp_y;
         
         // Calucalte a radom radius size for the HR
-        temp_size = Number1.PositiveNormal(RandomNumberStreamHRlocationT1[10],Home_AverageSize,Home_AverageSize/10);
+        temp_size = Number1.PositiveNormal(RandomNumberStreamHRlocationT1[10],HR_AverageRadius,HR_AverageRadius/10);
         
-    } //END IF TYPE==1
+    } //END IF HR_SolidBoundaries==1
     
     
     /////////////////////////////////

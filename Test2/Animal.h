@@ -59,7 +59,9 @@ public:
     void NewLocationMT0(double, double);
     void NewLocationMT1(double, double,double);
     void NewLocationMT2(double, double,double);
+    void NewLocationUnCorr(double, double,double);
 
+    
     void NewLocation(double, double,double);
     void LeaveEnterWorld(double , double ,double , double );
     void UpdateLocation (double, double);

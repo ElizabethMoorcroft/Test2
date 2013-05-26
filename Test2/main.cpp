@@ -34,29 +34,16 @@ std::string make_filename( const std::string& basename, int index, const std::st
 ///////////////////////
 
 int main(){
-    
-    
 
-    //Tim's code for calucalting the attentuation of sound in order to calucalte the 
-    // maximum distance, here refered to as Radius, that the detector can detect a bat call
-    double T = 273.15+temp ; //Convert celsius to kelvin
-    double T01 = 273.16;
-    double T0 = 293.15;
-    double psat_ps0 = pow(10,-6.8346*pow(T01/T,1.261)+4.6151); // saturation pressure ratio from ISO
-    double h = hum*psat_ps0/1;
-    double taur = T/T0;
-    double fr0 = (24+40400*h*(0.02+h)/(0.391+h));
-    double frN = pow(taur,-1/2)*(9+280*h*exp(-4.17*(pow(taur,-1/3)-1)));
-    double b1 = 0.1068*exp(-3352/T)/(frN+pow(freq,2)/frN);
-    double b2 = 0.01275*exp(-2239.1/T)/(fr0+pow(freq,2)/fr0);
-    double alpha = 8.686*pow(freq,2)*pow(taur,0.5)*(1.84*pow(10,-11)/1+pow(taur,-3)*(b1+b2));
-    double Attenuation = alpha + 6; // # spherical spreading.
-    double Radius = (I0-It)/Attenuation;
+    
     
     
     /////////////////////
     //Calculates values//
     /////////////////////
+    
+    double area = (Sq_MaxX-Sq_MinX)*(Sq_MaxY-Sq_MinY);
+    int NoAnimal = floor(DensityAnimals*area);
     
     int NoCameraTraps = round(LengthMonitoring/StepLength);
     int NoSteps = NoCameraTraps + NoRunIn;
@@ -75,19 +62,60 @@ int main(){
     // The number of the HR's no of expected HR given the number of animals and the average size of HR
     int NoHR = NoAnimal/AverageSizeHR;
     
-    /*
-    //Print statement
-    std::cout<< (NoCameraTraps-1) <<std::endl;
-    std::cout<< 2*M_PI <<std::endl;
-    std::cout<< AngleBetweenCameras <<std::endl;
-    */
+    //Tim's code for calucalting the attentuation of sound in order to calucalte the
+    // maximum distance, here refered to as Radius, that the detector can detect a bat call
+    double T = 273.15+temp ; //Convert celsius to kelvin
+    double T01 = 273.16;
+    double T0 = 293.15;
+    double psat_ps0 = pow(10,-6.8346*pow(T01/T,1.261)+4.6151); // saturation pressure ratio from ISO
+    double h = hum*psat_ps0/1;
+    double taur = T/T0;
+    double fr0 = (24+40400*h*(0.02+h)/(0.391+h));
+    double frN = pow(taur,-1/2)*(9+280*h*exp(-4.17*(pow(taur,-1/3)-1)));
+    double b1 = 0.1068*exp(-3352/T)/(frN+pow(freq,2)/frN);
+    double b2 = 0.01275*exp(-2239.1/T)/(fr0+pow(freq,2)/fr0);
+    double alpha = 8.686*pow(freq,2)*pow(taur,0.5)*(1.84*pow(10,-11)/1+pow(taur,-3)*(b1+b2));
+    double Attenuation = alpha + 6; // # spherical spreading.
+    double CallRadius = (Amp-It)/Attenuation;
+    //
+    // End of Tim's code
     
     
     
+    ///////////////////////
+    /// !!! WARNINGS!!! ///
+    ///////////////////////
     
-    ///////////////
-    //SAVES FILES//
-    ///////////////
+    //Number of animals needs to be greater than zero
+    if(NoAnimal==0){
+        std::cout<<"No of Animals = "<<NoAnimal<< ", Increase density"<< std::endl;
+        exit (EXIT_FAILURE);
+    };
+    
+    //Number of Home ranges needs to be greater than zero
+    if(NoHR==0){
+        std::cout<<"No of roosts = "<<NoHR<< ", Decrease number of bats per roost"<< std::endl;
+        exit (EXIT_FAILURE);
+    };
+    
+    // The width of the printed area needs to be greater than the world environment
+    if(Cir_CntX+RadiusCameraCircle+HR_AverageRadius>Sq_MaxX){
+        std::cout<<"Width of area < Width nessecary, Increase Sq_MaxX"<< std::endl;
+        exit (EXIT_FAILURE);
+    };
+    
+    // The height of the printed area needs to be greater than the world environment
+    if(Cir_CntY+RadiusCameraCircle+HR_AverageRadius>Sq_MaxY){
+        std::cout<<"Height of area < Height nessecary, Increase Sq_MaxY"<< std::endl;
+        exit (EXIT_FAILURE);
+    };
+
+    
+
+    
+    /////////////////////////
+    // Create output files //
+    /////////////////////////
     
     
     
@@ -120,6 +148,7 @@ int main(){
         "," << "Y location" <<
         "," << "CentreAngle" <<
         "," << "HalfWidthAngle" <<
+        "," << "Camera Speed" <<
         "\n";
     
     Animals << "ID" <<
@@ -143,17 +172,11 @@ int main(){
     //List of random number
     srand(Seed);
     std::vector<double> RandomNumberStream;
+    RandomNumberStream.resize(LengthStream);
     for(int i=0; i<LengthStream; i++){
-        double myrandomnumber =  rand();
-        RandomNumberStream.push_back(myrandomnumber);
+        RandomNumberStream[i] = double (rand());
     };
     
-    /*
-    // Prints off list of Random numbers
-     for(int i=0; i<LengthStream; i++){
-        std::cout << RandomNumberStream[i] <<std::endl;
-    };
-    */
     
     
     ///////////////////////////
@@ -168,34 +191,18 @@ int main(){
     //Creates 1 Random number for the seed each HR
     srand(RandomNumberStream[1]);
     std::vector<double> RandomNumberStreamHR;
+    RandomNumberStreamHR.resize(NoHR);
     for(int i=0; i<NoHR; i++){
-        double myrandomnumber =  rand();
-        RandomNumberStreamHR.push_back(myrandomnumber);
+        RandomNumberStreamHR[i] = double (rand());
     };
     
     
     //Enters data for NoHR home ranges
     for(int i=0; i<NoHR; i++){
         AllHR[i] =new HomeRange(i //identifier; //The HR id number
-                                ,0 //type;       //HR have boudaries, 1=Y 0=N
-                                ,1 //Home_Shape; // Shape of HR, 1=Circle
-                                );
-        // Randomly places HR's
-        AllHR[i]->HRSetValues(Sq_MinX //Used if type=0, places randomly anywhere
-                              ,Sq_MaxX //Used if type=0, places randomly anywhere
-                              ,Sq_MinY //Used if type=0, places randomly anywhere
-                              ,Sq_MaxY //Used if type=0, places randomly anywhere
-                              //Below may need to be altered... due to random radius values
-                              ,Cir_CntX // used if type=1, within average radius boudaries MinRng/MaxRng
-                              ,Cir_CntY// used if type=1, within average radius boudaries MinRng/MaxRng
-                              ,Cir_MinRng//used if type=1, within average radius boudaries MinRng/MaxRng
-                              ,Cir_MaxRng//used if type=1, within average radius boudaries MinRng/MaxRng
-                              ,HR_AverageRadius //Average radius of HR
-                              // Use for all HR
-                              ,RandomNumberStreamHR[i] // Seed for random variables
+                              , RandomNumberStreamHR[i] // Seed for random variables
+                              , RadiusCameraCircle
                               );
-    
-    
     
     HomeRangefile << AllHR[i]->getHomeID() << //1st column
         "," << AllHR[i]->getHomeX() << //...
@@ -219,25 +226,25 @@ int main(){
     //Random number stream for choosing HR
     srand(RandomNumberStream[2]);
     std::vector<double> RandomNumberStreamAnimal1;
+    RandomNumberStreamAnimal1.resize(NoAnimal);
     for(int i=0; i<NoAnimal; i++){
-        double myrandomnumber =  rand();
-        RandomNumberStreamAnimal1.push_back(myrandomnumber);
+        RandomNumberStreamAnimal1[i]=double(rand());
     };
     
     // Random number stream seed for start angle
     srand(RandomNumberStream[3]);
     std::vector<double> RandomNumberStreamAnimal2;
+    RandomNumberStreamAnimal2.resize(NoAnimal);
     for(int i=0; i<NoAnimal; i++){
-        double myrandomnumber =  rand();
-        RandomNumberStreamAnimal2.push_back(myrandomnumber);
+        RandomNumberStreamAnimal2[i]=double(rand());
     };
     
     // Random number stream seed for the seed for the movement
     srand(RandomNumberStream[4]);
     std::vector<double> RandomNumberStreamAnimal3;
+    RandomNumberStreamAnimal3.resize(NoAnimal);
     for(int i=0; i<NoAnimal; i++){
-        double myrandomnumber =  rand();
-        RandomNumberStreamAnimal3.push_back(myrandomnumber);
+        RandomNumberStreamAnimal3[i]=double(rand());
     };
     
     // Enters data
@@ -266,7 +273,7 @@ int main(){
                                   ,MovementType         // Movement_type
                                   ,0                    // Move_state = e;
                                   ,AnimalSpeed          // Move_speed = f;
-                                  ,M_PI/2               // Move_maxangle = g;
+                                  ,CorrWalkMaxAngleChange//Move_maxangle = g;
                                   ,xlocation            // Current_x = i;
                                   ,ylocation            // Current_y = j;
                                   ,CurrentAngleTemp     // Current_angle = k;
@@ -277,7 +284,7 @@ int main(){
                                   ,HR_SolidBoundaries   // SolidHomeRangeBoundary = r ;  // HR = 1=Y or 0=N
                                   ,xlocation            // Home_x = t;
                                   ,ylocation            // Home_y = u;
-                                  ,Radius     // Home_r = v;
+                                  ,HR_AverageRadius     // Home_r = v;
                                   );
         
         //Saves each individual animals 
@@ -296,9 +303,9 @@ int main(){
         srand(RandomNumberStreamAnimal3[i]);
         //Random number stream for the movemnet of the animal
         std::vector<double> RandomNumberCurrentAnimal;
+        RandomNumberCurrentAnimal.resize(NoSteps*NoSteps);
         for(int i=0; i<NoSteps*NoSteps; i++){
-            double myrandomnumber =  rand();
-            RandomNumberCurrentAnimal.push_back(myrandomnumber);
+            RandomNumberCurrentAnimal[i]=  double(rand());
         };
         
             for(int j=0; j<NoSteps; j++){
@@ -336,15 +343,15 @@ int main(){
     ///Creates camera traps////
     ///////////////////////////
     
-    /*
+    
     //List of random number for CTs
     //Uses RandomNumberStream as a seed for the stream
     //Creates 1 Random number for the seed each CT
     srand(RandomNumberStream[4]);
     std::vector<double> RandomNumberStreamCT;
+    RandomNumberStreamCT.resize(NoCameraTraps);
     for(int i=0; i<NoCameraTraps; i++){
-        double myrandomnumber =  rand();
-        RandomNumberStreamCT.push_back(myrandomnumber);
+        RandomNumberStreamCT[i] =double (rand());
     };
      
     
@@ -358,12 +365,9 @@ int main(){
         // The cameras start at 3o'clock and move in a anti-clockwise direction
         // This is for the simplicity of calculation
         All_CT[i] = new CameraTrap(i //identifier;
-                                   ,RadiusCameraCircle // Radius of circle
-                                   , Cir_CntX //Cntre of circle x
-                                   , Cir_CntY // Centre of circle y
+                                   , RadiusCameraCircle // Radius of circle
                                    , AngleBetweenCameras //Angle between cameras
-                                   , Radius //radius
-                                   , CameraWidth //half angle
+                                   , CallRadius //radius
                                    );
         
         //Saves the locations and the angle of the camera
@@ -372,14 +376,14 @@ int main(){
             "," << All_CT[i]->getYloc() << //...
             "," << All_CT[i]->getAngle() << //...
             "," << All_CT[i]->getHalfAngle() << //4th column
+            "," << SpeedCamera << //5th column
             "\n";
         };
     
 
-    
+    // For each individual check each camera location and see whether they were captured
+    //Each camera is only at a their location for one time interval
     for(int Individual=0; Individual<NoAnimal; Individual++){
-        
-        
         
         for(int NoCT=0; NoCT<NoCameraTraps; NoCT++){ //Checks all CT for presence of animal
             
@@ -438,7 +442,7 @@ int main(){
     }; //End of NoCT loop
     
      std::cout <<"Finish Camera" <<std::endl;
-    */
+    
     
     
     
@@ -464,12 +468,12 @@ int main(){
         delete AllAnimals[i];
     }
     std::cout <<"Destruct" <<std::endl;
-    /*
+    
      // Destructors For Camera Traps
     for(int i=0; i<NoCameraTraps; i++){
         delete All_CT[i];
     }
-     */
+     
     std::cout <<"Destruct" <<std::endl;
     
     //////////////////

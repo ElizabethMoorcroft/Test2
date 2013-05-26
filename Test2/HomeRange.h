@@ -13,10 +13,7 @@
 class HomeRange{
     
     int identifier; //The HR id number
-    int type;       //HR exists, 1=Y 0=N
-    int Home_Shape; // Shape of HR, 1=Circle
-    
-    
+        
     double Home_Size;  // Size of HR
     double Home_X;  //Location of Home Range X
     double Home_Y;  //Location of Home Range Y
@@ -29,13 +26,8 @@ public:
     
     HomeRange();
     HomeRange(int //identifier; //The HR id number
-             ,int //type;       //Type of HR, 1=Y 0=N
-             ,int //Home_Shape; // Shape of HR, 1=Circle
-            );
-
-    void HRSetValues( double, double, double, double,
-                     double, double, double, double,
-                     double, double);
+              , double
+              , double);
 
     double getHomeX(){return Home_X;};
     double getHomeY(){return Home_Y;};

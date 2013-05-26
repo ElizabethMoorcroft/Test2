@@ -29,8 +29,6 @@ private:
 public:
     CameraTrap();
     CameraTrap(int //ID No (Also time step)
-               , double // Radius of circle
-               , double, double //Centre of circle x,y
                , double //Angle between cameras
                , double , double
                );

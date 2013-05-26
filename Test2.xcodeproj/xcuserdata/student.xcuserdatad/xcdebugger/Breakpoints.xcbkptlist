@@ -8,11 +8,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "Test2/main.cpp"
-         timestampString = "391076613.533318"
+         timestampString = "391259293.417109"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "146"
-         endingLineNumber = "146"
+         startingLineNumber = "176"
+         endingLineNumber = "176"
          landmarkName = "main()"
          landmarkType = "7">
       </FileBreakpoint>
@@ -21,11 +21,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "Test2/main.cpp"
-         timestampString = "391076613.533318"
+         timestampString = "391259293.417109"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "148"
-         endingLineNumber = "148"
+         startingLineNumber = "177"
+         endingLineNumber = "177"
          landmarkName = "main()"
          landmarkType = "7">
       </FileBreakpoint>
@@ -34,12 +34,12 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "Test2/HomeRange.cpp"
-         timestampString = "390992991.128232"
+         timestampString = "391260469.008426"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "132"
-         endingLineNumber = "132"
-         landmarkName = "HomeRange::HRSetValues( double a, double b, double c, double d, double e, double f, double g, double h, double i, double j)"
+         startingLineNumber = "111"
+         endingLineNumber = "111"
+         landmarkName = "HomeRange::HomeRange(int a//identifier; //The HR id number ,double b ,double c )"
          landmarkType = "5">
       </FileBreakpoint>
       <FileBreakpoint
@@ -60,11 +60,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "Test2/main.cpp"
-         timestampString = "391076613.533318"
+         timestampString = "391260469.008426"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "353"
-         endingLineNumber = "353"
+         startingLineNumber = "360"
+         endingLineNumber = "360"
          landmarkName = "main()"
          landmarkType = "7">
       </FileBreakpoint>
@@ -73,11 +73,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "Test2/main.cpp"
-         timestampString = "391076613.533318"
+         timestampString = "391260469.008426"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "313"
-         endingLineNumber = "313"
+         startingLineNumber = "320"
+         endingLineNumber = "320"
          landmarkName = "main()"
          landmarkType = "7">
       </FileBreakpoint>
@@ -86,11 +86,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "Test2/CameraTraps.h"
-         timestampString = "390910777.709733"
+         timestampString = "391257793.318707"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "40"
-         endingLineNumber = "40"
+         startingLineNumber = "38"
+         endingLineNumber = "38"
          landmarkName = "class CameraTrap"
          landmarkType = "3">
       </FileBreakpoint>
@@ -98,25 +98,12 @@
          shouldBeEnabled = "No"
          ignoreCount = "0"
          continueAfterRunningActions = "No"
-         filePath = "Test2/main.cpp"
-         timestampString = "390993992.379844"
-         startingColumnNumber = "9223372036854775807"
-         endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "42"
-         endingLineNumber = "42"
-         landmarkName = "main()"
-         landmarkType = "7">
-      </FileBreakpoint>
-      <FileBreakpoint
-         shouldBeEnabled = "No"
-         ignoreCount = "0"
-         continueAfterRunningActions = "No"
          filePath = "Test2/Animal.cpp"
-         timestampString = "391099835.127104"
+         timestampString = "391255366.429055"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "168"
-         endingLineNumber = "168">
+         startingLineNumber = "179"
+         endingLineNumber = "179">
       </FileBreakpoint>
       <FileBreakpoint
          shouldBeEnabled = "No"
@@ -136,11 +123,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "Test2/Animal.cpp"
-         timestampString = "391099835.127104"
+         timestampString = "391255366.429055"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "382"
-         endingLineNumber = "382"
+         startingLineNumber = "395"
+         endingLineNumber = "395"
          landmarkName = "Animal::UpdateLocation (double a, double b)"
          landmarkType = "5">
       </FileBreakpoint>
@@ -149,12 +136,51 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "Test2/Animal.cpp"
-         timestampString = "391099835.127104"
+         timestampString = "391255366.429055"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "202"
-         endingLineNumber = "202"
+         startingLineNumber = "213"
+         endingLineNumber = "213"
          landmarkName = "Animal::LeaveEnterWorld(double a, double b , double c, double d)"
+         landmarkType = "5">
+      </FileBreakpoint>
+      <FileBreakpoint
+         shouldBeEnabled = "No"
+         ignoreCount = "0"
+         continueAfterRunningActions = "No"
+         filePath = "Test2/HomeRange.cpp"
+         timestampString = "391260469.008426"
+         startingColumnNumber = "9223372036854775807"
+         endingColumnNumber = "9223372036854775807"
+         startingLineNumber = "127"
+         endingLineNumber = "127"
+         landmarkName = "HomeRange::HomeRange(int a//identifier; //The HR id number ,double b ,double c )"
+         landmarkType = "5">
+      </FileBreakpoint>
+      <FileBreakpoint
+         shouldBeEnabled = "No"
+         ignoreCount = "0"
+         continueAfterRunningActions = "No"
+         filePath = "Test2/HomeRange.cpp"
+         timestampString = "391260427.521907"
+         startingColumnNumber = "9223372036854775807"
+         endingColumnNumber = "9223372036854775807"
+         startingLineNumber = "43"
+         endingLineNumber = "43"
+         landmarkName = "HomeRange::HomeRange(int a//identifier; //The HR id number ,double b ,double c )"
+         landmarkType = "5">
+      </FileBreakpoint>
+      <FileBreakpoint
+         shouldBeEnabled = "No"
+         ignoreCount = "0"
+         continueAfterRunningActions = "No"
+         filePath = "Test2/HomeRange.cpp"
+         timestampString = "391260431.677386"
+         startingColumnNumber = "9223372036854775807"
+         endingColumnNumber = "9223372036854775807"
+         startingLineNumber = "38"
+         endingLineNumber = "38"
+         landmarkName = "HomeRange::HomeRange(int a//identifier; //The HR id number ,double b ,double c )"
          landmarkType = "5">
       </FileBreakpoint>
    </FileBreakpoints>

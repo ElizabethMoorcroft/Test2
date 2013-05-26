@@ -14,17 +14,14 @@
 CameraTrap::CameraTrap(){};
 CameraTrap::CameraTrap(int a//CT_identifier;
                        ,double b //Radius of circle
-                       ,double cx
-                       ,double cy
-                       ,double ca
+                       ,double ca // Angle between each location
                        ,double d//radius;
-                       ,double f//angle_HalfWidth;
                        //,std::vector<std::vector<int>> //::Captures()
                        ){
     
     // Renames variables
-    double CentreX = cx;
-    double CentreY = cy;
+
+    
     double CircleR = b;
     double CircleAngle = ca;
     
@@ -34,13 +31,13 @@ CameraTrap::CameraTrap(int a//CT_identifier;
     //////////////////////////
     // Using polar to cartesian co-ordinates
     // This means that the cameras start at 3o'clock and move in a anti-clockwise direction
-    location_x = (CircleR * cos(a*CircleAngle)) + CentreX ;
-    location_y = (CircleR * sin(a*CircleAngle)) + CentreY ;
+    location_x = (CircleR * cos(a*CircleAngle)) + Cir_CntX ;
+    location_y = (CircleR * sin(a*CircleAngle)) + Cir_CntY ;
     
     // The angle (with respect to "north") the camera is facing is:
     // 90 degrees minus the number of degrees between the start and the current camera
     // because of the anti-clockwise motion
-    // After passes zero - then 
+    // After passes zero - then
     double angle_temp = M_PI/2 - a*CircleAngle;
     if(angle_temp<0){angle_temp = 2*M_PI + angle_temp;};
     angle = angle_temp;
@@ -48,8 +45,6 @@ CameraTrap::CameraTrap(int a//CT_identifier;
     
     //Assigning varaibles
     CT_identifier = a;
-    radius = d;
-    angle_HalfWidth = f;
 
 };
 

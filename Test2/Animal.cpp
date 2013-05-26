@@ -130,7 +130,31 @@ void Animal::NewLocationMT1 (double a, double b, double c){
     //Current_angle = NextAngle;
 }
 
+void Animal::NewLocationUnCorr (double a, double b, double c){
+    
+    double seed=a;
+    double seed2=b;
+    double Dist=c;
+    
 
+        
+    //set up a random number
+    RandNum Number1;
+    //Correlated random walk
+    // Calculate a distance value
+    NextDist = Number1.PositiveNormal (seed,Dist,Dist/10);
+        
+    //calculates a new random angle of movement
+    NextAngle = Number1.AtoBUnif(seed2,0,2*M_PI);
+        
+        
+    //Based on polar coordinates updates the temp x/y location
+    NextX = Current_x + NextDist*sin(NextAngle);
+    NextY = Current_y + NextDist*cos(NextAngle);
+
+    
+    
+}
 
 void Animal::NewLocationMT2 (double a, double b, double c){
     
@@ -138,22 +162,9 @@ void Animal::NewLocationMT2 (double a, double b, double c){
     double seed2=b;
     double Dist=c;
     
-    if(Move_NonCorr==1){//ENTRE CODE IF THE MOVEMENT IS NOT_CORRELATED
-        
-        //set up a random number
-        RandNum Number1;
-        //Correlated random walk
-        // Calculate a distance value
-        NextDist = Number1.PositiveNormal (seed,Dist,Dist/10);
-        
-        //calculates a new random angle of movement
-        NextAngle = Number1.AtoBUnif(seed2,0,2*M_PI);
-
-        
-        //Based on polar coordinates updates the temp x/y location
-        NextX = Current_x + NextDist*sin(NextAngle);
-        NextY = Current_y + NextDist*cos(NextAngle);
-        
+    if(Move_NonCorr==1){
+        //ENTRE CODE IF THE MOVEMENT IS NOT_CORRELATED
+        NewLocationUnCorr(seed,seed2,Dist);
         
         }
     else if(Move_NonCorr==0){
@@ -323,7 +334,8 @@ void Animal::UpdateLocation (double a, double b){ // a is the number of seconds 
 
         std::cout<<"Solid"<<std::endl;
         while(i==0){
-            if(count<10000){
+            if(count<1000){
+                std::cout<<"Corr" << count<<std::endl;
                 NewLocation(StepLength, RandomNumberUpdateMovement[count], RandomNumberUpdateMovement[count+100]);
             
                 // Distance from centre of hr to animal
@@ -336,7 +348,8 @@ void Animal::UpdateLocation (double a, double b){ // a is the number of seconds 
                 if(TempDistToHR<Home_r){ i=i+1;}
             }
             else {
-                NewLocationMT0(Move_speed*StepLength, RandomNumberUpdateMovement[count]);
+                std::cout<<"UnCorr"<< count<<std::endl;
+                NewLocationUnCorr(RandomNumberUpdateMovement[count], RandomNumberUpdateMovement[count+100], Move_speed*StepLength);
                 
                 double TempDistToHR =sqrt(pow(NextX-Home_x,2)+pow(NextY-Home_y,2));
                 
@@ -377,7 +390,7 @@ void Animal::UpdateLocation (double a, double b){ // a is the number of seconds 
     ////////////////////////////////
     if(SolidHomeRangeBoundary==0){
         
-        std::cout<<"NoSolid"<<std::endl;
+        //std::cout<<"NoSolid"<<std::endl;
         
             NewLocation(StepLength, RandomNumberUpdateMovement[0], RandomNumberUpdateMovement[100]);
         
@@ -420,13 +433,7 @@ void Animal::UpdateLocation (double a, double b){ // a is the number of seconds 
                 ///////////////////////////////////////
                 //If angle between 0 and 90 degrees then will exit either at top or right boundary
                 if(NextAngle>=0 && NextAngle<M_PI/2){
-                    std::cout <<"0-90"<<std::endl;
-                    /*
-                    double YBound =a;
-                    double XBound =b;
-                    double YBoundEnter =c;
-                    double XBoundEnter =d;
-                     */
+                    //std::cout <<"0-90"<<std::endl;
                     LeaveEnterWorld(Sq_MaxY, Sq_MaxX ,Sq_MinY, Sq_MinX);
                 } //END OF 0 to 90 degrees IF STATEMENT
                 
@@ -435,9 +442,9 @@ void Animal::UpdateLocation (double a, double b){ // a is the number of seconds 
                 // If angle between 90 and 180 degrees //
                 /////////////////////////////////////////
                 //then will exit either at Bottom or right boundary
-                
+
                 else if(NextAngle>=M_PI/2 && NextAngle<M_PI){
-                    std::cout <<"90-180"<<std::endl;
+                    //std::cout <<"90-180"<<std::endl;
                     LeaveEnterWorld(Sq_MinY, Sq_MaxX ,Sq_MaxY, Sq_MinX);
                     
                 }//END OF 90 to 180 degrees IF STATEMENT
@@ -448,7 +455,7 @@ void Animal::UpdateLocation (double a, double b){ // a is the number of seconds 
                 //then will exit either at Bottom or right boundary
                 
                 else if(NextAngle>=M_PI && NextAngle<1.5*M_PI){
-                    std::cout <<"180-270"<<std::endl;
+                    //std::cout <<"180-270"<<std::endl;
                     LeaveEnterWorld(Sq_MinY, Sq_MinX ,Sq_MaxY, Sq_MaxX);
                     
                 }//END OF 180 to 270 degrees IF STATEMENT
@@ -459,11 +466,15 @@ void Animal::UpdateLocation (double a, double b){ // a is the number of seconds 
                 //then will exit either at Bottom or right boundary
                 
                 else if(NextAngle>=1.5*M_PI && NextAngle<2*M_PI){
-                    std::cout <<"270-360"<<std::endl;
+                    //std::cout <<"270-360"<<std::endl;
                     LeaveEnterWorld(Sq_MaxY, Sq_MinX ,Sq_MinY, Sq_MaxX);
                 
                 }//END OF 270 to 360 degrees IF STATEMENT
                 
+                
+                //////////////////////////
+                // Two possible errors  //
+                //////////////////////////
                 // Produces error is the ANGLE is not between 0 and 360
                 else {std::cout << "ERROR - ANGLE" <<std::endl;};
                 
@@ -483,32 +494,19 @@ void Animal::UpdateLocation (double a, double b){ // a is the number of seconds 
     step_number =step_number+1;
     
     if(Movement_type==2){
+        //Movement type 2 switches between correlated and uncorrelated movement
     
-        //set up a random number
-        RandNum Number1;
-    
-        //List of random number
-        srand(RandomNumberMovement[1]);
-        std::vector<double> RandomNumberUpdateMovementType;
-        for(int i=0; i<100000; i++){ //Do I need to increase the max value??
-            double myrandomnumber =  rand();
-            RandomNumberUpdateMovementType.push_back(myrandomnumber);
-        };
-        std::cout<<"Random NUmber"<<RandomNumberUpdateMovementType[0]<<std::endl;
-        srand(RandomNumberUpdateMovementType[0]);
-        if(Move_NonCorr==1){
+        if(Move_NonCorr==1){ 
             //Changes the movement from non-correlated to correlated for the next step
-            double ChangeMoveState = rand()/RAND_MAX;
-            std::cout<<"Random ChangeMoveState"<<ChangeMoveState<<std::endl;
+            srand(RandomNumberMovement[100]);
+            double ChangeMoveState = double(rand())/double(RAND_MAX);
             if(ChangeMoveState < ProbChangeMoveState){
-                std::cout<<"Change state"<<std::endl;
                 Move_NonCorr=0;}
-        } else {
+        } else { 
             //Changes the movement from correlated to non-correlated for the next step
-            double ChangeMoveState = rand()/RAND_MAX;
-            std::cout<<"Random ChangeMoveState"<<ChangeMoveState<<std::endl;
+            srand(RandomNumberMovement[100]);
+            double ChangeMoveState = double(rand())/double(RAND_MAX);
             if(ChangeMoveState < ProbChangeMoveState){
-                std::cout<<"Change state"<<std::endl;
                 Move_NonCorr=1;}
         }
     }
