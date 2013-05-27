@@ -40,7 +40,7 @@ public:
     double getAngle(){return angle;};
     double getHalfAngle(){return angle_HalfWidth;};
     
-    void CapturesIndividual(double  //x location animal
+    int CapturesIndividual(double  //x location animal
                             ,double //y location animal
                             ,int // Animal ID
                             ,int //Camera #
@@ -48,6 +48,16 @@ public:
                             ,double //Call angle
                             , double//Movement angle
                        );
+    
+    void TestCapturesIndividual(int
+                                ,double
+                                , double
+                                , double
+                                , double
+                                , double
+                                , double);
+    
+
     
 };
 

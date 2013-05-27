@@ -53,7 +53,9 @@ CameraTrap::CameraTrap(int a//CT_identifier;
 ////////////////////////
 ////////////////////////
 
-void CameraTrap::CapturesIndividual(double a,double b, int c, int d, int e, double f, double g){
+int CameraTrap::CapturesIndividual(double a,double b, int c, int d, int e, double f, double g){
+    
+    int captured=0;
     
     double AngleFromCamera = 0;
     
@@ -103,10 +105,10 @@ void CameraTrap::CapturesIndividual(double a,double b, int c, int d, int e, doub
                 myvector[1] = Individual_ID;
                 myvector[2] = Time_step;
                 myvector[3] = CameraID;
-                
-                //std::cout<<Individual_ID<<std::endl;
-                
+                    
                 Captures.push_back (myvector);
+                
+                captured = 1;
             };//End of "detector in the width of the call" IF
             
             
@@ -114,5 +116,50 @@ void CameraTrap::CapturesIndividual(double a,double b, int c, int d, int e, doub
     
         
     }; //End of "radius" IF
-
+    if(captured==1){return(1);} else {return(0);};
 }; // End of function
+
+
+
+
+//////////////////////////////////
+// !!!!!!!!!! TEST !!!!!!!!!!!! //
+//////////////////////////////////
+
+void CameraTrap::TestCapturesIndividual(int ID
+                                        ,double a
+                                        ,double b
+                                        ,double a1
+                                        ,double b1
+                                        ,double c
+                                        ,double d
+                            ){
+    //aninal location realtive to camera
+    double animal_xlocation = location_x +a*radius*(sin(a1*angle_HalfWidth+angle)); 
+    double animal_ylocation = location_y +b*radius*(cos(b1*angle_HalfWidth+angle));
+    
+    // Call angle relative to the camera angle
+    double call_angle = angle + c*M_PI; 
+    if(call_angle>2*M_PI){call_angle=call_angle-2*M_PI;};
+    
+    int capture = CapturesIndividual(animal_xlocation,
+                                     animal_ylocation,
+                                     1, // Animal ID  - the number printed in the output
+                                     1, // Camera ID  - the number printed in the output
+                                     1, // Step ID  - the number printed in the output
+                                     angle,
+                                     call_angle);
+    //
+    if(capture!=d){
+        if(d==1){
+            std::cout<<"Error! Failed camera test -  Not captured when should. Failed input: "<<ID<< std::endl;
+            exit (EXIT_FAILURE);
+        } else{
+            std::cout<<"Error! Failed camera test - Captured when shouldn't. Failed input: "<<ID<<  std::endl;
+            exit (EXIT_FAILURE);
+        }
+    }
+    
+}; //END OF FUNCTION
+
+

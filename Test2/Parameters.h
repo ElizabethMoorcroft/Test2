@@ -22,37 +22,32 @@
 //////////////////////////////////////////////////
 
 //Simulation values - #Animals, #Steps, #HR, #CT
-const double DensityAnimals = 0.1*pow(10,-6); // XX*10^-6 Density/m^2  => XX Density/KM^2
-const int LengthMonitoring = 45*(60*60); //Length of monitoring in seconds
-const int AverageSizeHR = 1;
-const int SpeedCamera  = 2.4; // m/s = 0.06 * KM/h
-const int NoRunIn = 10;
-const int NoOfIterations = 3;
+const double DensityAnimals = 0.5*pow(10,-6); // XX*10^-6 Density/m^2  => XX Density/KM^2
+const double LengthMonitoring = 1.5*(60*60); //Length of monitoring in seconds. XX*(60*60)secs => XX hrs
+const double AverageSizeHR = 1; //Average number of animals per roost
+const double SpeedCamera  = 30*0.06 ; // => XX m/s =  XX/ 0.06 KM/h  => XX*0.06 m/s =  XX KM/h
+const int NoRunIn = 10; // Number of steps before cameras are "activated"
+const int NoOfIterations = 1; // No of iterations with the settings
 
 
-
-//Range of animal start locations if no HR boudaries
-const int Sq_MinX = 0;
-const int Sq_MaxX = 500000;
-const int Sq_MinY = 0;
-const int Sq_MaxY = 500000;
+//Size of the enviroment
+const double Sq_MinX = 0;
+const double Sq_MaxX = 10000;
+const double Sq_MinY = 0;
+const double Sq_MaxY = 10000;
 
 // Centre of the camera circle is in the centre of the environment
-const int Cir_CntX = (Sq_MaxX-Sq_MinX)/2+Sq_MinX;
-const int Cir_CntY = (Sq_MaxY-Sq_MinY)/2+Sq_MinY;
+const double Cir_CntX = (Sq_MaxX-Sq_MinX)/2+Sq_MinX;
+const double Cir_CntY = (Sq_MaxY-Sq_MinY)/2+Sq_MinY;
 
-const int CameraWidth = M_PI/3;
+const double CameraWidth = M_PI/3;
 
-// Range of animal start locations if HR boudaries - and cicular camera formulations
-const int Cir_MinRng = 5;
-const int Cir_MaxRng = 50;
-
-//HR set up values
-const int HR_AverageRadius = 500;
-const int HR_SolidBoundaries = 1; // Solid boundaries for HR --- 1 =Yes 0 = No
+//HR set up value
+const double HR_AverageRadius = 1500; //meters
+const int HR_SolidBoundaries = 0; // Solid boundaries for HR --- 1 =Yes 0 = No
 
 //Radom number seed
-//std::vector<int> Startseeds;
+const int Seed =1;
 const int LengthStream = 10;
 
 //Movement parameters
@@ -60,18 +55,18 @@ const int StepLength = 3.5; //Length of each step in seconds
 const double CorrWalkMaxAngleChange = M_PI/36;
 
 //Animal parameters
-const int AnimalSpeed = 5; // ms^-1
-const int MovementType =2;
-const double ProbChangeMoveState = 0.01;//Probability of switching from coorelated to non-correlated
+const double AnimalSpeed = 6.3; // ms^-1
+const int MovementType =0;
+const double ProbChangeMoveState = 0;//Probability of switching from coorelated to non-correlated
 
 //Call parameters
-const int Call_halfwidth = 45;   //Call_halfwidth
+const double Call_halfwidth = M_PI/4;   //Call_halfwidth
 
 //For the attenuation of sound
-const int Temp = 25;
-const int Hum = 30;
-const int Freq = 50;
-const int Amp = 127; //Amplitude
-const int It = 0;
+const double Temp = 25;
+const double Hum = 30;
+const double Freq = 45.11;
+const double Amp = 126; //Amplitude
+const double It = 0;
 
 #endif

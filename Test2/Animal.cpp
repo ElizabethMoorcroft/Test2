@@ -234,7 +234,7 @@ void Animal::LeaveEnterWorld(double a, double b , double c, double d){
     
     if(tempDistToSideBoundary>tempDistToTopBoundary | tempDistToSideBoundary ==0 ){
     
-        std::cout <<"Top"<<std::endl;
+        //std::cout <<"Top"<<std::endl;
         //This means that it exits the world at maximum value of y and at the corresponding x value
         tempExitsY = YBoundExit;
         tempExitsX = Current_x+tempDistToTopBoundary*sin(NextAngle);
@@ -246,7 +246,7 @@ void Animal::LeaveEnterWorld(double a, double b , double c, double d){
         // The distance left to travel
         NextDist = NextDist - tempDistToTopBoundary;
     } else{
-        std::cout <<"Side"<<std::endl;
+        //std::cout <<"Side"<<std::endl;
         //This means that it exits the world at maximum value of y and at the corresponding x value
         tempExitsX = XBoundExit;
         tempExitsY = Current_y+tempDistToSideBoundary*cos(NextAngle);

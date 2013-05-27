@@ -23,13 +23,24 @@
 
 
 // Function for creating a dynamic file names
-std::string make_filename( const std::string& directory, const std::string& basename, int index, const std::string& ext )
-{
+std::string make_filename( const std::string& directory,const std::string& basename, int index, const std::string& ext ){
     std::ostringstream result;
     result << directory << basename << index << ext;
     return result.str();
 }
-std::string SaveDirectory = "/Users/student/Documents/Bats/";
+
+// Function for creating a dynamic file names
+std::string make_filenamesettings( const std::string& directory ,const std::string& basename, const std::string& ext ){
+    std::ostringstream result;
+    result << directory <<basename << ext;
+    return result.str();
+};
+
+
+std::string SaveDirectory = "/Users/student/Documents/Bats/Simulations/CommonPip,Nobound,Density=0.5,";
+
+
+
 
 ///////////////////////
 ///Main code starts////
@@ -38,13 +49,11 @@ std::string SaveDirectory = "/Users/student/Documents/Bats/";
 int main(){
     
     
-    /////////////////////
-    //Calculates values//
-    /////////////////////
+    /////////////////////////////////////////////////////////////////////////
+    //Calculates some values before the before the iteration of loop starts//
+    /////////////////////////////////////////////////////////////////////////
     
-    double area = (Sq_MaxX-Sq_MinX)*(Sq_MaxY-Sq_MinY);
-    int NoAnimal = floor(DensityAnimals*area);
-    std::cout<<NoAnimal<<std::endl;
+
     
     int NoCameraTraps = round(LengthMonitoring/StepLength);
     int NoSteps = NoCameraTraps + NoRunIn;
@@ -59,9 +68,6 @@ int main(){
     // Assuming equal distance between the cameras
     // Assume the first one is occurs at 0
     double AngleBetweenCameras = (2*M_PI)/(NoCameraTraps-1);
-    
-    // The number of the HR's no of expected HR given the number of animals and the average size of HR
-    int NoHR = NoAnimal/AverageSizeHR;
     
     
     //Tim's code for calucalting the attentuation of sound in order to calucalte the
@@ -83,20 +89,89 @@ int main(){
     // End of Tim's code
     
     
+    //Calculates the number of animals given the are and the density
+    int NoAnimal;
+    //If there are no solid boundaries then the animals can start anywhere
+    //uses the min and max of the environment
+    if(HR_SolidBoundaries==0){
+        double area = (Sq_MaxX-Sq_MinX)*(Sq_MaxY-Sq_MinY);
+         NoAnimal = floor(DensityAnimals*area);
+    }else if(HR_SolidBoundaries==1){
+    // If there is solid boundaries then can only detect the animals within
+    // one home range radius of a camera
+    // If the radius of the camera movement is less than the average home range then there is no hole
+    // in the middle of the camera circle
+        if(HR_AverageRadius>=RadiusCameraCircle){
+            double area = pow(RadiusCameraCircle+HR_AverageRadius,2)*M_PI;
+            NoAnimal = floor(DensityAnimals*area);}
+        else{
+            double area = pow(RadiusCameraCircle+HR_AverageRadius,2)*M_PI - pow(RadiusCameraCircle-HR_AverageRadius,2)*M_PI;
+            NoAnimal = floor(DensityAnimals*area);}
+        }
     
-    ///////////////////////
-    /// !!! WARNINGS!!! ///
-    ///////////////////////
+    // The number of the HR's no of expected HR given the number of animals and the average size of HR
+    int NoHR = ceil(NoAnimal/AverageSizeHR);
+    
+    ////////////////////////////////////////////////////////
+    //Creates Camera traps as they do not change location //
+    // when the movement changes - only after the set up  //
+    // parameters change                                  //
+    ////////////////////////////////////////////////////////
+    
+    //Creates a CSV file and writes in the header
+    std::ofstream Cameras;
+    Cameras.open(make_filenamesettings(SaveDirectory, ",Cameras", ".csv" ).c_str());
+    Cameras << "ID" <<
+    "," << "X location" <<
+    "," << "Y location" <<
+    "," << "CentreAngle" <<
+    "," << "HalfWidthAngle" <<
+    "," << "Camera Speed" <<
+    "\n";
+    
+    //Creates a list of pointers to the CTs
+    std::vector<CameraTrap*> All_CT(NoCameraTraps);
+    //Caluclates the location of all the camera traps
+    for(int i=0; i<NoCameraTraps; i++){
+        // Calculate the starting position of all Camera traps
+        // The cameras start at 3o'clock and move in a anti-clockwise direction
+        // This is for the simplicity of calculation
+        All_CT[i] = new CameraTrap(i //identifier;
+                                   , RadiusCameraCircle // Radius of circle
+                                   , AngleBetweenCameras //Angle between cameras
+                                   , CallRadius //radius
+                                   );
+        
+        //Saves the locations and the angle of the camera
+        Cameras << All_CT[i]->getID() << //1st column
+        "," << All_CT[i]->getXloc() << //2nd column
+        "," << All_CT[i]->getYloc() << //...
+        "," << All_CT[i]->getAngle() << //...
+        "," << All_CT[i]->getHalfAngle() << //4th column
+        "," << SpeedCamera << //5th column
+        "\n";
+    };
+    //Closes the csv camera file
+    Cameras.close();
+    
+    
+    ///////////////////////////////////////////////////////////////////////////////////////
+    ///                                 !!! WARNINGS!!!                                 ///
+    /// Will automatically stop the simulation if certain conditions they               ///
+    /// aren't satisfied.                                                               ///
+    /// Includes a limited number of tests on the following functions:                  ///
+    ///         *CapturesIndividual                                                     ///
+    ///////////////////////////////////////////////////////////////////////////////////////
     
    
     //Number of animals needs to be greater than zero
-    if(NoAnimal==0){
+    if(NoAnimal<=0){
         std::cout<<"No of Animals = "<<NoAnimal<< ", Increase density"<< std::endl;
         exit (EXIT_FAILURE);
     };
     
     //Number of Home ranges needs to be greater than zero
-    if(NoHR==0){
+    if(NoHR<=0){
         std::cout<<"No of roosts = "<<NoHR<< ", Decrease number of bats per roost"<< std::endl;
         exit (EXIT_FAILURE);
     };
@@ -114,6 +189,69 @@ int main(){
     };
     
     
+    // This does not work yet!! - not reading in correctly
+    //Test on the camera trap
+    int a;
+    double b, c, d, e, f, g;
+    std::ifstream input;
+    input.open("/Users/student/Documents/Bats/CameraTestInputs.dat");
+    for(int i=0; i<5; i++){
+    //while(!input.eof()){
+        input >> a >> b>> c >>d >>e >>f >>g;
+        std::cout<<a<<std::endl;
+        //for(int i=0; i<NoCameraTraps; i++){
+            //All_CT[i]->TestCapturesIndividual(a,b,c,d,e,f,g);
+        //}
+    }
+    input.close();
+     
+    
+    ////////////////////
+    // Saves settings //
+    ////////////////////
+    
+    std::ofstream Settings;
+    Settings.open(make_filenamesettings(SaveDirectory,"Settings", ".csv").c_str());
+
+    //Simulation values - #Animals, #Steps, #HR, #CT
+    Settings
+        << "DensityAnimals" << ","<< DensityAnimals << "\n"
+        << "LengthMonitoring" << ","<< LengthMonitoring << "\n"
+        << "AverageSizeHR" << ","<< AverageSizeHR << "\n"
+        << "SpeedCamera"  << ","<<  SpeedCamera << "\n"
+        << "NoRunIn" << ","<<  NoRunIn << "\n"
+        << "NoOfIterations" << ","<< NoOfIterations << "\n"
+        << "Seed" << "," << Seed << "\n"
+    //Size of the enviroment
+        << "Sq_MinX" << ","<<  Sq_MinX << "\n"
+        << "Sq_MaxX" << ","<<  Sq_MaxX << "\n"
+        << "Sq_MinY" << ","<<  Sq_MinY << "\n"
+        << "Sq_MaxY" << ","<<  Sq_MaxY << "\n"
+        << "CameraWidth" << "," << CameraWidth<< "\n"
+    //HR set up value
+        << "HR_AverageRadius" << ","<< HR_AverageRadius << "\n"
+        << "HR_SolidBoundaries"  << ","<< HR_SolidBoundaries << "\n"
+    //Radom number seed
+        << "LengthStream"  << ","<< LengthStream << "\n"
+    //Movement parameters
+        << "StepLength" << ","<< StepLength << "\n"
+        << "CorrWalkMaxAngleChange" << ","<<   CorrWalkMaxAngleChange<< "\n"
+    //Animal parameters
+        << "AnimalSpeed" << ","<< AnimalSpeed<< "\n"
+        << "MovementType" << ","<< MovementType<< "\n"
+        << "ProbChangeMoveState" << ","<< ProbChangeMoveState<< "\n"
+    //Call parameters
+        << "Call_halfwidth" << ","<< Call_halfwidth << "\n"
+    //For the attenuation of sound
+        << "Temp" << ","<< Temp << "\n"
+        << "Hum"  << ","<< Hum<< "\n"
+        << "Freq" << ","<< Freq << "\n"
+        << "Amp"  << ","<< Amp<< "\n"
+        << "It"   << ","<< It << "\n";
+    //Closes file
+     Settings.close();
+    
+    
     //////////////////////////////////////////////////////////////////////////////////////////////////
     // Starts a loop for the rest of the code                                                       //
     // This loop "NoOfIterations" number of times                                                   //
@@ -123,29 +261,28 @@ int main(){
 
     std::vector<int> Startseeds;
     Startseeds.resize(NoOfIterations);
-    for(int iterationnumber=1; iterationnumber<NoOfIterations+1; iterationnumber++){
-        Startseeds[iterationnumber]=iterationnumber;
+    for(int iterationnumber=0; iterationnumber<NoOfIterations; iterationnumber++){
+        Startseeds[iterationnumber]=Seed + iterationnumber;
         
 
     
     /////////////////////////
     // Create output files //
-    // 
+    //                     //
     /////////////////////////
     std::ofstream Movement;
-    Movement.open(make_filename(SaveDirectory, "Movement",iterationnumber,".csv").c_str());
+    Movement.open(make_filename(SaveDirectory, ",Movement",iterationnumber,".csv").c_str());
     
     std::ofstream Captures;
-    Captures.open(make_filename(SaveDirectory, "Captures",iterationnumber,".csv" ).c_str());
+    Captures.open(make_filename(SaveDirectory, ",Captures",iterationnumber,".csv" ).c_str());
     
-    std::ofstream Cameras;
-    Cameras.open(make_filename(SaveDirectory, "Cameras", iterationnumber, ".csv" ).c_str());
+
     
     std::ofstream Animals;
-    Animals.open(make_filename(SaveDirectory, "Animals",iterationnumber,".csv" ).c_str());
+    Animals.open(make_filename(SaveDirectory, ",Animals",iterationnumber,".csv" ).c_str());
     
     std::ofstream HomeRangefile;
-    HomeRangefile.open(make_filename(SaveDirectory, "HomeRange",iterationnumber,".csv").c_str());
+    HomeRangefile.open(make_filename(SaveDirectory, ",HomeRange",iterationnumber,".csv").c_str());
 
     
     //Creates a header for the file
@@ -164,14 +301,7 @@ int main(){
         "," << "Time_step" <<
         "," << "CameraID" <<
         "\n";
-    
-    Cameras << "ID" <<
-        "," << "X location" <<
-        "," << "Y location" <<
-        "," << "CentreAngle" <<
-        "," << "HalfWidthAngle" <<
-        "," << "Camera Speed" <<
-        "\n";
+
     
     Animals << "ID" <<
         "," << "HomeRangeID" <<
@@ -271,7 +401,7 @@ int main(){
     
     // Enters data
     for(int i=0; i<NoAnimal; i++){
-        std::cout <<"Animal:" << i <<"/" << NoAnimal << std::endl;
+        std::cout <<"Animal:" << i+1 <<"/" << NoAnimal << std::endl;
         
         //Sets seed for a random number
         // So that can choose a home range centre at random
@@ -355,43 +485,6 @@ int main(){
     ///////////////////////////
     ///Creates camera traps////
     ///////////////////////////
-    
-    
-    //List of random number for CTs
-    //Uses RandomNumberStream as a seed for the stream
-    //Creates 1 Random number for the seed each CT
-    srand(RandomNumberStream[4]);
-    std::vector<double> RandomNumberStreamCT;
-    RandomNumberStreamCT.resize(NoCameraTraps);
-    for(int i=0; i<NoCameraTraps; i++){
-        RandomNumberStreamCT[i] =double (rand());
-    };
-     
-    
-    //Creates a list of pointers to the CTs
-    std::vector<CameraTrap*> All_CT(NoCameraTraps);
-    for(int i=0; i<NoCameraTraps; i++){
-        
-        // Calculate the starting position of all Camera traps
-        //std::cout<<"Start Camera trap"<<std::endl;
-        
-        // The cameras start at 3o'clock and move in a anti-clockwise direction
-        // This is for the simplicity of calculation
-        All_CT[i] = new CameraTrap(i //identifier;
-                                   , RadiusCameraCircle // Radius of circle
-                                   , AngleBetweenCameras //Angle between cameras
-                                   , CallRadius //radius
-                                   );
-        
-        //Saves the locations and the angle of the camera
-        Cameras << All_CT[i]->getID() << //1st column
-            "," << All_CT[i]->getXloc() << //2nd column
-            "," << All_CT[i]->getYloc() << //...
-            "," << All_CT[i]->getAngle() << //...
-            "," << All_CT[i]->getHalfAngle() << //4th column
-            "," << SpeedCamera << //5th column
-            "\n";
-        };
     
 
     // For each individual check each camera location and see whether they were captured
@@ -482,12 +575,6 @@ int main(){
     }
     std::cout <<"Destruct" <<std::endl;
     
-    // Destructors For Camera Traps
-    for(int i=0; i<NoCameraTraps; i++){
-        delete All_CT[i];
-    }
-    
-    std::cout <<"Destruct" <<std::endl;
         
         // Destructors For HomeRange
     for(int i=0; i<NoHR; i++){
@@ -498,6 +585,13 @@ int main(){
     
     
     };//End of iteration
+    
+    
+    // Destructors For Camera Traps
+    for(int i=0; i<NoCameraTraps; i++){
+        delete All_CT[i];
+    }
+     std::cout <<"Destruct" <<std::endl;
     
     
     //////////////////
