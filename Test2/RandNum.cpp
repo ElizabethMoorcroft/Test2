@@ -68,15 +68,14 @@ long double RandNum::PositiveNormal (double a,double b,double c){
         
     } while(RV_1<=0);
 
-    /*
-    //Print statements
-    std::cout<<RV_1<<std::endl;
-    std::cout<<RV_2<<std::endl;
-    */
-
     return (RV_1);
     
 }
+////////////////////
+// End of +veNorm //
+////////////////////
+
+
 
 //a is the seed value
 //b is the current angle
@@ -104,6 +103,9 @@ long double RandNum::AtoRangeBUnif (double a,double b,double c){
     //returns value
     return v1;
 }
+//////////////////////////////
+// End of A to Range B Unif //
+//////////////////////////////
 
 //a is the seed value
 //b is the Min value
@@ -129,3 +131,6 @@ long double RandNum::AtoBUnif (double a,double b,double c){
     //returns value
     return v1;
 }
+////////////////////////
+// End of A to B Unif //
+////////////////////////

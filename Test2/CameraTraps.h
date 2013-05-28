@@ -16,6 +16,7 @@
 class CameraTrap {
 private:
     int CT_identifier;
+    int CT_StepOn;
     
     double location_x;
     double location_y;
@@ -35,6 +36,7 @@ public:
     std::vector<std::vector<int>> getCaptures(){return Captures;};
     
     double getID(){return CT_identifier;};
+    double getStepOn(){return CT_StepOn;};
     double getXloc(){return location_x;};
     double getYloc(){return location_y;};
     double getAngle(){return angle;};

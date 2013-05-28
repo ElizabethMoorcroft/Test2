@@ -45,6 +45,7 @@ CameraTrap::CameraTrap(int a//CT_identifier;
     
     //Assigning varaibles
     CT_identifier = a;
+    CT_StepOn = a + NoRunIn;
 
 };
 

@@ -7,32 +7,6 @@
          shouldBeEnabled = "No"
          ignoreCount = "0"
          continueAfterRunningActions = "No"
-         filePath = "Test2/main.cpp"
-         timestampString = "391356075.046726"
-         startingColumnNumber = "9223372036854775807"
-         endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "311"
-         endingLineNumber = "311"
-         landmarkName = "main()"
-         landmarkType = "7">
-      </FileBreakpoint>
-      <FileBreakpoint
-         shouldBeEnabled = "No"
-         ignoreCount = "0"
-         continueAfterRunningActions = "No"
-         filePath = "Test2/main.cpp"
-         timestampString = "391356075.046726"
-         startingColumnNumber = "9223372036854775807"
-         endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "312"
-         endingLineNumber = "312"
-         landmarkName = "main()"
-         landmarkType = "7">
-      </FileBreakpoint>
-      <FileBreakpoint
-         shouldBeEnabled = "No"
-         ignoreCount = "0"
-         continueAfterRunningActions = "No"
          filePath = "Test2/HomeRange.cpp"
          timestampString = "391260469.008426"
          startingColumnNumber = "9223372036854775807"
@@ -60,24 +34,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "Test2/main.cpp"
-         timestampString = "391356075.046726"
+         timestampString = "391443276.715774"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "486"
-         endingLineNumber = "486"
-         landmarkName = "main()"
-         landmarkType = "7">
-      </FileBreakpoint>
-      <FileBreakpoint
-         shouldBeEnabled = "No"
-         ignoreCount = "0"
-         continueAfterRunningActions = "No"
-         filePath = "Test2/main.cpp"
-         timestampString = "391356075.046726"
-         startingColumnNumber = "9223372036854775807"
-         endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "445"
-         endingLineNumber = "445"
+         startingLineNumber = "505"
+         endingLineNumber = "505"
          landmarkName = "main()"
          landmarkType = "7">
       </FileBreakpoint>
@@ -86,11 +47,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "Test2/CameraTraps.h"
-         timestampString = "391257793.318707"
+         timestampString = "391437811.211113"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "38"
-         endingLineNumber = "38"
+         startingLineNumber = "40"
+         endingLineNumber = "40"
          landmarkName = "class CameraTrap"
          landmarkType = "3">
       </FileBreakpoint>
@@ -188,11 +149,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "Test2/main.cpp"
-         timestampString = "391356075.046726"
+         timestampString = "391443276.715774"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "214"
-         endingLineNumber = "214"
+         startingLineNumber = "267"
+         endingLineNumber = "267"
          landmarkName = "main()"
          landmarkType = "7">
       </FileBreakpoint>
@@ -227,23 +188,23 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "Test2/CameraTraps.cpp"
-         timestampString = "391355651.065461"
+         timestampString = "391437811.211113"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "129"
-         endingLineNumber = "129">
+         startingLineNumber = "130"
+         endingLineNumber = "130">
       </FileBreakpoint>
       <FileBreakpoint
          shouldBeEnabled = "No"
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "Test2/CameraTraps.cpp"
-         timestampString = "391355651.065461"
+         timestampString = "391437811.211113"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "139"
-         endingLineNumber = "139"
-         landmarkName = "CameraTrap::TestCapturesIndividual( double a ,double b ,double a1 ,double b1 ,double c ,double d )"
+         startingLineNumber = "140"
+         endingLineNumber = "140"
+         landmarkName = "CameraTrap::TestCapturesIndividual(int ID ,double a ,double b ,double a1 ,double b1 ,double c ,double d )"
          landmarkType = "5">
       </FileBreakpoint>
       <FileBreakpoint
@@ -251,12 +212,38 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "Test2/main.cpp"
-         timestampString = "391356075.046726"
+         timestampString = "391443276.715774"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "197"
-         endingLineNumber = "197"
+         startingLineNumber = "246"
+         endingLineNumber = "246"
          landmarkName = "main()"
+         landmarkType = "7">
+      </FileBreakpoint>
+      <FileBreakpoint
+         shouldBeEnabled = "No"
+         ignoreCount = "0"
+         continueAfterRunningActions = "No"
+         filePath = "Test2/main.cpp"
+         timestampString = "391443276.715774"
+         startingColumnNumber = "9223372036854775807"
+         endingColumnNumber = "9223372036854775807"
+         startingLineNumber = "401"
+         endingLineNumber = "401"
+         landmarkName = "main()"
+         landmarkType = "7">
+      </FileBreakpoint>
+      <FileBreakpoint
+         shouldBeEnabled = "No"
+         ignoreCount = "0"
+         continueAfterRunningActions = "No"
+         filePath = "Test2/main.cpp"
+         timestampString = "391443276.715774"
+         startingColumnNumber = "9223372036854775807"
+         endingColumnNumber = "9223372036854775807"
+         startingLineNumber = "62"
+         endingLineNumber = "62"
+         landmarkName = "make_directory( const std::string&amp; directory)"
          landmarkType = "7">
       </FileBreakpoint>
    </FileBreakpoints>

@@ -22,19 +22,19 @@
 //////////////////////////////////////////////////
 
 //Simulation values - #Animals, #Steps, #HR, #CT
-const double DensityAnimals = 0.5*pow(10,-6); // XX*10^-6 Density/m^2  => XX Density/KM^2
+const double DensityAnimals = 0.05*pow(10,-6); // XX*10^-6 Density/m^2  => XX Density/KM^2
 const double LengthMonitoring = 1.5*(60*60); //Length of monitoring in seconds. XX*(60*60)secs => XX hrs
 const double AverageSizeHR = 1; //Average number of animals per roost
 const double SpeedCamera  = 30*0.06 ; // => XX m/s =  XX/ 0.06 KM/h  => XX*0.06 m/s =  XX KM/h
 const int NoRunIn = 10; // Number of steps before cameras are "activated"
-const int NoOfIterations = 1; // No of iterations with the settings
+const int NoOfIterations = 2; // No of iterations with the settings
 
 
 //Size of the enviroment
 const double Sq_MinX = 0;
-const double Sq_MaxX = 10000;
+const double Sq_MaxX = 7500;
 const double Sq_MinY = 0;
-const double Sq_MaxY = 10000;
+const double Sq_MaxY = 7500;
 
 // Centre of the camera circle is in the centre of the environment
 const double Cir_CntX = (Sq_MaxX-Sq_MinX)/2+Sq_MinX;
@@ -44,7 +44,7 @@ const double CameraWidth = M_PI/3;
 
 //HR set up value
 const double HR_AverageRadius = 1500; //meters
-const int HR_SolidBoundaries = 0; // Solid boundaries for HR --- 1 =Yes 0 = No
+const int HR_SolidBoundaries = 1; // Solid boundaries for HR --- 1 =Yes 0 = No
 
 //Radom number seed
 const int Seed =1;
@@ -56,7 +56,7 @@ const double CorrWalkMaxAngleChange = M_PI/36;
 
 //Animal parameters
 const double AnimalSpeed = 6.3; // ms^-1
-const int MovementType =0;
+const int MovementType = 1;
 const double ProbChangeMoveState = 0;//Probability of switching from coorelated to non-correlated
 
 //Call parameters
