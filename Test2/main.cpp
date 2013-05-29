@@ -132,6 +132,7 @@ int main(){
     double alpha = 8.686*pow(Freq,2)*pow(taur,0.5)*(1.84*pow(10,-11)/1+pow(taur,-3)*(b1+b2));
     double Attenuation = alpha + 6; // # spherical spreading.
     double CallRadius = (Amp-It)/Attenuation;
+    //std::cout<<CallRadius<<std::endl;
     //
     // End of Tim's code
     
@@ -225,6 +226,11 @@ int main(){
         exit (EXIT_FAILURE);
     };
     
+    if(CallRadius>200){
+        std::cout<<"Improbable camera radius. Camera radius= "<<CallRadius<< ". Check input in correct units"<< std::endl;
+        exit (EXIT_FAILURE);
+    };
+    
     // The width of the printed area needs to be greater than the world environment
     if(Cir_CntX+RadiusCameraCircle+HR_AverageRadius>Sq_MaxX){
         std::cout<<"Width of area < Width nessecary, Increase Sq_MaxX"<< std::endl;
@@ -243,16 +249,29 @@ int main(){
     int a;
     double b, c, d, e, f, g;
     std::ifstream input;
+    std::string line;
     input.open("/Users/student/Documents/Bats/CameraTestInputs.dat");
-    for(int i=0; i<5; i++){
-    //while(!input.eof()){
-        input >> a >> b>> c >>d >>e >>f >>g;
-        std::cout<<a<<std::endl;
-        for(int i=0; i<NoCameraTraps; i++){
-            All_CT[i]->TestCapturesIndividual(a,b,c,d,e,f,g);
+    if (input.is_open()) {
+        getline(input, line);
+        while (!input.eof()) {
+            //std::cout<<a<<std::endl;
+            input >> a;
+            input >> b;
+            input >> c;
+            input >> d;
+            input >> e;
+            input >> f;
+            input >> g;
+            for(int i=0; i<NoCameraTraps; i++){
+                All_CT[i]->TestCapturesIndividual(a,b,c,d,e,f,g);
+            }
         }
-    }
-    input.close();
+        input.close();
+    } // END OF CAMERA CHECK 
+
+    
+               
+
     
     
     ////////////////////////////////////////////////////////////////////////////////////////

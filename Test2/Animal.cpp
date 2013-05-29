@@ -135,13 +135,12 @@ void Animal::NewLocationMT1 (double a, double b, double c){
     //Current_angle = NextAngle;
 }
 
+// Uncorrelated movement - Used in type 2 movement (a mixture of correlated and uncorrelated movement).
 void Animal::NewLocationUnCorr (double a, double b, double c){
     
     double seed=a;
     double seed2=b;
     double Dist=c;
-    
-
         
     //set up a random number
     RandNum Number1;
@@ -152,13 +151,9 @@ void Animal::NewLocationUnCorr (double a, double b, double c){
     //calculates a new random angle of movement
     NextAngle = Number1.AtoBUnif(seed2,0,2*M_PI);
         
-        
     //Based on polar coordinates updates the temp x/y location
     NextX = Current_x + NextDist*sin(NextAngle);
     NextY = Current_y + NextDist*cos(NextAngle);
-
-    
-    
 }
 
 void Animal::NewLocationMT2 (double a, double b, double c){

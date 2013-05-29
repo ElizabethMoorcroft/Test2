@@ -60,7 +60,7 @@ const int MovementType = 1;
 const double ProbChangeMoveState = 0;//Probability of switching from coorelated to non-correlated
 
 //Call parameters
-const double Call_halfwidth = M_PI/4;   //Call_halfwidth
+const double Call_halfwidth = M_PI/3;   //Call_halfwidth
 
 //For the attenuation of sound
 const double Temp = 25;
