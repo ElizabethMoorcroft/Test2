@@ -54,10 +54,13 @@ Animal::Animal( int a, int b,
     //Set up like this so in the future can be initalized as RV??
     Move_speed =AnimalSpeed        ; // Move_speed = f;
     Move_maxangle=CorrWalkMaxAngleChange;//Move_maxangle = g;
+    locationvectorcount =1;
+
+    EndStep_locations.resize(NoSteps+1);
+    All_locations.resize(2*NoSteps);
+    mylocationvector.resize(8);
     
     //Records the starting locations
-    std::vector<double> mylocationvector;
-    mylocationvector.resize(8);
     mylocationvector[0] = identifier;
     mylocationvector[1] = step_number;
     mylocationvector[2] = Current_x;
@@ -66,8 +69,8 @@ Animal::Animal( int a, int b,
     mylocationvector[5] = Current_distance;
     mylocationvector[6] = Move_speed;
     mylocationvector[7] = 0;
-    All_locations.push_back (mylocationvector);
-    EndStep_locations.push_back (mylocationvector);
+    All_locations[0]=mylocationvector;
+    EndStep_locations[0]=mylocationvector;
                 }
 
 
@@ -136,11 +139,11 @@ void Animal::NewLocationMT1 (double a, double b, double c){
 }
 
 // Uncorrelated movement - Used in type 2 movement (a mixture of correlated and uncorrelated movement).
-void Animal::NewLocationUnCorr (double a, double b, double c){
+void Animal::NewLocationUnCorr (double a, double b){
     
     double seed=a;
     double seed2=b;
-    double Dist=c;
+    double Dist= Move_speed*StepLength;
         
     //set up a random number
     RandNum Number1;
@@ -149,8 +152,10 @@ void Animal::NewLocationUnCorr (double a, double b, double c){
     NextDist = Number1.PositiveNormal (seed,Dist,Dist/10);
         
     //calculates a new random angle of movement
-    NextAngle = Number1.AtoBUnif(seed2,0,2*M_PI);
-        
+    //NextAngle = Number1.AtoBUnif(seed2,0,2*M_PI);
+    srand(seed2);
+    NextAngle = (double (rand())/RAND_MAX)*2*M_PI;
+    //std::cout<<NextAngle<<std::endl;
     //Based on polar coordinates updates the temp x/y location
     NextX = Current_x + NextDist*sin(NextAngle);
     NextY = Current_y + NextDist*cos(NextAngle);
@@ -164,7 +169,7 @@ void Animal::NewLocationMT2 (double a, double b, double c){
     
     if(Move_NonCorr==1){
         //ENTRE CODE IF THE MOVEMENT IS NOT_CORRELATED
-        NewLocationUnCorr(seed,seed2,Dist);
+        NewLocationUnCorr(seed,seed2);
         
         }
     else if(Move_NonCorr==0){
@@ -176,10 +181,9 @@ void Animal::NewLocationMT2 (double a, double b, double c){
 }
 
 
-void Animal::NewLocation (double a, double b, double c){
+void Animal::NewLocation (double b, double c){
     
     //Renames variables
-    double StepLength = a;
     double seed = b;
     double seed2 = c;
     //std::cout<< seed <<std::endl;
@@ -256,15 +260,13 @@ void Animal::LeaveEnterWorld(double a, double b , double c, double d){
     
     }
 
-    
-    
         // The current distance travelled
-        Current_distance = Current_distance + tempDistToTopBoundary;
+        if(tempDistToSideBoundary>tempDistToTopBoundary | tempDistToSideBoundary ==0 ){
+            Current_distance = Current_distance + tempDistToTopBoundary;} else{
+            Current_distance = Current_distance + tempDistToSideBoundary;}
     
     
         //Records exit of the world
-        std::vector<double> mylocationvector;
-        mylocationvector.resize(8);
         mylocationvector[0] = identifier;
         mylocationvector[1] = step_number;
         mylocationvector[2] = tempExitsX;
@@ -273,8 +275,8 @@ void Animal::LeaveEnterWorld(double a, double b , double c, double d){
         mylocationvector[5] = Current_distance;
         mylocationvector[6] = Move_speed;
         mylocationvector[7] = 0;
-        All_locations.push_back (mylocationvector);
-    
+        All_locations[locationvectorcount]= mylocationvector;
+        locationvectorcount=locationvectorcount+1;
     
         //New end locations
         //Based on polar coordinates updates the temp x/y location
@@ -282,18 +284,16 @@ void Animal::LeaveEnterWorld(double a, double b , double c, double d){
         NextY = Current_y + NextDist*cos(NextAngle);
     
         //Records the etring of the world
-        std::vector<double> mylocationvector1;
-        mylocationvector1.resize(8);
-        mylocationvector1[0] = identifier;
-        mylocationvector1[1] = step_number;
-        mylocationvector1[2] = Current_x;
-        mylocationvector1[3] = Current_y;
-        mylocationvector1[4] = NextAngle;
-        mylocationvector1[5] = Current_distance;
-        mylocationvector1[6] = Move_speed;
-        mylocationvector1[7] = 1;
-        All_locations.push_back (mylocationvector1);
-    
+        mylocationvector[0] = identifier;
+        mylocationvector[1] = step_number;
+        mylocationvector[2] = Current_x;
+        mylocationvector[3] = Current_y;
+        mylocationvector[4] = NextAngle;
+        mylocationvector[5] = Current_distance;
+        mylocationvector[6] = Move_speed;
+        mylocationvector[7] = 1;
+        All_locations[locationvectorcount] = mylocationvector;
+        locationvectorcount= locationvectorcount+1;
 }
 
 
@@ -302,10 +302,17 @@ void Animal::LeaveEnterWorld(double a, double b , double c, double d){
 /// UPDATE LOCATION ///
 ///////////////////////
 
-void Animal::UpdateLocation (double a, double b){ // a is the number of seconds per step, b is the random seed
+void Animal::UpdateLocation ( double b){ // a is the number of seconds per step, b is the random seed
+    //clock_t tupdate;
+    //clock_t tupdatea;
+    //clock_t tupdateb;
+    //clock_t tupdatec;
+    //tupdate= clock();
+    //tupdatea= clock();
+    //tupdateb=0;
     
-    double StepLength = a;
     double seed = b;
+    
     
     //List of random number
     srand(seed);
@@ -330,13 +337,13 @@ void Animal::UpdateLocation (double a, double b){ // a is the number of seconds 
     /// HR bounding movement ///
     ////////////////////////////
     if(SolidHomeRangeBoundary==1){
-        
+        //tupdatec = clock();
         int i=0;
         int count=0;
 
         while(i==0){
             if(count<200){
-                NewLocation(StepLength, RandomNumberUpdateMovement[count], RandomNumberUpdateMovement[count+100]);
+                NewLocation(RandomNumberUpdateMovement[count], RandomNumberUpdateMovement[count+100]);
             
                 // Distance from centre of hr to animal
                 double TempDistToHR =sqrt(pow(NextX-Home_x,2)+pow(NextY-Home_y,2));
@@ -348,7 +355,7 @@ void Animal::UpdateLocation (double a, double b){ // a is the number of seconds 
                 if(TempDistToHR<Home_r){ i=i+1;}
             }
             else {
-                NewLocationUnCorr(RandomNumberUpdateMovement[count], RandomNumberUpdateMovement[count+100], Move_speed*StepLength);
+                NewLocationUnCorr(RandomNumberUpdateMovement[count], RandomNumberUpdateMovement[count+100]);
                 
                 double TempDistToHR =sqrt(pow(NextX-Home_x,2)+pow(NextY-Home_y,2));
                 
@@ -370,8 +377,6 @@ void Animal::UpdateLocation (double a, double b){ // a is the number of seconds 
 
         
         //Add to the all locations
-        std::vector<double> mylocationvector;
-        mylocationvector.resize(8);
         mylocationvector[0] =identifier;
         mylocationvector[1] =step_number;
         mylocationvector[2] =Current_x;
@@ -380,8 +385,9 @@ void Animal::UpdateLocation (double a, double b){ // a is the number of seconds 
         mylocationvector[5] =Current_distance;
         mylocationvector[6] = Move_speed;
         mylocationvector[7] = 0;
-        All_locations.push_back (mylocationvector);
-        EndStep_locations.push_back (mylocationvector);
+        All_locations[locationvectorcount] = mylocationvector;
+        EndStep_locations[step_number] = mylocationvector;
+        locationvectorcount=locationvectorcount+1;
     } //END OF SOLID BOUNDARIES
     
     
@@ -392,7 +398,7 @@ void Animal::UpdateLocation (double a, double b){ // a is the number of seconds 
         
         //std::cout<<"NoSolid"<<std::endl;
         
-            NewLocation(StepLength, RandomNumberUpdateMovement[0], RandomNumberUpdateMovement[100]);
+            NewLocation(RandomNumberUpdateMovement[0], RandomNumberUpdateMovement[100]);
         
         int tempcounter = 0;
         //std::cout<< "ENTER WHILE" << std::endl;
@@ -407,8 +413,6 @@ void Animal::UpdateLocation (double a, double b){ // a is the number of seconds 
                 Current_distance = Current_distance + NextDist;
                 
                 //Add to the all locations
-                std::vector<double> mylocationvector;
-                mylocationvector.resize(8);
                 mylocationvector[0] = identifier;
                 mylocationvector[1] = step_number;
                 mylocationvector[2] = NextX;
@@ -417,8 +421,9 @@ void Animal::UpdateLocation (double a, double b){ // a is the number of seconds 
                 mylocationvector[5] = Current_distance;
                 mylocationvector[6] = Move_speed;
                 mylocationvector[7] = 0;
-                All_locations.push_back (mylocationvector);
-                EndStep_locations.push_back (mylocationvector);
+                All_locations[locationvectorcount] = mylocationvector;
+                EndStep_locations[step_number] = mylocationvector;;
+                locationvectorcount=locationvectorcount+1;
                 
                 //Ends the while loop by achieving the condition
                 tempcounter = 1;
@@ -496,19 +501,14 @@ void Animal::UpdateLocation (double a, double b){ // a is the number of seconds 
     
     if(Movement_type==2){
         //Movement type 2 switches between correlated and uncorrelated movement
-    
-        if(Move_NonCorr==1){ 
+        srand(RandomNumberMovement[100]);
+        double ChangeMoveState = double(rand())/double(RAND_MAX);
+        if(ChangeMoveState < ProbChangeMoveState){
+            if(Move_NonCorr==1){Move_NonCorr=0;} else{Move_NonCorr=1;}
             //Changes the movement from non-correlated to correlated for the next step
-            srand(RandomNumberMovement[100]);
-            double ChangeMoveState = double(rand())/double(RAND_MAX);
-            if(ChangeMoveState < ProbChangeMoveState){
-                Move_NonCorr=0;}
-        } else { 
             //Changes the movement from correlated to non-correlated for the next step
-            srand(RandomNumberMovement[100]);
-            double ChangeMoveState = double(rand())/double(RAND_MAX);
-            if(ChangeMoveState < ProbChangeMoveState){
-                Move_NonCorr=1;}
         }
     }
+//tupdate= clock() - tupdate;
+  //  std::cout<< float(tupdate)/CLOCKS_PER_SEC<<std::endl;
 }//End of update

@@ -87,7 +87,9 @@ std::string SaveDirectory = make_directory("/Users/student/Documents/Bats/Simula
 
 int main(){
     
-    
+    clock_t tstart;
+    clock_t t;
+    tstart=clock();
     /////////////////////////////////////////////////////////////////////////
     //Calculates some values before the before the iteration of loop starts//
     /////////////////////////////////////////////////////////////////////////
@@ -103,7 +105,7 @@ int main(){
     //          length of the study/ step length
     // The number of steps is the number of times the camer switches on + the amount of run in time
     int NoCameraTraps = round(LengthMonitoring/StepLength);
-    int NoSteps = NoCameraTraps + NoRunIn;
+    //int NoSteps = NoCameraTraps + NoRunIn;
     
     // The radius of the camera circle - to calucalte the locations of the cameras
     // The circumferance of the circle is: total distnace = total time * camera speed
@@ -167,7 +169,9 @@ int main(){
     //  - only after the set up parameters change (change in length of study, etc)      ///
     // Saves the locations in a CSV file                                                ///
     ///////////////////////////////////////////////////////////////////////////////////////
-    
+
+    clock_t tcam;
+    tcam=clock();
     //Creates a CSV file and writes in the header
     std::ofstream Cameras;
     Cameras.open(make_filenamesettings(SaveDirectory, ",Cameras", ".csv" ).c_str());
@@ -203,7 +207,8 @@ int main(){
     };
     //Closes the csv camera file
     Cameras.close();
-    
+    tcam=clock() -tcam;
+    std::cout<< "Time for cameras creatation: " <<float(tcam)/CLOCKS_PER_SEC<<std::endl;
     
     ///////////////////////////////////////////////////////////////////////////////////////
     ///                                 !!! WARNINGS!!!                                 ///
@@ -246,6 +251,8 @@ int main(){
     
     // !!This does not work yet!! - not reading in correctly
     //Test on the camera trap
+    int test=0;
+    if(test==1){
     int a;
     double b, c, d, e, f, g;
     std::ifstream input;
@@ -268,7 +275,7 @@ int main(){
         }
         input.close();
     } // END OF CAMERA CHECK 
-
+    }
     
                
 
@@ -343,8 +350,8 @@ int main(){
     //List of random number
     srand(iterationnumber);
     std::vector<double> RandomNumberStream;
-    RandomNumberStream.resize(LengthStream);
-    for(int i=0; i<LengthStream; i++){
+    RandomNumberStream.resize(100);
+    for(int i=0; i<100; i++){
         RandomNumberStream[i] = double (rand());
     };
     
@@ -418,6 +425,12 @@ int main(){
     ///  - Allocates start location, simulates movement                                     ////
     ////////////////////////////////////////////////////////////////////////////////////////////
     
+    time_t tanimal;
+    time_t tanimal1;
+    time_t tanimal2;
+    time_t tanimal3;
+    time(&tanimal);
+    
     //Creates a vecter of pointers to individuals
     std::vector<Animal*> AllAnimals(NoAnimal);
     
@@ -427,7 +440,7 @@ int main(){
     //Random number stream for choosing HR
     srand(RandomNumberStream[2]);
     std::vector<double> RandomNumberStreamAnimal1;
-    RandomNumberStreamAnimal1.resize(NoAnimal);        
+    RandomNumberStreamAnimal1.resize(NoAnimal);
     for(int i=0; i<NoAnimal; i++){
         RandomNumberStreamAnimal1[i]=double(rand());
     };
@@ -447,11 +460,13 @@ int main(){
     for(int i=0; i<NoAnimal; i++){
         RandomNumberStreamAnimal3[i]=double(rand());
     };
-    
-    
+        
+        double sec = time(NULL)- tanimal;
+        std::cout<<"Random numbers"<<sec<<std::endl;
     /////////////////////////
     // Create output files //
     /////////////////////////
+    time(&tanimal1);
     // Named such the that the each simulation can be correctly identified
     std::ofstream Movement;
     Movement.open(make_filename(SaveDirectory, ",Movement",iterationnumber,".csv").c_str());
@@ -474,10 +489,14 @@ int main(){
         "," << "YLocation" <<
         "," << "Speed" <<
         "\n";
+    sec =difftime(tanimal1, time(NULL));
+    std::cout<<"Save files"<<sec<<std::endl;
+
     ////////////////////////////////////////////
     // Creating  animals and animal movement ///
     ////////////////////////////////////////////
     for(int i=0; i<NoAnimal; i++){
+        time(&tanimal2);
         //Print out animal number to screen
         std::cout <<"Animal:" << i+1 <<"/" << NoAnimal << std::endl;
         
@@ -519,7 +538,8 @@ int main(){
         ///////////////////////
         /// Update location ///
         ///////////////////////
-        
+        clock_t tanimal3a;
+        clock_t tanimal3;
         //Sets seed for a random number
         srand(RandomNumberStreamAnimal3[i]);
         //Random number stream for the movemnet of the animal
@@ -530,17 +550,22 @@ int main(){
         };
             // For each step
             for(int j=0; j<NoSteps; j++){
+                tanimal3a=clock();
                 double count = (j)*100;
                 //Updates animal location
-                AllAnimals[i] -> UpdateLocation(StepLength,RandomNumberCurrentAnimal[count]);
+                AllAnimals[i] -> UpdateLocation(RandomNumberCurrentAnimal[count]);
+                tanimal3 =tanimal3 + clock()- tanimal3a;
             }; //End of j loop for Steps
         
         // Creates a temp matrix for "all locations"
         std::vector<std::vector<double>> TempAllLocations = AllAnimals[i]->getAllLocations();
-        
+        std::cout<<TempAllLocations.size()<<std::endl;
+        std::cout<<TempAllLocations[0][0]<<std::endl;
+         std::cout<<TempAllLocations[0][1]<<std::endl;
         // Temp location file is written in csv file
         // Each location is a seperate row  - the number of rows = "TempAllLocations.size()"
             for(int stepcounter=0; stepcounter<TempAllLocations.size(); stepcounter++){
+                if(TempAllLocations[stepcounter].size()>0){
                 Movement<< TempAllLocations[stepcounter][0] << //1st column, row "stepcounter"
                     "," << TempAllLocations[stepcounter][1] << //2nd column, row "stepcounter"
                     "," << TempAllLocations[stepcounter][2] << //...
@@ -551,8 +576,10 @@ int main(){
                     "," << TempAllLocations[stepcounter][7] << //7th column, row "stepcounter"
                 "\n";                                      // New line
             }; //END of STEPCOUNTER LOOP
-            
-        
+            };
+        sec = time(NULL) - tanimal2;
+        std::cout<<"Update location"<<float(tanimal3)/CLOCKS_PER_SEC<<std::endl;
+        std::cout<<"Create animals"<<sec<<std::endl;
         }; //End of i loop for EACH ANIMALS
     
     //Print "Finish movement" to screen 
@@ -562,7 +589,8 @@ int main(){
     Movement.close();
     Animals.close();
     
-        
+    tanimal=tanimal-clock();
+     std::cout <<"Time for animals: "<< float(tanimal)/CLOCKS_PER_SEC <<std::endl;
         
     ////////////////////////////////////////////////////////////////////////////////////////////
     ///                         CAPTURES                                                    ////
@@ -593,7 +621,9 @@ int main(){
                         
             
             std::vector<std::vector<double>> TempAllLocations = AllAnimals[Individual]->getEndStepLocations();
-            
+            if(TempAllLocations[TimeStepTrap].size()>0){
+                //std::cout<<TempAllLocations.size()<<std::endl;
+                //std::cout<<TimeStepTrap<<std::endl;
             double currentid = TempAllLocations[TimeStepTrap][0];
             double currentx = TempAllLocations[TimeStepTrap][2];
             double currenty = TempAllLocations[TimeStepTrap][3];
@@ -624,7 +654,7 @@ int main(){
                                              , currentangle );
             
             
-            
+            }
          }; // End on camera loop (NoCT)
      }; //End of Individual loop
     
@@ -692,8 +722,8 @@ int main(){
     }
     
     
-
-    std::cout<< "FINISHED" <<std::endl;
+    t=clock()-tstart;
+    std::cout<< "FINISHED :" << float(t)/CLOCKS_PER_SEC <<std::endl;
     return 0;
 }; 
 

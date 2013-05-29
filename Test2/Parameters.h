@@ -22,7 +22,7 @@
 //////////////////////////////////////////////////
 
 //Simulation values - #Animals, #Steps, #HR, #CT
-const double DensityAnimals = 0.05*pow(10,-6); // XX*10^-6 Density/m^2  => XX Density/KM^2
+const double DensityAnimals = 0.1*pow(10,-6); // XX*10^-6 Density/m^2  => XX Density/KM^2
 const double LengthMonitoring = 1.5*(60*60); //Length of monitoring in seconds. XX*(60*60)secs => XX hrs
 const double AverageSizeHR = 1; //Average number of animals per roost
 const double SpeedCamera  = 30*0.06 ; // => XX m/s =  XX/ 0.06 KM/h  => XX*0.06 m/s =  XX KM/h
@@ -48,7 +48,6 @@ const int HR_SolidBoundaries = 1; // Solid boundaries for HR --- 1 =Yes 0 = No
 
 //Radom number seed
 const int Seed =1;
-const int LengthStream = 10;
 
 //Movement parameters
 const int StepLength = 3.5; //Length of each step in seconds
@@ -60,7 +59,7 @@ const int MovementType = 1;
 const double ProbChangeMoveState = 0;//Probability of switching from coorelated to non-correlated
 
 //Call parameters
-const double Call_halfwidth = M_PI/3;   //Call_halfwidth
+const double Call_halfwidth = M_PI/4;   //Call_halfwidth
 
 //For the attenuation of sound
 const double Temp = 25;
@@ -69,4 +68,5 @@ const double Freq = 45.11;
 const double Amp = 126; //Amplitude
 const double It = 0;
 
+const int NoSteps = round(LengthMonitoring/StepLength)+ NoRunIn;
 #endif

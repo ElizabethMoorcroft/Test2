@@ -44,6 +44,9 @@ class Animal {
     double Call_freq;
     double Call_width;
     
+    int locationvectorcount;
+    
+    std::vector<double> mylocationvector;
     std::vector<std::vector<double>> All_locations;
     std::vector<std::vector<double>> EndStep_locations;
 
@@ -57,12 +60,12 @@ public:
     void NewLocationMT0(double, double);
     void NewLocationMT1(double, double,double);
     void NewLocationMT2(double, double,double);
-    void NewLocationUnCorr(double, double,double);
+    void NewLocationUnCorr(double, double);
 
     
-    void NewLocation(double, double,double);
+    void NewLocation(double,double);
     void LeaveEnterWorld(double , double ,double , double );
-    void UpdateLocation (double, double);
+    void UpdateLocation (double);
     
     void setHomeX(double a){Home_x = a;};
     void setHomeY(double a){Home_y = a;};
