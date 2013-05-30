@@ -44,6 +44,10 @@ class Animal {
     double Call_freq;
     double Call_width;
     
+    clock_t timeLE1;
+     clock_t timeLE2;
+    clock_t timeLE3;
+    
     int locationvectorcount;
     
     std::vector<double> mylocationvector;
@@ -58,7 +62,7 @@ public:
     void Set_MoveValue (double,double);
     void Set_HRValues (int, int, double, double, double );
     void NewLocationMT0(double, double);
-    void NewLocationMT1(double, double,double);
+    void NewLocationCorr(double, double,double);
     void NewLocationMT2(double, double,double);
     void NewLocationUnCorr(double, double);
 
@@ -75,8 +79,11 @@ public:
     double getID(){return identifier;};
     double getHRID(){return HomeRange_id;};
     double getSpeed(){return Move_speed;};
-    double getCallWidth(){return Call_width;};
     
+    double getCallWidth(){return Call_width;};
+    double gettime1(){return timeLE1;};
+    double gettime2(){return timeLE2;};
+    double gettime3(){return timeLE3;};
     std::vector<std::vector<double>> getAllLocations(){return All_locations;};
     std::vector<std::vector<double>> getEndStepLocations(){return EndStep_locations;};
     

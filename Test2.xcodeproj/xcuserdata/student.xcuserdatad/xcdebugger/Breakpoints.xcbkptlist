@@ -34,11 +34,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "Test2/main.cpp"
-         timestampString = "391525823.087237"
+         timestampString = "391612532.398636"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "544"
-         endingLineNumber = "544"
+         startingLineNumber = "545"
+         endingLineNumber = "545"
          landmarkName = "main()"
          landmarkType = "7">
       </FileBreakpoint>
@@ -47,11 +47,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "Test2/CameraTraps.h"
-         timestampString = "391437811.211113"
+         timestampString = "391611437.098602"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "40"
-         endingLineNumber = "40"
+         startingLineNumber = "41"
+         endingLineNumber = "41"
          landmarkName = "class CameraTrap"
          landmarkType = "3">
       </FileBreakpoint>
@@ -60,49 +60,23 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "Test2/Animal.cpp"
-         timestampString = "391532362.365259"
+         timestampString = "391614404.284828"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "184"
-         endingLineNumber = "184">
+         startingLineNumber = "182"
+         endingLineNumber = "182">
       </FileBreakpoint>
       <FileBreakpoint
          shouldBeEnabled = "No"
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "Test2/Animal.cpp"
-         timestampString = "391532085.600759"
+         timestampString = "391614404.284828"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "106"
-         endingLineNumber = "106"
-         landmarkName = "Animal::NewLocationMT0 (double a, double b)"
-         landmarkType = "5">
-      </FileBreakpoint>
-      <FileBreakpoint
-         shouldBeEnabled = "No"
-         ignoreCount = "0"
-         continueAfterRunningActions = "No"
-         filePath = "Test2/Animal.cpp"
-         timestampString = "391532362.365259"
-         startingColumnNumber = "9223372036854775807"
-         endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "400"
-         endingLineNumber = "400"
-         landmarkName = "Animal::UpdateLocation ( double b)"
-         landmarkType = "5">
-      </FileBreakpoint>
-      <FileBreakpoint
-         shouldBeEnabled = "No"
-         ignoreCount = "0"
-         continueAfterRunningActions = "No"
-         filePath = "Test2/Animal.cpp"
-         timestampString = "391532362.365259"
-         startingColumnNumber = "9223372036854775807"
-         endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "217"
-         endingLineNumber = "217"
-         landmarkName = "Animal::LeaveEnterWorld(double a, double b , double c, double d)"
+         startingLineNumber = "376"
+         endingLineNumber = "376"
+         landmarkName = "Animal::UpdateLocation (double seed)"
          landmarkType = "5">
       </FileBreakpoint>
       <FileBreakpoint
@@ -188,7 +162,7 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "Test2/CameraTraps.cpp"
-         timestampString = "391517965.868353"
+         timestampString = "391611437.098602"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
          startingLineNumber = "194"
@@ -199,7 +173,7 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "Test2/CameraTraps.cpp"
-         timestampString = "391518370.882494"
+         timestampString = "391611437.098602"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
          startingLineNumber = "206"
@@ -251,13 +225,24 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "Test2/CameraTraps.cpp"
-         timestampString = "391515757.385522"
+         timestampString = "391610948.229081"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "80"
-         endingLineNumber = "80"
-         landmarkName = "CameraTrap::CapturesIndividual(double a,double b, int c, int d, int e, double f, double g)"
+         startingLineNumber = "78"
+         endingLineNumber = "78"
+         landmarkName = "CameraTrap::CapturesIndividual(double location_x_animal, double location_y_animal, int Individual_ID, int CameraID, int Time_step, double call_halfwidth, double move_angle )"
          landmarkType = "5">
+      </FileBreakpoint>
+      <FileBreakpoint
+         shouldBeEnabled = "No"
+         ignoreCount = "0"
+         continueAfterRunningActions = "No"
+         filePath = "Test2/Animal.cpp"
+         timestampString = "391614404.284828"
+         startingColumnNumber = "9223372036854775807"
+         endingColumnNumber = "9223372036854775807"
+         startingLineNumber = "123"
+         endingLineNumber = "123">
       </FileBreakpoint>
    </FileBreakpoints>
 </Bucket>

@@ -428,7 +428,6 @@ int main(){
     time_t tanimal;
     time_t tanimal1;
     time_t tanimal2;
-    time_t tanimal3;
     time(&tanimal);
     
     //Creates a vecter of pointers to individuals
@@ -496,7 +495,7 @@ int main(){
     // Creating  animals and animal movement ///
     ////////////////////////////////////////////
     for(int i=0; i<NoAnimal; i++){
-        time(&tanimal2);
+        clock_t tanimal2=clock();
         //Print out animal number to screen
         std::cout <<"Animal:" << i+1 <<"/" << NoAnimal << std::endl;
         
@@ -513,8 +512,10 @@ int main(){
         
         // To choose a start angle, sets up a random number class
         // Uses a radom number from stream RandomNumberStreamAnimal2 for a random seed
-        RandNum Number1;
-        double CurrentAngleTemp = Number1.AtoBUnif(RandomNumberStreamAnimal2[i],0,(2*M_PI));
+        //RandNum Number1;
+        //double CurrentAngleTemp = Number1.AtoBUnif(RandomNumberStreamAnimal2[i],0,(2*M_PI));
+        srand(RandomNumberStreamAnimal2[i]);
+        double CurrentAngleTemp = (double(rand())/RAND_MAX)*2*M_PI;
         
         // New animal given start locations - at the centre of the home range
         // ????? Can start anywhere - within HR radius  => Remove need for Run in period ????
@@ -539,7 +540,7 @@ int main(){
         /// Update location ///
         ///////////////////////
         clock_t tanimal3a;
-        clock_t tanimal3;
+        clock_t tanimal3=0;
         //Sets seed for a random number
         srand(RandomNumberStreamAnimal3[i]);
         //Random number stream for the movemnet of the animal
@@ -551,17 +552,17 @@ int main(){
             // For each step
             for(int j=0; j<NoSteps; j++){
                 tanimal3a=clock();
-                double count = (j)*100;
+                double count = j*100;
                 //Updates animal location
                 AllAnimals[i] -> UpdateLocation(RandomNumberCurrentAnimal[count]);
-                tanimal3 =tanimal3 + clock()- tanimal3a;
+                tanimal3 += clock()- tanimal3a;
             }; //End of j loop for Steps
+        std::cout<<"Leave-Enter world: "<< float(AllAnimals[i]->gettime1())/CLOCKS_PER_SEC <<std::endl;
+        std::cout<<"No Leave-Enter world: "<< float(AllAnimals[i]->gettime2())/CLOCKS_PER_SEC <<std::endl;
+        std::cout<<"Cal: "<< float(AllAnimals[i]->gettime3())/CLOCKS_PER_SEC <<std::endl;
         
         // Creates a temp matrix for "all locations"
         std::vector<std::vector<double>> TempAllLocations = AllAnimals[i]->getAllLocations();
-        std::cout<<TempAllLocations.size()<<std::endl;
-        std::cout<<TempAllLocations[0][0]<<std::endl;
-         std::cout<<TempAllLocations[0][1]<<std::endl;
         // Temp location file is written in csv file
         // Each location is a seperate row  - the number of rows = "TempAllLocations.size()"
             for(int stepcounter=0; stepcounter<TempAllLocations.size(); stepcounter++){
@@ -577,9 +578,9 @@ int main(){
                 "\n";                                      // New line
             }; //END of STEPCOUNTER LOOP
             };
-        sec = time(NULL) - tanimal2;
-        std::cout<<"Update location"<<float(tanimal3)/CLOCKS_PER_SEC<<std::endl;
-        std::cout<<"Create animals"<<sec<<std::endl;
+        tanimal2 = clock() - tanimal2;
+        std::cout<<"Update location: "<<float(tanimal3)/CLOCKS_PER_SEC<<std::endl;
+        std::cout<<"Create animals"<<float(tanimal2)/CLOCKS_PER_SEC<<std::endl;
         }; //End of i loop for EACH ANIMALS
     
     //Print "Finish movement" to screen 
@@ -677,13 +678,14 @@ int main(){
 
         // Creates a temp matrix for "all locations"
         std::vector<std::vector<int>> TempCaptures = All_CT[NoCT]->getCaptures();
-        
+        int stepcounter=0;
         // Temp location file is written in csv file
-        for(int stepcounter=0; stepcounter<TempCaptures.size(); stepcounter++){
-            Captures << TempCaptures[stepcounter][0] << //1st column, row
+        while(TempCaptures[stepcounter].size()>0){
+            Captures<< TempCaptures[stepcounter][0] << //1st column, row
                 "," << TempCaptures[stepcounter][1] << //2nd column, row "stepcounter"
                 "," << TempCaptures[stepcounter][2] << //...
-                "\n";                                  // New line
+                "\n";// New line
+            stepcounter+=1;
         }; //End of step counter loop
     }; //End of NoCT loop
         

@@ -38,16 +38,16 @@ CameraTrap::CameraTrap(int a//CT_identifier;
     // 90 degrees minus the number of degrees between the start and the current camera
     // because of the anti-clockwise motion
     // After passes zero - then
-    double angle_temp = M_PI/2 - a*CircleAngle;
-    if(angle_temp<0){angle_temp = 2*M_PI + angle_temp;};
-    angle = angle_temp;
-
+    angle = M_PI/2 - a*CircleAngle;
+    if(angle<0){angle = 2*M_PI + angle;};
     
     //Assigning varaibles
     CT_identifier = a;
     CT_StepOn = a + NoRunIn;
     radius =d;
     angle_HalfWidth = CameraWidth;
+    Captures.resize(NoSteps*(Sq_MaxX-Sq_MinX)*(Sq_MaxY-Sq_MinY)*DensityAnimals);
+    capturecount=0;
 };
 
 
@@ -61,20 +61,18 @@ int approximatelyequal(double a, double b){
     return (r);
 }
 
-int CameraTrap::CapturesIndividual(double a,double b, int c, int d, int e, double f, double g){
+int CameraTrap::CapturesIndividual(double location_x_animal,
+                                   double location_y_animal,
+                                   int Individual_ID,
+                                   int CameraID,
+                                   int Time_step,
+                                   double call_halfwidth,
+                                   double move_angle
+                                   ){
     
     int captured=0;
     
     double AngleFromCamera = 0;
-    
-    // Renames values
-    double location_x_animal = a;
-    double location_y_animal = b;
-    int Individual_ID=c;
-    int CameraID = d;
-    int Time_step =e;
-    double call_halfwidth =f;
-    double move_angle =g;
     
     //distance to the camera
     double diffx = location_x_animal - location_x;
@@ -87,11 +85,12 @@ int CameraTrap::CapturesIndividual(double a,double b, int c, int d, int e, doubl
         myvector[2] = Time_step;
         myvector[3] = CameraID;
         
-        Captures.push_back (myvector);
+        Captures[capturecount]=myvector;
+        capturecount+=1;
         
         captured = 1;
     } else{
-    // If not at the exact same location then check whether it is 
+    // If not at the exact same location then check whether it is
     
     double diff_animal_camera = sqrt(pow(diffx, 2) + pow(diffy, 2));
         //std::cout<<diff_animal_camera <<std::endl;
@@ -170,7 +169,8 @@ int CameraTrap::CapturesIndividual(double a,double b, int c, int d, int e, doubl
                 myvector[2] = Time_step;
                 myvector[3] = CameraID;
                     
-                Captures.push_back (myvector);
+                Captures[capturecount]=myvector;
+                capturecount+=1;
                 
                 captured = 1;
             };//End of "detector in the width of the call" IF

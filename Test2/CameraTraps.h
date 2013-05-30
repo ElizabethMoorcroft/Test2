@@ -24,6 +24,7 @@ private:
     double radius;
     double angle;
     double angle_HalfWidth;
+    int capturecount;
     
     std::vector<std::vector<int>> Captures;
     

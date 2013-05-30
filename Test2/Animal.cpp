@@ -9,6 +9,7 @@
 #include <iostream>
 #include <math.h>
 #include <cmath> 
+#include <time.h>
 #include "Animal.h"
 #include "RandNum.h"
 #include "Parameters.h"
@@ -54,7 +55,7 @@ Animal::Animal( int a, int b,
     //Set up like this so in the future can be initalized as RV??
     Move_speed =AnimalSpeed        ; // Move_speed = f;
     Move_maxangle=CorrWalkMaxAngleChange;//Move_maxangle = g;
-    locationvectorcount =1;
+    
 
     EndStep_locations.resize(NoSteps+1);
     All_locations.resize(2*NoSteps);
@@ -71,7 +72,16 @@ Animal::Animal( int a, int b,
     mylocationvector[7] = 0;
     All_locations[0]=mylocationvector;
     EndStep_locations[0]=mylocationvector;
-                }
+    //locationvectorcount is the parameter which allows the code to know which location to say the
+    // current location in
+    locationvectorcount =1;
+    
+    //temp
+    timeLE1=0;
+    timeLE2=0;
+    timeLE3=0;
+
+}
 
 
 ////////////////////////////
@@ -96,30 +106,23 @@ void Animal::Set_HRValues (int a, int b, double c, double d, double e) {
 /// NEW LOCATION  ///
 /////////////////////
 
-void Animal::NewLocationMT0 (double a, double b){
+void Animal::NewLocationMT0 (double seed, double Dist){
     
-    double seed=a;
-    double Dist=b;
     //set up a random number
     RandNum Number1;
-    
-    // Gas movmeent there is no change in the angle of movemnet
-    NextAngle=Current_angle;
 
     // Calculate a distance value
     NextDist = Number1.PositiveNormal (seed,Dist,Dist/10);
     //std::cout <<TempDist<<std::endl;
 
     //Based on polar coordinates updates the temp x/y location
-    NextX = Current_x + NextDist*sin(NextAngle);
-    NextY = Current_y + NextDist*cos(NextAngle);
+    NextX = Current_x + NextDist*sin(Current_angle);
+    NextY = Current_y + NextDist*cos(Current_angle);
 }
 
-void Animal::NewLocationMT1 (double a, double b, double c){
+void Animal::NewLocationCorr (double seed, double seed2, double Dist){
     
-    double seed=a;
-    double seed2=b;
-    double Dist=c;
+
     //set up a random number
     RandNum Number1;
     //Correlated random walk
@@ -139,10 +142,8 @@ void Animal::NewLocationMT1 (double a, double b, double c){
 }
 
 // Uncorrelated movement - Used in type 2 movement (a mixture of correlated and uncorrelated movement).
-void Animal::NewLocationUnCorr (double a, double b){
+void Animal::NewLocationUnCorr (double seed, double seed2){
     
-    double seed=a;
-    double seed2=b;
     double Dist= Move_speed*StepLength;
         
     //set up a random number
@@ -161,11 +162,8 @@ void Animal::NewLocationUnCorr (double a, double b){
     NextY = Current_y + NextDist*cos(NextAngle);
 }
 
-void Animal::NewLocationMT2 (double a, double b, double c){
+void Animal::NewLocationMT2 (double seed, double seed2, double Dist){
     
-    double seed=a;
-    double seed2=b;
-    double Dist=c;
     
     if(Move_NonCorr==1){
         //ENTRE CODE IF THE MOVEMENT IS NOT_CORRELATED
@@ -174,18 +172,15 @@ void Animal::NewLocationMT2 (double a, double b, double c){
         }
     else if(Move_NonCorr==0){
         //If MOVEMENT IS CORRELATED THEN CALUCLATE THE MOVEMENT FROM THE MOVETYPE1 CORR-RANDOM WALK
-        NewLocationMT1(seed,seed2,Dist);
+        NewLocationCorr(seed,seed2,Dist);
     }
     
  
 }
 
 
-void Animal::NewLocation (double b, double c){
+void Animal::NewLocation (double seed, double seed2){
     
-    //Renames variables
-    double seed = b;
-    double seed2 = c;
     //std::cout<< seed <<std::endl;
 
     
@@ -197,7 +192,7 @@ void Animal::NewLocation (double b, double c){
         NewLocationMT0(seed,Dist);
         
     } else if (Movement_type==1){
-        NewLocationMT1(seed,seed2,Dist);
+        NewLocationCorr(seed,seed2,Dist);
         
     } else if (Movement_type==2){
         NewLocationMT2(seed,seed2,Dist);
@@ -212,14 +207,9 @@ void Animal::NewLocation (double b, double c){
 //////////////////////////
 
 
-void Animal::LeaveEnterWorld(double a, double b , double c, double d){
+void Animal::LeaveEnterWorld(double YBoundExit, double XBoundExit, double YBoundEnter, double XBoundEnter){
     
-    double YBoundExit =a;
-    double XBoundExit =b;
-    double YBoundEnter =c;
-    double XBoundEnter =d;
     
-
     // Caculate the V & H distances to the boudaries
     double tempDistToTop = std::abs(YBoundExit-Current_y);
     double tempDistToSide = std::abs(XBoundExit-Current_x);
@@ -243,7 +233,10 @@ void Animal::LeaveEnterWorld(double a, double b , double c, double d){
         Current_x = tempExitsX;
         
         // The distance left to travel
-        NextDist = NextDist - tempDistToTopBoundary;
+        NextDist -= tempDistToTopBoundary;
+        // The current distance travelled
+        Current_distance += tempDistToTopBoundary;
+        
     } else{
         //std::cout <<"Side"<<std::endl;
         //This means that it exits the world at maximum value of y and at the corresponding x value
@@ -256,14 +249,10 @@ void Animal::LeaveEnterWorld(double a, double b , double c, double d){
         Current_angle = NextAngle;
         
         // The distance left to travel
-        NextDist = NextDist - tempDistToSideBoundary;
-    
-    }
-
+        NextDist -=tempDistToSideBoundary;
         // The current distance travelled
-        if(tempDistToSideBoundary>tempDistToTopBoundary | tempDistToSideBoundary ==0 ){
-            Current_distance = Current_distance + tempDistToTopBoundary;} else{
-            Current_distance = Current_distance + tempDistToSideBoundary;}
+        Current_distance += tempDistToSideBoundary;
+    }
     
     
         //Records exit of the world
@@ -276,7 +265,7 @@ void Animal::LeaveEnterWorld(double a, double b , double c, double d){
         mylocationvector[6] = Move_speed;
         mylocationvector[7] = 0;
         All_locations[locationvectorcount]= mylocationvector;
-        locationvectorcount=locationvectorcount+1;
+        locationvectorcount+=1;
     
         //New end locations
         //Based on polar coordinates updates the temp x/y location
@@ -293,7 +282,9 @@ void Animal::LeaveEnterWorld(double a, double b , double c, double d){
         mylocationvector[6] = Move_speed;
         mylocationvector[7] = 1;
         All_locations[locationvectorcount] = mylocationvector;
-        locationvectorcount= locationvectorcount+1;
+        locationvectorcount+=1;
+    
+    
 }
 
 
@@ -302,17 +293,8 @@ void Animal::LeaveEnterWorld(double a, double b , double c, double d){
 /// UPDATE LOCATION ///
 ///////////////////////
 
-void Animal::UpdateLocation ( double b){ // a is the number of seconds per step, b is the random seed
-    //clock_t tupdate;
-    //clock_t tupdatea;
-    //clock_t tupdateb;
-    //clock_t tupdatec;
-    //tupdate= clock();
-    //tupdatea= clock();
-    //tupdateb=0;
-    
-    double seed = b;
-    
+void Animal::UpdateLocation (double seed){ // a is the number of seconds per step, b is the random seed
+
     
     //List of random number
     srand(seed);
@@ -337,44 +319,38 @@ void Animal::UpdateLocation ( double b){ // a is the number of seconds per step,
     /// HR bounding movement ///
     ////////////////////////////
     if(SolidHomeRangeBoundary==1){
-        //tupdatec = clock();
-        int i=0;
-        int count=0;
 
-        while(i==0){
+        int count=0;
+        double TempDistToHR =Home_r+1;
+
+        while(TempDistToHR >Home_r){
             if(count<200){
                 NewLocation(RandomNumberUpdateMovement[count], RandomNumberUpdateMovement[count+100]);
             
                 // Distance from centre of hr to animal
-                double TempDistToHR =sqrt(pow(NextX-Home_x,2)+pow(NextY-Home_y,2));
+                //double
+                TempDistToHR =sqrt(pow(NextX-Home_x,2)+pow(NextY-Home_y,2));
             
-                count = count +1;
-            
-                //While loop wasn't working
-                //if new location is inside the home range then let
-                if(TempDistToHR<Home_r){ i=i+1;}
+                count +=1;
             }
             else {
                 NewLocationUnCorr(RandomNumberUpdateMovement[count], RandomNumberUpdateMovement[count+100]);
                 
-                double TempDistToHR =sqrt(pow(NextX-Home_x,2)+pow(NextY-Home_y,2));
+                //double
+                TempDistToHR =sqrt(pow(NextX-Home_x,2)+pow(NextY-Home_y,2));
                 
-                count = count +1;
+                count +=1;
                 
-                //While loop wasn't working
-                //if new location is inside the home range then let
-                if(TempDistToHR<Home_r){ i=i+1;}
-            }
-        } //End of While loop
+            } //END OF ELSE
+        } //End of While loop (i loop)
         
-        // rewrite current locaion
+        // rewrite current location
         Current_x = NextX;
         Current_y = NextY;
         Current_angle = NextAngle;
         Current_distance = Current_distance + NextDist;
         
         //std::cout<<Current_angle <<std::endl;
-
         
         //Add to the all locations
         mylocationvector[0] =identifier;
@@ -387,7 +363,7 @@ void Animal::UpdateLocation ( double b){ // a is the number of seconds per step,
         mylocationvector[7] = 0;
         All_locations[locationvectorcount] = mylocationvector;
         EndStep_locations[step_number] = mylocationvector;
-        locationvectorcount=locationvectorcount+1;
+        locationvectorcount+=1;
     } //END OF SOLID BOUNDARIES
     
     
@@ -398,19 +374,22 @@ void Animal::UpdateLocation ( double b){ // a is the number of seconds per step,
         
         //std::cout<<"NoSolid"<<std::endl;
         
+        clock_t LE3 =clock();
             NewLocation(RandomNumberUpdateMovement[0], RandomNumberUpdateMovement[100]);
-        
+        LE3 =clock()-LE3;
+        timeLE3 +=LE3;
         int tempcounter = 0;
         //std::cout<< "ENTER WHILE" << std::endl;
         while(tempcounter<1){
             // If the movement finishes inside the environment
             if(NextX < Sq_MaxX && NextX > Sq_MinX && NextY < Sq_MaxY && NextY > Sq_MinY){
+                clock_t LE2 =clock();
                 //Can save the temp location as the current location
                 // rewrite current locaion
                 Current_x = NextX;
                 Current_y = NextY;
                 Current_angle = NextAngle;
-                Current_distance = Current_distance + NextDist;
+                Current_distance += NextDist;
                 
                 //Add to the all locations
                 mylocationvector[0] = identifier;
@@ -423,14 +402,18 @@ void Animal::UpdateLocation ( double b){ // a is the number of seconds per step,
                 mylocationvector[7] = 0;
                 All_locations[locationvectorcount] = mylocationvector;
                 EndStep_locations[step_number] = mylocationvector;;
-                locationvectorcount=locationvectorcount+1;
+                locationvectorcount+=1;
                 
                 //Ends the while loop by achieving the condition
                 tempcounter = 1;
+                
+                LE2 =clock()-LE2;
+                timeLE2 +=LE2;
             } //End of the IF loop
             
         // If the movement goes outside of the environment
             else {
+                clock_t LE1 =clock();
                 //std::cout<< "Leaves environment"<<std::endl;
             //Have to work out which boundary it leaves first
                 
@@ -489,16 +472,23 @@ void Animal::UpdateLocation ( double b){ // a is the number of seconds per step,
                  if(NextDist<0) {
                     std::cout<< "ERROR: Next dist" << NextDist<<std::endl;
                     tempcounter=1;};
+                
+                LE1 =clock()-LE1;
+                timeLE1 +=LE1;
+                
             }; // End of Else loop;
-            //std::cout << "END" <<std::endl;
            
         }; //End of While loop
+    
 
+        
+    
     }; // End of SolidHomeRangeBoundary=0
    
+    
     //Increases step number by one once the animal finishes moving in the environment
     step_number =step_number+1;
-    
+    // IF the movement is a two state movement model then 
     if(Movement_type==2){
         //Movement type 2 switches between correlated and uncorrelated movement
         srand(RandomNumberMovement[100]);
@@ -506,7 +496,7 @@ void Animal::UpdateLocation ( double b){ // a is the number of seconds per step,
         if(ChangeMoveState < ProbChangeMoveState){
             if(Move_NonCorr==1){Move_NonCorr=0;} else{Move_NonCorr=1;}
             //Changes the movement from non-correlated to correlated for the next step
-            //Changes the movement from correlated to non-correlated for the next step
+            // OR Changes the movement from correlated to non-correlated for the next step
         }
     }
 //tupdate= clock() - tupdate;
