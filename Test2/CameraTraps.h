@@ -27,6 +27,7 @@ private:
     int capturecount;
     
     std::vector<std::vector<int>> Captures;
+    std::vector<int> myvector;
     
 public:
     CameraTrap();
@@ -46,10 +47,9 @@ public:
     int CapturesIndividual(double  //x location animal
                             ,double //y location animal
                             ,int // Animal ID
-                            ,int //Camera #
-                            ,int // step
                             ,double //Call angle
                             , double//Movement angle
+                           , int //iternation number
                        );
     
     void TestCapturesIndividual(int

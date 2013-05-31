@@ -61,9 +61,9 @@ public:
              double, double);
     void Set_MoveValue (double,double);
     void Set_HRValues (int, int, double, double, double );
-    void NewLocationMT0(double, double);
-    void NewLocationCorr(double, double,double);
-    void NewLocationMT2(double, double,double);
+    void NewLocationMT0(double);
+    void NewLocationCorr(double, double);
+    void NewLocationMT2(double, double);
     void NewLocationUnCorr(double, double);
 
     

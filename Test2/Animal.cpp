@@ -106,13 +106,13 @@ void Animal::Set_HRValues (int a, int b, double c, double d, double e) {
 /// NEW LOCATION  ///
 /////////////////////
 
-void Animal::NewLocationMT0 (double seed, double Dist){
+void Animal::NewLocationMT0 (double seed){
     
     //set up a random number
     RandNum Number1;
 
     // Calculate a distance value
-    NextDist = Number1.PositiveNormal (seed,Dist,Dist/10);
+    NextDist = Number1.PositiveNormal (seed,StepLengthDist,StepLengthDist/10);
     //std::cout <<TempDist<<std::endl;
 
     //Based on polar coordinates updates the temp x/y location
@@ -120,14 +120,14 @@ void Animal::NewLocationMT0 (double seed, double Dist){
     NextY = Current_y + NextDist*cos(Current_angle);
 }
 
-void Animal::NewLocationCorr (double seed, double seed2, double Dist){
+void Animal::NewLocationCorr (double seed, double seed2){
     
 
     //set up a random number
     RandNum Number1;
     //Correlated random walk
     // Calculate a distance value
-    NextDist = Number1.PositiveNormal (seed,Dist,Dist/10);
+    NextDist = Number1.PositiveNormal (seed,StepLengthDist,StepLengthDist/10);
 
     //calculates a new random angle of movement
     NextAngle = Number1.AtoRangeBUnif(seed2,Current_angle,Move_maxangle);
@@ -143,14 +143,12 @@ void Animal::NewLocationCorr (double seed, double seed2, double Dist){
 
 // Uncorrelated movement - Used in type 2 movement (a mixture of correlated and uncorrelated movement).
 void Animal::NewLocationUnCorr (double seed, double seed2){
-    
-    double Dist= Move_speed*StepLength;
-        
+            
     //set up a random number
     RandNum Number1;
     //Correlated random walk
     // Calculate a distance value
-    NextDist = Number1.PositiveNormal (seed,Dist,Dist/10);
+    NextDist = Number1.PositiveNormal (seed,StepLengthDist,StepLengthDist/10);
         
     //calculates a new random angle of movement
     //NextAngle = Number1.AtoBUnif(seed2,0,2*M_PI);
@@ -162,7 +160,7 @@ void Animal::NewLocationUnCorr (double seed, double seed2){
     NextY = Current_y + NextDist*cos(NextAngle);
 }
 
-void Animal::NewLocationMT2 (double seed, double seed2, double Dist){
+void Animal::NewLocationMT2 (double seed, double seed2){
     
     
     if(Move_NonCorr==1){
@@ -172,7 +170,7 @@ void Animal::NewLocationMT2 (double seed, double seed2, double Dist){
         }
     else if(Move_NonCorr==0){
         //If MOVEMENT IS CORRELATED THEN CALUCLATE THE MOVEMENT FROM THE MOVETYPE1 CORR-RANDOM WALK
-        NewLocationCorr(seed,seed2,Dist);
+        NewLocationCorr(seed,seed2);
     }
     
  
@@ -183,22 +181,21 @@ void Animal::NewLocation (double seed, double seed2){
     
     //std::cout<< seed <<std::endl;
 
-    
+    clock_t LE3 =clock();
     //calculates a new random step distance
-    double Dist = Move_speed*StepLength;
     
     if(Movement_type==0){
-        
-        NewLocationMT0(seed,Dist);
+        NewLocationMT0(seed);
         
     } else if (Movement_type==1){
-        NewLocationCorr(seed,seed2,Dist);
+        NewLocationCorr(seed,seed2);
         
     } else if (Movement_type==2){
-        NewLocationMT2(seed,seed2,Dist);
+        NewLocationMT2(seed,seed2);
         
     }
-    
+    LE3 =clock()-LE3;
+    timeLE3 +=LE3;
 }
 
 
@@ -374,10 +371,9 @@ void Animal::UpdateLocation (double seed){ // a is the number of seconds per ste
         
         //std::cout<<"NoSolid"<<std::endl;
         
-        clock_t LE3 =clock();
+        
             NewLocation(RandomNumberUpdateMovement[0], RandomNumberUpdateMovement[100]);
-        LE3 =clock()-LE3;
-        timeLE3 +=LE3;
+        
         int tempcounter = 0;
         //std::cout<< "ENTER WHILE" << std::endl;
         while(tempcounter<1){

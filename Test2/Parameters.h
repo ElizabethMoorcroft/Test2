@@ -44,19 +44,22 @@ const double CameraWidth = M_PI/3;
 
 //HR set up value
 const double HR_AverageRadius = 1500; //meters
-const int HR_SolidBoundaries = 0; // Solid boundaries for HR --- 1 =Yes 0 = No
+const int HR_SolidBoundaries = 1; // Solid boundaries for HR --- 1 =Yes 0 = No
 
 //Radom number seed
-const int Seed =1;
-
-//Movement parameters
-const int StepLength = 3.5; //Length of each step in seconds
-const double CorrWalkMaxAngleChange = M_PI/36;
+const int Seed =42;
 
 //Animal parameters
 const double AnimalSpeed = 6.3; // ms^-1
-const int MovementType = 1;
+const int MovementType = 0;
 const double ProbChangeMoveState = 0;//Probability of switching from coorelated to non-correlated
+
+
+//Movement parameters
+const int StepLength = 3.5; //Length of each step in seconds
+const int StepLengthDist = StepLength*AnimalSpeed;
+const double CorrWalkMaxAngleChange = M_PI/36;
+
 
 //Call parameters
 const double Call_halfwidth = M_PI/4;   //Call_halfwidth

@@ -48,6 +48,7 @@ CameraTrap::CameraTrap(int a//CT_identifier;
     angle_HalfWidth = CameraWidth;
     Captures.resize(NoSteps*(Sq_MaxX-Sq_MinX)*(Sq_MaxY-Sq_MinY)*DensityAnimals);
     capturecount=0;
+    myvector.resize(4);
 };
 
 
@@ -64,10 +65,9 @@ int approximatelyequal(double a, double b){
 int CameraTrap::CapturesIndividual(double location_x_animal,
                                    double location_y_animal,
                                    int Individual_ID,
-                                   int CameraID,
-                                   int Time_step,
                                    double call_halfwidth,
-                                   double move_angle
+                                   double move_angle,
+                                   int itnumber
                                    ){
     
     int captured=0;
@@ -78,12 +78,12 @@ int CameraTrap::CapturesIndividual(double location_x_animal,
     double diffx = location_x_animal - location_x;
     double diffy = location_y_animal - location_y;
     
-    if(diffx==0 && diffy ==0){ // If on the exact same spot as the camera assume it will be captured 
-        std::vector<int> myvector;
-        myvector.resize(3);
-        myvector[1] = Individual_ID;
-        myvector[2] = Time_step;
-        myvector[3] = CameraID;
+    if(diffx==0 && diffy ==0){ // If on the exact same spot as the camera assume it will be captured
+
+        myvector[0] = Individual_ID;
+        myvector[1] = CT_StepOn;
+        myvector[2] = CT_identifier;
+        myvector[3] = itnumber;
         
         Captures[capturecount]=myvector;
         capturecount+=1;
@@ -161,13 +161,14 @@ int CameraTrap::CapturesIndividual(double location_x_animal,
                (approximatelyequal(Max_batangle, AngleFromBat)==1)   ||
                (AngleFromBat >= Min_batangle && AngleFromBat <= Max_batangle)){
                 //std::cout<< "IN BAT ANGEL"<<std::endl;
+                std::cout<< Individual_ID<<std::endl;
+                std::cout<< myvector.size() <<std::endl;
                 
                 // If it's in the possible angle then record in vector
-                std::vector<int> myvector;
-                myvector.resize(3);
-                myvector[1] = Individual_ID;
-                myvector[2] = Time_step;
-                myvector[3] = CameraID;
+                myvector[0] = Individual_ID;
+                myvector[1] = CT_StepOn;
+                myvector[2] = CT_identifier;
+                myvector[3] = itnumber;
                     
                 Captures[capturecount]=myvector;
                 capturecount+=1;
@@ -223,10 +224,9 @@ void CameraTrap::TestCapturesIndividual(int ID
     int capture = CapturesIndividual(animal_xlocation,
                                      animal_ylocation,
                                      1, // Animal ID  - the number printed in the output
-                                     1, // Camera ID  - the number printed in the output
-                                     1, // Step ID  - the number printed in the output
                                       Call_halfwidth,
-                                     call_angle);
+                                     call_angle,
+                                     1);
     //std::cout<<capture<<std::endl;
     //
     if(capture!=d){

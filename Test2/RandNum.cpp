@@ -14,21 +14,16 @@
 
 //Calcaulte a random variable that is normally distribtued
 //But if the value is negative them it recalculates it until +ve
-long double RandNum::PositiveNormal (double a,double b,double c){
-    
-    double seed = a;
-    double Mean = b;
-    double SD = c;
+long double RandNum::PositiveNormal (double seed,double Mean,double SD){
     
     
     long double RV_1;
-    /*long double RV_2 = -1;*/
     
     srand(seed);
     std::vector<double> RandomNumberStreamTemp;
-    for(int i=0; i<100000; i++){
-        double myrandomnumber =  rand();
-        RandomNumberStreamTemp.push_back(myrandomnumber);
+    RandomNumberStreamTemp.resize(1000);
+    for(int i=0; i<1000; i++){
+        RandomNumberStreamTemp[i] =double (rand());
     };
     
     int count=0;
