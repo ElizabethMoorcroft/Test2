@@ -30,6 +30,7 @@ Animal::Animal( int a, int b,
     Current_x = i;
     Current_y = j;
     Current_angle = k;
+    if(Current_angle>2*M_PI){Current_angle=Current_angle-2*M_PI;};
     
     //When initialising the step number and the current distance travelled
     // will always be set to zero
@@ -371,7 +372,7 @@ void Animal::UpdateLocation (double seed){ // a is the number of seconds per ste
         
         //std::cout<<"NoSolid"<<std::endl;
         
-        
+        NextAngle = Current_angle;
             NewLocation(RandomNumberUpdateMovement[0], RandomNumberUpdateMovement[100]);
         
         int tempcounter = 0;
@@ -384,7 +385,6 @@ void Animal::UpdateLocation (double seed){ // a is the number of seconds per ste
                 // rewrite current locaion
                 Current_x = NextX;
                 Current_y = NextY;
-                Current_angle = NextAngle;
                 Current_distance += NextDist;
                 
                 //Add to the all locations
@@ -392,7 +392,7 @@ void Animal::UpdateLocation (double seed){ // a is the number of seconds per ste
                 mylocationvector[1] = step_number;
                 mylocationvector[2] = NextX;
                 mylocationvector[3] = NextY;
-                mylocationvector[4] = NextAngle;
+                mylocationvector[4] = Current_angle;
                 mylocationvector[5] = Current_distance;
                 mylocationvector[6] = Move_speed;
                 mylocationvector[7] = 0;
@@ -461,7 +461,7 @@ void Animal::UpdateLocation (double seed){ // a is the number of seconds per ste
                 // Two possible errors  //
                 //////////////////////////
                 // Produces error is the ANGLE is not between 0 and 360
-                else {std::cout << "ERROR - ANGLE" <<std::endl;};
+                else {std::cout << "ERROR - ANGLE: "<<NextAngle <<std::endl;};
                 
                 // Produces error if the Next distance is less than zero
                 // But exits loop and continues with the rest of the code

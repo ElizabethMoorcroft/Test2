@@ -26,14 +26,15 @@ private:
     double angle_HalfWidth;
     int capturecount;
     
+    clock_t time1;
+    
     std::vector<std::vector<int>> Captures;
     std::vector<int> myvector;
     
 public:
     CameraTrap();
-    CameraTrap(int //ID No (Also time step)
-               , double //Angle between cameras
-               , double , double
+    CameraTrap( int //ID No (Also time step)
+               ,double
                );
     std::vector<std::vector<int>> getCaptures(){return Captures;};
     
@@ -43,6 +44,7 @@ public:
     double getYloc(){return location_y;};
     double getAngle(){return angle;};
     double getHalfAngle(){return angle_HalfWidth;};
+    clock_t gettime(){return time1;};
     
     int CapturesIndividual(double  //x location animal
                             ,double //y location animal

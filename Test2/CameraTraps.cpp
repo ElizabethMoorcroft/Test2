@@ -13,32 +13,26 @@
 
 CameraTrap::CameraTrap(){};
 CameraTrap::CameraTrap(int a//CT_identifier;
-                       ,double b //Radius of circle
-                       ,double ca // Angle between each location
                        ,double d//radius;
                        //,std::vector<std::vector<int>> //::Captures()
                        ){
     
     // Renames variables
-
-    
-    double CircleR = b;
-    double CircleAngle = ca;
-    
+    time1=0;
     
     //////////////////////////
     /// Location of camera ///
     //////////////////////////
     // Using polar to cartesian co-ordinates
     // This means that the cameras start at 3o'clock and move in a anti-clockwise direction
-    location_x = (CircleR * cos(a*CircleAngle)) + Cir_CntX ;
-    location_y = (CircleR * sin(a*CircleAngle)) + Cir_CntY ;
+    location_x = (RadiusCameraCircle  * cos(a*AngleBetweenCameras)) + Cir_CntX ;
+    location_y = (RadiusCameraCircle  * sin(a*AngleBetweenCameras)) + Cir_CntY ;
     
     // The angle (with respect to "north") the camera is facing is:
     // 90 degrees minus the number of degrees between the start and the current camera
     // because of the anti-clockwise motion
     // After passes zero - then
-    angle = M_PI/2 - a*CircleAngle;
+    angle = M_PI/2 - a*AngleBetweenCameras;
     if(angle<0){angle = 2*M_PI + angle;};
     
     //Assigning varaibles
@@ -69,7 +63,7 @@ int CameraTrap::CapturesIndividual(double location_x_animal,
                                    double move_angle,
                                    int itnumber
                                    ){
-    
+    clock_t Time1=clock();
     int captured=0;
     
     double AngleFromCamera = 0;
@@ -162,7 +156,7 @@ int CameraTrap::CapturesIndividual(double location_x_animal,
                (AngleFromBat >= Min_batangle && AngleFromBat <= Max_batangle)){
                 //std::cout<< "IN BAT ANGEL"<<std::endl;
                 std::cout<< Individual_ID<<std::endl;
-                std::cout<< myvector.size() <<std::endl;
+                //std::cout<< myvector.size() <<std::endl;
                 
                 // If it's in the possible angle then record in vector
                 myvector[0] = Individual_ID;
@@ -182,7 +176,12 @@ int CameraTrap::CapturesIndividual(double location_x_animal,
         
     }; //End of "radius" IF
     }; //END of not directly on same spot as camera
+    
     if(captured==1){return(1);} else {return(0);};
+    
+    Time1=clock()-Time1;
+    time1+=Time1;
+    
 }; // End of function
 
 
