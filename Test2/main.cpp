@@ -61,12 +61,16 @@ std::string make_directory( const std::string& directory){
     //density is recorded
     double denistyCal = DensityAnimals*pow(10,6);
     
+    int maxseed = NoOfIterations+Seed;
     std::ostringstream result;
     result  << directory
             << boundary         << Move
             << ",Density="      << denistyCal
             << ",Speed="        << AnimalSpeed
+            << ",Iterations="   << Seed << "-" << maxseed
             << ",StepLength="   << StepLength
+            << ",CallHalfwidth=" << Call_halfwidth
+            << ",CameraHalfwidth=" << CameraWidth
             << ",Freq="         << Freq ;
     return result.str();
 };
@@ -77,7 +81,7 @@ std::string make_directory( const std::string& directory){
 // - The boundary
 // - The movement type
 // - The animal denisty
-std::string SaveDirectory = make_directory("/Users/student/Documents/Bats/Simulations/CommonPip");
+std::string SaveDirectory = make_directory("/Users/student/Documents/Bats/Simulations/SenAna");
 
 /// END OF FILE NAMES
 
@@ -120,8 +124,12 @@ int main(){
     double b2 = 0.01275*exp(-2239.1/T)/(fr0+pow(Freq,2)/fr0);
     double alpha = 8.686*pow(Freq,2)*pow(taur,0.5)*(1.84*pow(10,-11)/1+pow(taur,-3)*(b1+b2));
     double Attenuation = alpha + 6; // # spherical spreading.
-    double CallRadius = (Amp-It)/Attenuation;
-    //std::cout<<CallRadius<<std::endl;
+    double CallRadius=10;
+    for(int i=0;  i<6; i++){ // Newton-raphson
+        CallRadius = CallRadius - (Amp-It-Attenuation*CallRadius-20*log10(10*CallRadius))/(-Attenuation-20/(log(10)*CallRadius));
+    }
+
+    std::cout<<CallRadius<<std::endl;
     //
     // End of Tim's code
     
@@ -190,30 +198,7 @@ int main(){
     
     
     
-    //Creates a list of pointers to the CTs
-    std::vector<CameraTrap*> All_CT(NoCameraTraps);
-    //Caluclates the location of all the camera traps
-    for(int i=0; i<NoCameraTraps; i++){
-        std::cout<<"Camera: "<<i+1 <<"/"<<NoCameraTraps <<std::endl;
-        // Calculate the starting position of all Camera traps
-        // The cameras start at 3o'clock and move in a anti-clockwise direction
-        // This is for the simplicity of calculation
-        All_CT[i] = new CameraTrap(i //identifier;
-                                   , CallRadius //radius
-                                   );
-        
-        //Saves the locations and the angle of the camera
-        Cameras << All_CT[i]->getID() << //1st column
-        "," << All_CT[i]->getXloc() << //2nd column
-        "," << All_CT[i]->getYloc() << //...
-        "," << All_CT[i]->getAngle() << //...
-        "," << All_CT[i]->getHalfAngle() << //4th column
-        "," << SpeedCamera << //5th column
-        "\n";
-    };
-    //Closes the csv camera file
-    Cameras.close();
-    
+
     
     ///////////////////////////////////////////////////////////////////////////////////////
     ///                                 !!! WARNINGS!!!                                 ///
@@ -254,19 +239,19 @@ int main(){
     };
     
     
-    // !!This does not work yet!! - not reading in correctly
     //Test on the camera trap
     int test=0;
     if(test==1){
+        std::cout<<"Start Test"<<std::endl;
     int a;
-    double b, c, d, e, f, g;
+    double b, c, d, e, f, g,h;
     std::ifstream input;
     std::string line;
     input.open("/Users/student/Documents/Bats/CameraTestInputs.dat");
     if (input.is_open()) {
         getline(input, line);
         while (!input.eof()) {
-            //std::cout<<a<<std::endl;
+            std::cout<<a<<std::endl;
             input >> a;
             input >> b;
             input >> c;
@@ -274,18 +259,51 @@ int main(){
             input >> e;
             input >> f;
             input >> g;
-            for(int i=0; i<NoCameraTraps; i++){
-                All_CT[i]->TestCapturesIndividual(a,b,c,d,e,f,g);
-            }
+            input >> h;
+           // for(int i=0; i<NoCameraTraps; i++){
+            double tempvarCamerawidth = 89*M_PI/180;
+                CameraTrap CT1;
+                 CT1 = CameraTrap(1 //identifier;
+                                    ,CallRadius //radius
+                                     ,60*M_PI/180
+                                     ,tempvarCamerawidth //tempCameraWidth
+                                    );
+            //    std::cout<<i<<std::endl;
+                CT1.TestCapturesIndividual(a,b,c,d,e,f,g*tempvarCamerawidth,h);
+          //  }
         }
         input.close();
     } // END OF CAMERA CHECK 
-    }
+    else{std::cout<<"Hello"<<std::endl;}
+    };
     
-               
+    //Creates a list of pointers to the CTs
+    std::vector<CameraTrap*> All_CT(NoCameraTraps);
+    //Caluclates the location of all the camera traps
+    for(int i=0; i<NoCameraTraps; i++){
+        //std::cout<<"Camera: "<<i+1 <<"/"<<NoCameraTraps <<std::endl;
+        // Calculate the starting position of all Camera traps
+        // The cameras start at 3o'clock and move in a anti-clockwise direction
+        // This is for the simplicity of calculation
+        All_CT[i] = new CameraTrap(i //identifier;
+                                   , CallRadius //radius
+                                   );
+        
+        //Saves the locations and the angle of the camera
+        Cameras << All_CT[i]->getID() << //1st column
+        "," << All_CT[i]->getXloc() << //2nd column
+        "," << All_CT[i]->getYloc() << //...
+        "," << All_CT[i]->getAngle() << //...
+        "," << All_CT[i]->getHalfAngle() << //4th column
+        "," << SpeedCamera << //5th column
+        "\n";
+    };
+    //Closes the csv camera file
+    Cameras.close();
+    
 
-    
-    
+    if(test==0)
+    {
     ////////////////////////////////////////////////////////////////////////////////////////
     //                                Saves settings                                      //
     //                                                                                    //
@@ -348,7 +366,7 @@ int main(){
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     for(int iterationnumber=Seed + 0; iterationnumber<Seed + NoOfIterations; iterationnumber++){
-
+        std::cout<<"Iteration: "<<iterationnumber+1<<"/"<<Seed + NoOfIterations<<std::endl;
     
     
     /////////////////////////////////////////////////////
@@ -490,7 +508,7 @@ int main(){
     ////////////////////////////////////////////
     for(int i=0; i<NoAnimal; i++){
         //Print out animal number to screen
-        std::cout <<"Animal:" << i+1 <<"/" << NoAnimal << std::endl;
+        //std::cout <<"Animal:" << i+1 <<"/" << NoAnimal << std::endl;
         
         // Sets seed for a random number
         // So that can choose a home range centre at random
@@ -699,12 +717,13 @@ int main(){
         }; //End of step counter loop
     }; //End of NoCT loop
     
+    
     // Closes captures CSV file
     Captures.close();
     
     //Closes the files Movement and Animals
     Movement.close();
-    
+    }; //end if test
     // Prints to screem to inform finished calculating captures
     //std::cout <<"Finish calculating captures" <<std::endl;
 
@@ -718,6 +737,7 @@ int main(){
     t=clock()-tstart;
     std::cout<< "FINISHED :" << float(t)/CLOCKS_PER_SEC <<std::endl;
     return 0;
+    
 }; 
 
 ///////////////////////////////////////////////////////////////////////////////////////////

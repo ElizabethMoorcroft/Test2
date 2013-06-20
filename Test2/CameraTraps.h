@@ -22,8 +22,8 @@ private:
     double location_y;
     
     double radius;
-    double angle;
-    double angle_HalfWidth;
+    double angle; // Direction of the camera
+    double angle_HalfWidth; // Half width of the camera 
     int capturecount;
     
     clock_t time1;
@@ -36,6 +36,10 @@ public:
     CameraTrap( int //ID No (Also time step)
                ,double
                );
+    CameraTrap( int //ID No (Also time step)
+                ,double
+                ,double
+               ,double);
     std::vector<std::vector<int>> getCaptures(){return Captures;};
     
     double getID(){return CT_identifier;};
@@ -56,6 +60,7 @@ public:
     
     void TestCapturesIndividual(int
                                 ,double
+                                , double
                                 , double
                                 , double
                                 , double

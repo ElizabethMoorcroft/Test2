@@ -22,7 +22,7 @@
 //////////////////////////////////////////////////
 
 //Simulation values - #Animals, #Steps, #HR, #CT
-const double DensityAnimals = 0.1*pow(10,-6); // XX*10^-6 Density/m^2  => XX Density/KM^2
+const double DensityAnimals = 0.5*pow(10,-6); // XX*10^-6 Density/m^2  => XX Density/KM^2
 const double LengthMonitoring = 1.5*(60*60); //Length of monitoring in seconds. XX*(60*60)secs => XX hrs
 const double AverageSizeHR = 1; //Average number of animals per roost
 const double SpeedCamera  = 30*0.06 ; // => XX m/s =  XX/ 0.06 KM/h  => XX*0.06 m/s =  XX KM/h
@@ -40,7 +40,7 @@ const double Sq_MaxY = 7500;
 const double Cir_CntX = (Sq_MaxX-Sq_MinX)/2+Sq_MinX;
 const double Cir_CntY = (Sq_MaxY-Sq_MinY)/2+Sq_MinY;
 
-const double CameraWidth = M_PI/3;
+const double CameraWidth = 15*M_PI/180;
 
 //HR set up value
 const double HR_AverageRadius = 1500; //meters
@@ -56,13 +56,13 @@ const double ProbChangeMoveState = 0;//Probability of switching from coorelated 
 
 
 //Movement parameters
-const double StepLength = 0.25; //Length of each step in seconds
+const double StepLength = 3.5; //Length of each step in seconds
 const double StepLengthDist = StepLength*AnimalSpeed;
 const double CorrWalkMaxAngleChange = M_PI/36;
 
 
 //Call parameters
-const double Call_halfwidth = M_PI/4;   //Call_halfwidth
+const double Call_halfwidth = 30*M_PI/180;   //Call_halfwidth
 
 //For the attenuation of sound
 const double Temp = 25;

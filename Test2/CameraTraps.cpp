@@ -40,7 +40,42 @@ CameraTrap::CameraTrap(int a//CT_identifier;
     CT_StepOn = a + NoRunIn;
     radius =d;
     angle_HalfWidth = CameraWidth;
-    Captures.resize(NoSteps*(Sq_MaxX-Sq_MinX)*(Sq_MaxY-Sq_MinY)*DensityAnimals);
+    Captures.resize((Sq_MaxX-Sq_MinX)*(Sq_MaxY-Sq_MinY)*DensityAnimals);
+    capturecount=0;
+    myvector.resize(4);
+};
+
+CameraTrap::CameraTrap(int a//CT_identifier;
+                       ,double d//radius;
+                        , double tempangle
+                       ,double tempCameraWidth
+                       //,std::vector<std::vector<int>> //::Captures()
+                       ){
+    
+    // Renames variables
+    time1=0;
+    
+    //////////////////////////
+    /// Location of camera ///
+    //////////////////////////
+    // Using polar to cartesian co-ordinates
+    // This means that the cameras start at 3o'clock and move in a anti-clockwise direction
+    location_x = 0 ;
+    location_y = 0 ;
+    
+    // The angle (with respect to "north") the camera is facing is:
+    // 90 degrees minus the number of degrees between the start and the current camera
+    // because of the anti-clockwise motion
+    // After passes zero - then
+    angle = tempangle;
+    if(angle<0){angle = 2*M_PI + tempangle;};
+    
+    //Assigning varaibles
+    CT_identifier = a;
+    CT_StepOn = 0;
+    radius =d;
+    angle_HalfWidth = tempCameraWidth;
+    Captures.resize((Sq_MaxX-Sq_MinX)*(Sq_MaxY-Sq_MinY)*DensityAnimals);
     capturecount=0;
     myvector.resize(4);
 };
@@ -114,6 +149,9 @@ int CameraTrap::CapturesIndividual(double location_x_animal,
         if(AngleFromCamera <0){AngleFromCamera = AngleFromCamera +2*M_PI;};
         
         /*
+        std::cout<< "Angle"<<angle<<std::endl;        
+        std::cout<< "Move Angle"<<move_angle<<std::endl;
+
         std::cout<< "Min angle"<<Min_angle<<std::endl;
         std::cout<< "Max angle"<<Max_angle<<std::endl;
         std::cout<<"AngleFromCamera"<<AngleFromCamera <<std::endl;
@@ -128,6 +166,15 @@ int CameraTrap::CapturesIndividual(double location_x_animal,
            (AngleFromCamera >= Min_angle && AngleFromCamera <= Max_angle)){
               //std::cout<< "IN CAM ANGEL"<<std::endl;
             
+            if(call_halfwidth==M_PI){
+                myvector[0] = Individual_ID;
+                myvector[1] = CT_StepOn;
+                myvector[2] = CT_identifier;
+                myvector[3] = itnumber;
+                
+                Captures[capturecount]=myvector;
+                capturecount+=1;
+            }else{
 
             
             //Calcaulates the angle from the Bat to the detector as a bearing from north
@@ -155,7 +202,7 @@ int CameraTrap::CapturesIndividual(double location_x_animal,
                (approximatelyequal(Max_batangle, AngleFromBat)==1)   ||
                (AngleFromBat >= Min_batangle && AngleFromBat <= Max_batangle)){
                 //std::cout<< "IN BAT ANGEL"<<std::endl;
-                std::cout<< Individual_ID<<std::endl;
+                //std::cout<< Individual_ID<<std::endl;
                 //std::cout<< myvector.size() <<std::endl;
                 
                 // If it's in the possible angle then record in vector
@@ -163,13 +210,14 @@ int CameraTrap::CapturesIndividual(double location_x_animal,
                 myvector[1] = CT_StepOn;
                 myvector[2] = CT_identifier;
                 myvector[3] = itnumber;
-                    
+                
                 Captures[capturecount]=myvector;
                 capturecount+=1;
                 
                 captured = 1;
-            };//End of "detector in the width of the call" IF
             
+            };//End of "detector in the width of the call" IF
+            }
             
         }; //End of "detector in the width of the call" IF
     
@@ -197,22 +245,23 @@ void CameraTrap::TestCapturesIndividual(int ID
                                         ,double a1
                                         ,double b1
                                         ,double c
-                                        ,double d
+                                        ,double tempcallangleHalfWidth
+                                        ,double outcome
                             ){
     
     //std::cout<<(a1*angle_HalfWidth+angle)<<std::endl;
     //aninal location realtive to camera
-    double animal_xlocation = location_x +a*radius*(sin(a1*angle_HalfWidth+angle)); 
+    double animal_xlocation = location_x +a*radius*(sin(a1*angle_HalfWidth+angle));
     double animal_ylocation = location_y +b*radius*(cos(b1*angle_HalfWidth+angle));
     
-   /*
+   
     std::cout<<radius<<std::endl;
     std::cout<<"Camera ID:"<<CT_identifier<<std::endl;
     std::cout<<"Camera x location:"<<location_x<<std::endl;
     std::cout<<"Camera y location:"<<location_y<<std::endl;
     std::cout<<"Animal x location:"<<animal_xlocation<<std::endl;
     std::cout<<"Animal y location:"<<animal_ylocation<<std::endl;
-    */
+    
     // Call angle relative to the camera angle
     double call_angle = angle + c*M_PI;
     if(call_angle>2*M_PI){call_angle=call_angle-2*M_PI;};
@@ -223,13 +272,13 @@ void CameraTrap::TestCapturesIndividual(int ID
     int capture = CapturesIndividual(animal_xlocation,
                                      animal_ylocation,
                                      1, // Animal ID  - the number printed in the output
-                                      Call_halfwidth,
+                                     tempcallangleHalfWidth,
                                      call_angle,
                                      1);
     //std::cout<<capture<<std::endl;
     //
-    if(capture!=d){
-        if(d==1){
+    if(capture!=outcome){
+        if(outcome==1){
             std::cout<<"Error! Failed camera test -  Not captured when should. Failed input: "<<ID<< std::endl;
             exit (EXIT_FAILURE);
         } else{
