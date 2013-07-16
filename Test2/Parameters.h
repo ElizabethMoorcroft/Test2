@@ -22,12 +22,12 @@
 //////////////////////////////////////////////////
 
 //Simulation values - #Animals, #Steps, #HR, #CT
-const double DensityAnimals = 0.5*pow(10,-6); // XX*10^-6 Density/m^2  => XX Density/KM^2
-const double LengthMonitoring = 1.5*(60*60); //Length of monitoring in seconds. XX*(60*60)secs => XX hrs
+const double DensityAnimals = 5*pow(10,-6); // XX*10^-6 Density/m^2  => XX Density/KM^2
+const double LengthMonitoring = 24*1*(60*60); //Length of monitoring in seconds. XX*(60*60)secs => XX hrs
 const double AverageSizeHR = 1; //Average number of animals per roost
 const double SpeedCamera  = 30*0.06 ; // => XX m/s =  XX/ 0.06 KM/h  => XX*0.06 m/s =  XX KM/h
-const int NoRunIn = 10; // Number of steps before cameras are "activated"
-const int NoOfIterations = 1000; // No of iterations with the settings
+const int NoRunIn = 0; // Number of steps before cameras are "activated"
+const int NoOfIterations = 500; // No of iterations with the settings
 
 
 //Size of the enviroment
@@ -40,10 +40,10 @@ const double Sq_MaxY = 7500;
 const double Cir_CntX = (Sq_MaxX-Sq_MinX)/2+Sq_MinX;
 const double Cir_CntY = (Sq_MaxY-Sq_MinY)/2+Sq_MinY;
 
-const double CameraWidth = 15*M_PI/180;
+const double CameraWidth = 45*M_PI/180;
 
 //HR set up value
-const double HR_AverageRadius = 1500; //meters
+const double HR_AverageRadius = 1000; //meters
 const int HR_SolidBoundaries = 0; // Solid boundaries for HR --- 1 =Yes 0 = No
 
 //Radom number seed
@@ -62,16 +62,20 @@ const double CorrWalkMaxAngleChange = M_PI/36;
 
 
 //Call parameters
-const double Call_halfwidth = 30*M_PI/180;   //Call_halfwidth
+const double Call_halfwidth = 180*M_PI/180;   //Call_halfwidth
 
 //For the attenuation of sound
 const double Temp = 25;
 const double Hum = 30;
-const double Freq = 45.11;
+const double Freq = 45.11*pow(10,3);
 const double Amp = 126; //Amplitude
 const double It = 0;
 
 const int NoSteps = round(LengthMonitoring/StepLength)+ NoRunIn;
+
+
+const int RandomCameraPlacement =1;
+const int CapturesContin=1;
 
 // The number of cameras and the number of steps
 // The camera moves around the in a circle switching on and off

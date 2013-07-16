@@ -25,12 +25,16 @@ Animal::Animal( int a, int b,
                 double t, double u
                ) {
     
+    //std::cout <<"Inside Animals"<< std::endl;
+    
     identifier = a;
     HomeRange_id = b;
     Current_x = i;
     Current_y = j;
     Current_angle = k;
     if(Current_angle>2*M_PI){Current_angle=Current_angle-2*M_PI;};
+    
+     
     
     //When initialising the step number and the current distance travelled
     // will always be set to zero
@@ -57,9 +61,10 @@ Animal::Animal( int a, int b,
     Move_speed =AnimalSpeed        ; // Move_speed = f;
     Move_maxangle=CorrWalkMaxAngleChange;//Move_maxangle = g;
     
+    //std::cout <<"B4 vectors"<< std::endl;
 
-    EndStep_locations.resize(NoSteps+1);
-    All_locations.resize(2*NoSteps);
+    EndStep_locations.resize(NoSteps+5);
+    All_locations.resize(2*NoSteps+5);
     mylocationvector.resize(8);
     
     //Records the starting locations
@@ -207,6 +212,7 @@ void Animal::NewLocation (double seed, double seed2){
 
 void Animal::LeaveEnterWorld(double YBoundExit, double XBoundExit, double YBoundEnter, double XBoundEnter){
     
+    //std::cout <<"Entre LeaveEnterWorld"<<std::endl;
     
     // Caculate the V & H distances to the boudaries
     double tempDistToTop = std::abs(YBoundExit-Current_y);
@@ -250,6 +256,7 @@ void Animal::LeaveEnterWorld(double YBoundExit, double XBoundExit, double YBound
         NextDist -=tempDistToSideBoundary;
         // The current distance travelled
         Current_distance += tempDistToSideBoundary;
+        //std::cout <<"leaves Side"<<std::endl;
     }
     
     
@@ -265,10 +272,14 @@ void Animal::LeaveEnterWorld(double YBoundExit, double XBoundExit, double YBound
         All_locations[locationvectorcount]= mylocationvector;
         locationvectorcount+=1;
     
+        //std::cout <<"vect1 done"<<std::endl;
         //New end locations
         //Based on polar coordinates updates the temp x/y location
         NextX = Current_x + NextDist*sin(NextAngle);
         NextY = Current_y + NextDist*cos(NextAngle);
+        //std::cout<<All_locations.size()<<std::endl;
+        //std::cout<<locationvectorcount<<std::endl;
+        //std::cout <<"vect1 done1"<<std::endl;
     
         //Records the etring of the world
         mylocationvector[0] = identifier;
@@ -279,9 +290,10 @@ void Animal::LeaveEnterWorld(double YBoundExit, double XBoundExit, double YBound
         mylocationvector[5] = Current_distance;
         mylocationvector[6] = Move_speed;
         mylocationvector[7] = 1;
+        //std::cout <<"vect2 temp"<<std::endl;
         All_locations[locationvectorcount] = mylocationvector;
         locationvectorcount+=1;
-    
+        //std::cout <<"vect2 done"<<std::endl;
     
 }
 
@@ -294,7 +306,9 @@ void Animal::LeaveEnterWorld(double YBoundExit, double XBoundExit, double YBound
 void Animal::UpdateLocation (double seed){ // a is the number of seconds per step, b is the random seed
 
     
+    //std::cout <<"Inside Update locations"<< std::endl;
     //List of random number
+    
     srand(seed);
     std::vector<double> RandomNumberMovement;
     RandomNumberMovement.resize(101);
@@ -378,8 +392,13 @@ void Animal::UpdateLocation (double seed){ // a is the number of seconds per ste
         int tempcounter = 0;
         //std::cout<< "ENTER WHILE" << std::endl;
         while(tempcounter<1){
+            
+            //std::cout<< "ENTERED WHILE" << std::endl;
             // If the movement finishes inside the environment
             if(NextX < Sq_MaxX && NextX > Sq_MinX && NextY < Sq_MaxY && NextY > Sq_MinY){
+                
+                //std::cout<< "If entered" << std::endl;
+                
                 clock_t LE2 =clock();
                 //Can save the temp location as the current location
                 // rewrite current locaion
@@ -396,15 +415,18 @@ void Animal::UpdateLocation (double seed){ // a is the number of seconds per ste
                 mylocationvector[5] = Current_distance;
                 mylocationvector[6] = Move_speed;
                 mylocationvector[7] = 0;
+                //std::cout<< "Vector done" << std::endl;
                 All_locations[locationvectorcount] = mylocationvector;
                 EndStep_locations[step_number] = mylocationvector;;
                 locationvectorcount+=1;
+                //std::cout<< "Vectors done" << std::endl;
                 
                 //Ends the while loop by achieving the condition
                 tempcounter = 1;
                 
                 LE2 =clock()-LE2;
                 timeLE2 +=LE2;
+                 //std::cout<<"ENDNoSolid"<<std::endl;
             } //End of the IF loop
             
         // If the movement goes outside of the environment

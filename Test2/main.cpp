@@ -81,7 +81,7 @@ std::string make_directory( const std::string& directory){
 // - The boundary
 // - The movement type
 // - The animal denisty
-std::string SaveDirectory = make_directory("/Users/student/Documents/Bats/Simulations/SenAna");
+std::string SaveDirectory = make_directory("/Users/student/Documents/Bats/Simulations/TestContinuous");
 
 /// END OF FILE NAMES
 
@@ -135,10 +135,11 @@ int main(){
     
     //Calculates the number of animals given the area and the density
     int NoAnimal;
+    double area;
     //If there are no solid Home range boundaries then the animals can start anywhere
     // and then the possible area uses the min and max of the environment
     if(HR_SolidBoundaries==0){
-        double area = (Sq_MaxX-Sq_MinX)*(Sq_MaxY-Sq_MinY);
+         area = (Sq_MaxX-Sq_MinX)*(Sq_MaxY-Sq_MinY);
          NoAnimal = floor(DensityAnimals*area);
     }else if(HR_SolidBoundaries==1){
     // If there is solid HR boundaries then can only detect the animals within
@@ -146,10 +147,10 @@ int main(){
     // If the radius of the camera movement is less than the average home range then there is no hole
     // in the middle of the camera circle
         if(HR_AverageRadius>=RadiusCameraCircle){
-            double area = pow(RadiusCameraCircle+HR_AverageRadius,2)*M_PI;
+            area = pow(RadiusCameraCircle+HR_AverageRadius,2)*M_PI;
             NoAnimal = floor(DensityAnimals*area);}
         else{
-            double area = pow(RadiusCameraCircle+HR_AverageRadius,2)*M_PI - pow(RadiusCameraCircle-HR_AverageRadius,2)*M_PI;
+            area = pow(RadiusCameraCircle+HR_AverageRadius,2)*M_PI - pow(RadiusCameraCircle-HR_AverageRadius,2)*M_PI;
             NoAnimal = floor(DensityAnimals*area);}
         }
     
@@ -160,7 +161,6 @@ int main(){
     int NoHR = ceil(NoAnimal/AverageSizeHR);
     
     std::cout<<"finishcal"<<std::endl;
-    
     ///////////////////////////////////////////////////////////////////////////////////////
     //                          CALCULATES LOCATION OF CAMERA TRAPS                     ///
     //                                                                                  ///
@@ -225,9 +225,10 @@ int main(){
         std::cout<<"Improbable camera radius. Camera radius= "<<CallRadius<< ". Check input in correct units"<< std::endl;
         exit (EXIT_FAILURE);
     };
-    
+    /*
     // The width of the printed area needs to be greater than the world environment
     if(Cir_CntX+RadiusCameraCircle+HR_AverageRadius>Sq_MaxX){
+        std::cout<<Cir_CntX <<","<<RadiusCameraCircle<<"," <<HR_AverageRadius << std::endl;
         std::cout<<"Width of area < Width nessecary, Increase Sq_MaxX"<< std::endl;
         exit (EXIT_FAILURE);
     };
@@ -237,7 +238,12 @@ int main(){
         std::cout<<"Height of area < Height nessecary, Increase Sq_MaxY"<< std::endl;
         exit (EXIT_FAILURE);
     };
-    
+    */
+    // No steps
+    if(NoSteps==0){
+        std::cout<<"No steps, Increase Length of monitoring"<< std::endl;
+        exit (EXIT_FAILURE);
+    };
     
     //Test on the camera trap
     int test=0;
@@ -301,7 +307,7 @@ int main(){
     //Closes the csv camera file
     Cameras.close();
     
-
+    std::cout<<"Finish CT"<<std::endl;
     if(test==0)
     {
     ////////////////////////////////////////////////////////////////////////////////////////
@@ -318,12 +324,14 @@ int main(){
     //Simulation values - #Animals, #Steps, #HR, #CT
     Settings
         << "DensityAnimals" << ","<< DensityAnimals << "\n"
-        << "LengthMonitoring" << ","<< LengthMonitoring << "\n"
-        << "AverageSizeHR" << ","<< AverageSizeHR << "\n"
-        << "SpeedCamera"  << ","<<  SpeedCamera << "\n"
-        << "NoRunIn" << ","<<  NoRunIn << "\n"
-        << "NoOfIterations" << ","<< NoOfIterations << "\n"
-        << " NoSteps"   << "," << NoSteps << "\n"
+        << "NoOfAnimals" << "," << NoAnimal << "\n"
+        << "Area"<< "," << area << "\n"
+        << "LengthMonitoring" << "," << LengthMonitoring << "\n"
+        << "AverageSizeHR" << "," << AverageSizeHR << "\n"
+        << "SpeedCamera"  << "," <<  SpeedCamera << "\n"
+        << "NoRunIn" << "," <<  NoRunIn << "\n"
+        << "NoOfIterations" << "," << NoOfIterations << "\n"
+        << "NoSteps"   << "," << NoSteps << "\n"
     //Radom number seed
         << "Seed" << "," << Seed << "\n"
     //Size of the enviroment
@@ -366,7 +374,7 @@ int main(){
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     for(int iterationnumber=Seed + 0; iterationnumber<Seed + NoOfIterations; iterationnumber++){
-        std::cout<<"Iteration: "<<iterationnumber+1<<"/"<<Seed + NoOfIterations<<std::endl;
+        std::cout<<"Iteration: "<<iterationnumber<<"/"<<Seed + NoOfIterations<<std::endl;
     
     
     /////////////////////////////////////////////////////
@@ -404,7 +412,8 @@ int main(){
                 "," << "YLocation" <<
                 "\n";
         
-    */    
+    */
+    //std::cout<<"HomeRange"<<std::endl;
     //Creates a vecter of pointers to Home ranges
     std::vector<HomeRange*> AllHR(NoHR);
     
@@ -454,7 +463,7 @@ int main(){
     ///  - Allocates start location, simulates movement                                     ////
     ////////////////////////////////////////////////////////////////////////////////////////////
     
-    
+    //std::cout<<"Animals"<<std::endl;
     //Creates a vecter of pointers to individuals
     std::vector<Animal*> AllAnimals(NoAnimal);
     
@@ -485,7 +494,7 @@ int main(){
         RandomNumberStreamAnimal3[i]=double(rand());
     };
         
-    //std::cout<<"Random numbers"<<sec<<std::endl;
+    //std::cout<<"Random numbers"<<std::endl;
     
     /////////////////////////
     // Create output files //
@@ -528,6 +537,10 @@ int main(){
         srand(RandomNumberStreamAnimal2[i]);
         double CurrentAngleTemp = (double(rand())/RAND_MAX)*2*M_PI;
         
+        //std::cout <<"Create animal"<< std::endl;
+
+        //std::cout <<"HrId "<< HrId << std::endl;
+
         // New animal given start locations - at the centre of the home range
         // ????? Can start anywhere - within HR radius  => Remove need for Run in period ????
         AllAnimals[i] =new Animal(i                     // identifier
@@ -551,7 +564,8 @@ int main(){
         ///////////////////////
         /// Update location ///
         ///////////////////////
-
+        
+        //std::cout <<"Update location"<< std::endl;
         //Sets seed for a random number
         srand(RandomNumberStreamAnimal3[i]);
         //Random number stream for the movemnet of the animal
@@ -562,13 +576,16 @@ int main(){
         };
             // For each step
             for(int j=0; j<NoSteps; j++){
+                //std::cout <<"Update step"<< std::endl;
                 double count = j*100;
                 //Updates animal location
                 AllAnimals[i] -> UpdateLocation(RandomNumberCurrentAnimal[count]);
             }; //End of j loop for Steps
         
+        //std::cout <<"Update all locations"<< std::endl;
         // Creates a temp matrix for "all locations"
         std::vector<std::vector<double>> TempAllLocations = AllAnimals[i]->getAllLocations();
+        
         // Temp location file is written in csv file
         // Each location is a seperate row  - the number of rows = "TempAllLocations.size()"
             for(int stepcounter=0; stepcounter<TempAllLocations.size(); stepcounter++){
@@ -632,6 +649,8 @@ int main(){
                 //std::cout<<TempAllLocations.size()<<std::endl;
                 //std::cout<<TimeStepTrap<<std::endl;
             //int currentid = TempAllLocations[TimeStepTrap][0];
+            double previousx = TempAllLocations[TimeStepTrap-1][2];
+            double previousy = TempAllLocations[TimeStepTrap-1][3];
             double currentx = TempAllLocations[TimeStepTrap][2];
             double currenty = TempAllLocations[TimeStepTrap][3];
             double currentangle = TempAllLocations[TimeStepTrap][4];
@@ -650,13 +669,15 @@ int main(){
              */
            
             // Calcualtes whether the animal is captured
-            All_CT[NoCT]->CapturesIndividual(  currentx
-                                             , currenty
-                                             , Individual
-                                             , callangle
-                                             , currentangle
-                                             , iterationnumber
-                                             );
+            All_CT[NoCT]->CapturesAlg( currentx
+                                   , currenty
+                                   , previousx
+                                   , previousy
+                                   , Individual
+                                   , callangle
+                                   , currentangle
+                                   , iterationnumber
+                                  );
                 
             
             }
@@ -697,23 +718,36 @@ int main(){
             "," << "Time_step" <<
             "," << "CameraID" <<
             "," << "Iteration number" <<
+        "," << "X location" <<
+        "," << "Ylocation" <<
+        "," << "% time" <<
         "\n";
     
     //For all camera traps get there capture lists
     //Write that to CSV file
     for(int NoCT=0; NoCT<NoCameraTraps; NoCT++){
+         std::cout<<"CT no."<< NoCT<<std::endl;
         
-        // Creates a temp matrix for "all locations"
-        std::vector<std::vector<int>> TempCaptures = All_CT[NoCT]->getCaptures();
+        // Retreaves all of the captures
+        std::vector<std::vector<double>> TempCaptures = All_CT[NoCT]->getCaptures();
+        
+        //STarts looking dor the first entry
         int stepcounter=0;
+        std::cout<<"Length of the first entry ="<<TempCaptures[stepcounter].size()<<std::endl;
         // Temp location file is written in csv file
-        while(TempCaptures[stepcounter].size()>0){
+        while(TempCaptures[stepcounter].size()==7){
+        std::cout<<"Length of the current entry  = "<<TempCaptures[stepcounter].size()<<std::endl;
                 Captures<< TempCaptures[stepcounter][0] << //1st column, row
                 "," << TempCaptures[stepcounter][1] << //2nd column, row "stepcounter"
                 "," << TempCaptures[stepcounter][2] << //...
                 "," << TempCaptures[stepcounter][3] <<
+                "," << TempCaptures[stepcounter][4] <<
+                "," << TempCaptures[stepcounter][5] <<
+                "," << TempCaptures[stepcounter][6] <<
                 "\n";// New line
+            
             stepcounter+=1;
+            std::cout<<"next entry"<<stepcounter<<std::endl;
         }; //End of step counter loop
     }; //End of NoCT loop
     

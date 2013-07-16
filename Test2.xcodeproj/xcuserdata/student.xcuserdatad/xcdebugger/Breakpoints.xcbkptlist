@@ -34,11 +34,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "Test2/main.cpp"
-         timestampString = "393419713.293181"
+         timestampString = "395052448.629328"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "553"
-         endingLineNumber = "553"
+         startingLineNumber = "566"
+         endingLineNumber = "566"
          landmarkName = "main()"
          landmarkType = "7">
       </FileBreakpoint>
@@ -60,22 +60,22 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "Test2/Animal.cpp"
-         timestampString = "391776336.38014"
+         timestampString = "395052304.245544"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "181"
-         endingLineNumber = "181">
+         startingLineNumber = "186"
+         endingLineNumber = "186">
       </FileBreakpoint>
       <FileBreakpoint
          shouldBeEnabled = "No"
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "Test2/Animal.cpp"
-         timestampString = "391776336.38014"
+         timestampString = "395053296.689463"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "374"
-         endingLineNumber = "374"
+         startingLineNumber = "388"
+         endingLineNumber = "388"
          landmarkName = "Animal::UpdateLocation (double seed)"
          landmarkType = "5">
       </FileBreakpoint>
@@ -123,11 +123,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "Test2/main.cpp"
-         timestampString = "393419713.293181"
+         timestampString = "395052448.629328"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "313"
-         endingLineNumber = "313"
+         startingLineNumber = "319"
+         endingLineNumber = "319"
          landmarkName = "main()"
          landmarkType = "7">
       </FileBreakpoint>
@@ -162,22 +162,22 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "Test2/CameraTraps.cpp"
-         timestampString = "393343210.289059"
+         timestampString = "395568297.79649"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "242"
-         endingLineNumber = "242">
+         startingLineNumber = "585"
+         endingLineNumber = "585">
       </FileBreakpoint>
       <FileBreakpoint
          shouldBeEnabled = "No"
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "Test2/CameraTraps.cpp"
-         timestampString = "393343210.289059"
+         timestampString = "395568297.79649"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "255"
-         endingLineNumber = "255"
+         startingLineNumber = "598"
+         endingLineNumber = "598"
          landmarkName = "CameraTrap::TestCapturesIndividual(int ID ,double a ,double b ,double a1 ,double b1 ,double c ,double tempcallangleHalfWidth ,double outcome )"
          landmarkType = "5">
       </FileBreakpoint>
@@ -186,11 +186,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "Test2/main.cpp"
-         timestampString = "393419713.293181"
+         timestampString = "395052448.629328"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "247"
-         endingLineNumber = "247"
+         startingLineNumber = "253"
+         endingLineNumber = "253"
          landmarkName = "main()"
          landmarkType = "7">
       </FileBreakpoint>
@@ -199,11 +199,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "Test2/main.cpp"
-         timestampString = "393419713.293181"
+         timestampString = "395052448.629328"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "453"
-         endingLineNumber = "453"
+         startingLineNumber = "462"
+         endingLineNumber = "462"
          landmarkName = "main()"
          landmarkType = "7">
       </FileBreakpoint>
@@ -225,12 +225,12 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "Test2/CameraTraps.cpp"
-         timestampString = "393246801.898183"
+         timestampString = "395568297.79649"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "107"
-         endingLineNumber = "107"
-         landmarkName = "CameraTrap::CapturesIndividual(double location_x_animal, double location_y_animal, int Individual_ID, double call_halfwidth, double move_angle, int itnumber )"
+         startingLineNumber = "426"
+         endingLineNumber = "426"
+         landmarkName = "CameraTrap::CapturesIndividual(double location_x_animal, double location_y_animal, int Individual_ID, double call_halfwidth, double move_angle, int itnumber, double time )"
          landmarkType = "5">
       </FileBreakpoint>
       <FileBreakpoint
@@ -238,11 +238,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "Test2/Animal.cpp"
-         timestampString = "391776336.38014"
+         timestampString = "395052304.245544"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "124"
-         endingLineNumber = "124">
+         startingLineNumber = "129"
+         endingLineNumber = "129">
       </FileBreakpoint>
    </FileBreakpoints>
 </Bucket>

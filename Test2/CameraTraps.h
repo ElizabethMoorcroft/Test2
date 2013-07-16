@@ -28,8 +28,8 @@ private:
     
     clock_t time1;
     
-    std::vector<std::vector<int>> Captures;
-    std::vector<int> myvector;
+    std::vector<std::vector<double>> Captures;
+    std::vector<double> myvector;
     
 public:
     CameraTrap();
@@ -40,7 +40,7 @@ public:
                 ,double
                 ,double
                ,double);
-    std::vector<std::vector<int>> getCaptures(){return Captures;};
+    std::vector<std::vector<double>> getCaptures(){return Captures;};
     
     double getID(){return CT_identifier;};
     double getStepOn(){return CT_StepOn;};
@@ -56,7 +56,17 @@ public:
                             ,double //Call angle
                             , double//Movement angle
                            , int //iternation number
+                           ,double //time
                        );
+    
+    int CapturesAlg(double  //x location animal
+                 ,double //y location animal
+                ,double,double //previous x/y
+                          ,int // Animal ID
+                          ,double //Call angle
+                          , double//Movement angle
+                          , int //iternation number
+                          );
     
     void TestCapturesIndividual(int
                                 ,double
