@@ -81,7 +81,7 @@ std::string make_directory( const std::string& directory){
 // - The boundary
 // - The movement type
 // - The animal denisty
-std::string SaveDirectory = make_directory("/Users/student/Documents/Bats/Simulations/TestContinuous");
+std::string SaveDirectory = make_directory("/Users/student/Documents/Bats/Simulations/TestForCapture");
 
 /// END OF FILE NAMES
 
@@ -180,6 +180,7 @@ int main(){
     "," << "Camera Speed" <<
     "\n";
     
+    /* ------------------------------------------------------------------------------
     // Named such the that the each simulation can be correctly identified
     std::ofstream Movement;
     Movement.open(make_filenamesettings(SaveDirectory, ",Movement", ".csv" ).c_str());
@@ -195,7 +196,7 @@ int main(){
     "," << "Re-enterWorld" <<
     "," << "Iternation number" <<
     "\n";
-    
+    ---------------------------------------------------------------------------------*/
     
     
 
@@ -244,6 +245,7 @@ int main(){
         std::cout<<"No steps, Increase Length of monitoring"<< std::endl;
         exit (EXIT_FAILURE);
     };
+    
     
     //Test on the camera trap
     int test=0;
@@ -307,7 +309,7 @@ int main(){
     //Closes the csv camera file
     Cameras.close();
     
-    std::cout<<"Finish CT"<<std::endl;
+    std::cout<<"Finish Camera traps"<<std::endl;
     if(test==0)
     {
     ////////////////////////////////////////////////////////////////////////////////////////
@@ -582,6 +584,15 @@ int main(){
                 AllAnimals[i] -> UpdateLocation(RandomNumberCurrentAnimal[count]);
             }; //End of j loop for Steps
         
+        /* -------------------------------------------------------
+         ////////////////// SAVES MOVEMENT \\\\\\\\\\\\\\\\\\\\\\\
+         //
+         // This section saves the movement of the animals to CSV
+         // This can be VERY space consuming so it has been commented
+         // out.
+         // REMEMBER TO UNCOMMENT OPEN MOVEMENT AND CLOSE MOVEMENT
+         */
+        /*
         //std::cout <<"Update all locations"<< std::endl;
         // Creates a temp matrix for "all locations"
         std::vector<std::vector<double>> TempAllLocations = AllAnimals[i]->getAllLocations();
@@ -602,14 +613,14 @@ int main(){
                 "\n";                                      // New line
                     
             }; //END of STEPCOUNTER LOOP
-            };
-
+            }; //END OF FOR LOOP
+          ---------------------------------------------------- */
+        
         }; //End of i loop for EACH ANIMALS
     
+        
     //Print "Finish movement" to screen 
-    std::cout <<"Finish movement" <<std::endl;
-    
-
+    //std::cout <<"Finish movement" <<std::endl;
     
     //Animals.close();
         
@@ -669,7 +680,7 @@ int main(){
              */
            
             // Calcualtes whether the animal is captured
-            All_CT[NoCT]->CapturesAlg( currentx
+            All_CT[NoCT]->CapturesIntersection( currentx
                                    , currenty
                                    , previousx
                                    , previousy
@@ -726,17 +737,17 @@ int main(){
     //For all camera traps get there capture lists
     //Write that to CSV file
     for(int NoCT=0; NoCT<NoCameraTraps; NoCT++){
-         std::cout<<"CT no."<< NoCT<<std::endl;
+         //std::cout<<"CT no."<< NoCT<<std::endl;
         
         // Retreaves all of the captures
         std::vector<std::vector<double>> TempCaptures = All_CT[NoCT]->getCaptures();
         
         //STarts looking dor the first entry
         int stepcounter=0;
-        std::cout<<"Length of the first entry ="<<TempCaptures[stepcounter].size()<<std::endl;
+        //std::cout<<"Length of the first entry ="<<TempCaptures[stepcounter].size()<<std::endl;
         // Temp location file is written in csv file
         while(TempCaptures[stepcounter].size()==7){
-        std::cout<<"Length of the current entry  = "<<TempCaptures[stepcounter].size()<<std::endl;
+        //std::cout<<"Length of the current entry  = "<<TempCaptures[stepcounter].size()<<std::endl;
                 Captures<< TempCaptures[stepcounter][0] << //1st column, row
                 "," << TempCaptures[stepcounter][1] << //2nd column, row "stepcounter"
                 "," << TempCaptures[stepcounter][2] << //...
@@ -755,8 +766,10 @@ int main(){
     // Closes captures CSV file
     Captures.close();
     
-    //Closes the files Movement and Animals
-    Movement.close();
+    //Closes the files Movement files
+    // TO BE UNCOMMENTED WITH MOVEMENT SECTION!!
+    //Movement.close();
+        
     }; //end if test
     // Prints to screem to inform finished calculating captures
     //std::cout <<"Finish calculating captures" <<std::endl;

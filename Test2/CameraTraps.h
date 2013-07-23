@@ -6,6 +6,7 @@
 //  Copyright (c) 2013 Elizabeth Moorcroft. All rights reserved.
 //
 #include <iostream>
+#include "Parameters.h"
 #include <cstdio>
 #include <math.h>
 #include <time.h>
@@ -14,6 +15,7 @@
 #define Test2_CameraTraps_h
 
 class CameraTrap {
+    
 private:
     int CT_identifier;
     int CT_StepOn;
@@ -50,6 +52,11 @@ public:
     double getHalfAngle(){return angle_HalfWidth;};
     clock_t gettime(){return time1;};
     
+    int VertAndAngleInteraction(double, double, double);
+    int HorzAndAngleInteraction(double, double, double);
+    int HorzAndCircInteraction(double, double, double, double);
+    int VertAndCircInteraction(double, double, double, double);
+    
     int CapturesIndividual(double  //x location animal
                             ,double //y location animal
                             ,int // Animal ID
@@ -59,7 +66,7 @@ public:
                            ,double //time
                        );
     
-    int CapturesAlg(double  //x location animal
+    int CapturesIntersection(double  //x location animal
                  ,double //y location animal
                 ,double,double //previous x/y
                           ,int // Animal ID
@@ -67,6 +74,22 @@ public:
                           , double//Movement angle
                           , int //iternation number
                           );
+    
+    int CameraAndMovementAtAngle(double,
+                                 double,
+                                 double,
+                                 double,
+                                 int,
+                                 double,
+                                 double,
+                                 int,
+                                 double,
+                                 double,
+                                 double,
+                                 double,
+                                 double,
+                                 double,
+                                 double);
     
     void TestCapturesIndividual(int
                                 ,double

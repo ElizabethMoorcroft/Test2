@@ -22,13 +22,13 @@
 //////////////////////////////////////////////////
 
 //Simulation values - #Animals, #Steps, #HR, #CT
-const double DensityAnimals = 5*pow(10,-6); // XX*10^-6 Density/m^2  => XX Density/KM^2
-const double LengthMonitoring = 24*1*(60*60); //Length of monitoring in seconds. XX*(60*60)secs => XX hrs
+const double DensityAnimals = 0.5*pow(10,-6); // XX*10^-6 Density/m^2  => XX Density/KM^2
+const double LengthMonitoring = 1.5*(60*60); //Length of monitoring in seconds. XX*(60*60)secs => XX hrs
 const double AverageSizeHR = 1; //Average number of animals per roost
 const double SpeedCamera  = 30*0.06 ; // => XX m/s =  XX/ 0.06 KM/h  => XX*0.06 m/s =  XX KM/h
 const int NoRunIn = 0; // Number of steps before cameras are "activated"
 const int NoOfIterations = 500; // No of iterations with the settings
-
+   
 
 //Size of the enviroment
 const double Sq_MinX = 0;
@@ -98,5 +98,7 @@ const double RadiusCameraCircle = (LengthMonitoring*SpeedCamera)/(2*M_PI);
 // Assuming equal distance between the cameras
 // Assume the first one is occurs at 0
 const double AngleBetweenCameras = (2*M_PI)/(NoCameraTraps-1);
+
+
 
 #endif
