@@ -467,7 +467,8 @@ int main(){
     
     //std::cout<<"Animals"<<std::endl;
     //Creates a vecter of pointers to individuals
-    std::vector<Animal*> AllAnimals(NoAnimal);
+    std::vector<Animal*> AllAnimals;
+        AllAnimals.resize(NoAnimal);
     
     //List of random number for Animals
     //Uses RandomNumberStream as a seed for the stream
@@ -519,7 +520,7 @@ int main(){
     ////////////////////////////////////////////
     for(int i=0; i<NoAnimal; i++){
         //Print out animal number to screen
-        //std::cout <<"Animal:" << i+1 <<"/" << NoAnimal << std::endl;
+        std::cout <<"Animal:" << i+1 <<"/" << NoAnimal << std::endl;
         
         // Sets seed for a random number
         // So that can choose a home range centre at random
@@ -585,7 +586,7 @@ int main(){
             }; //End of j loop for Steps
         
         /* -------------------------------------------------------
-         ////////////////// SAVES MOVEMENT \\\\\\\\\\\\\\\\\\\\\\\
+         ////////////////// SAVES MOVEMENT 
          //
          // This section saves the movement of the animals to CSV
          // This can be VERY space consuming so it has been commented
@@ -615,12 +616,12 @@ int main(){
             }; //END of STEPCOUNTER LOOP
             }; //END OF FOR LOOP
           ---------------------------------------------------- */
-        
+        //
         }; //End of i loop for EACH ANIMALS
     
         
     //Print "Finish movement" to screen 
-    //std::cout <<"Finish movement" <<std::endl;
+    std::cout <<"Finish movement" <<std::endl;
     
     //Animals.close();
         
@@ -659,24 +660,25 @@ int main(){
             if(TempAllLocations[TimeStepTrap].size()>0){
                 //std::cout<<TempAllLocations.size()<<std::endl;
                 //std::cout<<TimeStepTrap<<std::endl;
-            //int currentid = TempAllLocations[TimeStepTrap][0];
-            double previousx = TempAllLocations[TimeStepTrap-1][2];
-            double previousy = TempAllLocations[TimeStepTrap-1][3];
-            double currentx = TempAllLocations[TimeStepTrap][2];
-            double currenty = TempAllLocations[TimeStepTrap][3];
-            double currentangle = TempAllLocations[TimeStepTrap][4];
+                //int currentid = TempAllLocations[TimeStepTrap][0];
+                double previousx = TempAllLocations[TimeStepTrap-1][2];
+                double previousy = TempAllLocations[TimeStepTrap-1][3];
+                double currentx = TempAllLocations[TimeStepTrap][2];
+                double currenty = TempAllLocations[TimeStepTrap][3];
+                double currentangle = TempAllLocations[TimeStepTrap][4];
             
-            /*
-            // !!!!Check!!!!
-            // Check whether the animal location is matched against the correct CT
-            double CameraCT_StepOn  = All_CT[NoCT]->getStepOn();
-            if(TempAllLocations[TimeStepTrap][1]!=CameraCT_StepOn){
-                std::cout << "Wrong Camera"
-                          << TempAllLocations[TimeStepTrap][1]
-                          << "!="
-                          << CameraCT_StepOn
-                          << std::endl;
-                exit (EXIT_FAILURE);};
+                /*
+                 // !!!!Check!!!!
+                 // Check whether the animal location is matched against the correct CT
+                 double CameraCT_StepOn  = All_CT[NoCT]->getStepOn();
+                 if(TempAllLocations[TimeStepTrap][1]!=CameraCT_StepOn){
+                    std::cout   << "Wrong Camera"
+                                << TempAllLocations[TimeStepTrap][1]
+                                << "!="
+                                << CameraCT_StepOn
+                                << std::endl;
+                    exit (EXIT_FAILURE);
+                 };
              */
            
             // Calcualtes whether the animal is captured
@@ -689,12 +691,13 @@ int main(){
                                    , currentangle
                                    , iterationnumber
                                   );
-                
+               
             
-            }
+            }; //END IF LOOP
          }; // End on camera loop (NoCT)
-     }; //End of Individual loop
+        //std::cout<< "HERE??"<<std::endl;
 
+     }; //End of Individual loop
         
     ///////////////////////////////////////////////////////////////////////////////////////
     ///                         !!!     Destructors         !!!!                        ///
@@ -702,16 +705,23 @@ int main(){
     /// Need to destruct the vectors of pointers to classes                             ///
     ///////////////////////////////////////////////////////////////////////////////////////
     
+        std::cout<< "HERE??"<<std::endl;
+        std::cout<< NoAnimal <<std::endl;
+        std::cout <<AllAnimals[3]->getID() <<std::endl;
+        std::cout <<AllAnimals[4]->getID() <<std::endl;
+
     // Destructors For Animals
-    for(int i=0; i<NoAnimal; i++){
-        delete AllAnimals[i];
-    }
+    for(int k=0; k<NoAnimal; k++){
+        std::cout<< k <<std::endl;
+        delete AllAnimals[k];
+    };
+         std::cout<< "HERE??"<<std::endl;
     
     // Destructors For HomeRange
     for(int i=0; i<NoHR; i++){
         delete AllHR[i];
-    }
-    
+    };
+            
         ///////////////////////////////////////////////////////////////////////////////////////
         ///                         !!!   END OF ITERATION   !!!!                           ///
         ///////////////////////////////////////////////////////////////////////////////////////
@@ -729,10 +739,10 @@ int main(){
             "," << "Time_step" <<
             "," << "CameraID" <<
             "," << "Iteration number" <<
-        "," << "X location" <<
-        "," << "Ylocation" <<
-        "," << "% time" <<
-        "\n";
+            "," << "X location" <<
+            "," << "Ylocation" <<
+            "," << "% time" <<
+            "\n";
     
     //For all camera traps get there capture lists
     //Write that to CSV file

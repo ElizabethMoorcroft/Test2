@@ -52,10 +52,11 @@ public:
     double getHalfAngle(){return angle_HalfWidth;};
     clock_t gettime(){return time1;};
     
-    int VertAndAngleInteraction(double, double, double);
-    int HorzAndAngleInteraction(double, double, double);
-    int HorzAndCircInteraction(double, double, double, double);
-    int VertAndCircInteraction(double, double, double, double);
+    //double VertAndAngleInteraction(double, double, double);
+    //double HorzAndAngleInteraction(double, double, double);
+    //std::vector<double> HorzAndCircInteraction(double, double, double, double);
+    //std::vector<double> VertAndCircInteraction(double, double, double, double);
+    //std::vector<double> AngleAndCurveInteraction(double, double, double, double, double);
     
     int CapturesIndividual(double  //x location animal
                             ,double //y location animal
@@ -67,29 +68,32 @@ public:
                        );
     
     int CapturesIntersection(double  //x location animal
-                 ,double //y location animal
-                ,double,double //previous x/y
+                             ,double //y location animal
+                             ,double,double //previous x/y
                           ,int // Animal ID
                           ,double //Call angle
                           , double//Movement angle
                           , int //iternation number
                           );
     
-    int CameraAndMovementAtAngle(double,
-                                 double,
-                                 double,
-                                 double,
-                                 int,
-                                 double,
-                                 double,
-                                 int,
-                                 double,
-                                 double,
-                                 double,
-                                 double,
-                                 double,
-                                 double,
-                                 double);
+    int CameraAndMovementAtAngle(double,// location_x_animal,
+                                 double,// location_y_animal,
+                                 double,// location_x_camera,
+                                 double,// location_y_camera,
+                                 double,// previous_x_animal,
+                                 double,// previous_y_animal,
+                                 int,// Individual_ID,
+                                 double ,//call_halfwidth,
+                                 double,// move_angle,
+                                 int ,//itnumber,
+                                 double,// m_animal,
+                                 double ,//c_animal,
+                                double ,//m_detector1,
+                                 double,// c_detector1,
+                                 double,// m_detector2,
+                                 double,// c_detector2,
+                                 double// radius)
+                                 );
     
     void TestCapturesIndividual(int
                                 ,double

@@ -34,11 +34,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "Test2/main.cpp"
-         timestampString = "396268587.520491"
+         timestampString = "396357923.141149"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "568"
-         endingLineNumber = "568"
+         startingLineNumber = "569"
+         endingLineNumber = "569"
          landmarkName = "main()"
          landmarkType = "7">
       </FileBreakpoint>
@@ -161,32 +161,6 @@
          shouldBeEnabled = "No"
          ignoreCount = "0"
          continueAfterRunningActions = "No"
-         filePath = "Test2/CameraTraps.cpp"
-         timestampString = "396271386.925582"
-         startingColumnNumber = "9223372036854775807"
-         endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "674"
-         endingLineNumber = "674"
-         landmarkName = "CameraTrap::CapturesIntersection(double location_x_animal, double location_y_animal, double previous_x_animal, double previous_y_animal, int Individual_ID, double call_halfwidth, double move_angle, int itnumber)"
-         landmarkType = "5">
-      </FileBreakpoint>
-      <FileBreakpoint
-         shouldBeEnabled = "No"
-         ignoreCount = "0"
-         continueAfterRunningActions = "No"
-         filePath = "Test2/CameraTraps.cpp"
-         timestampString = "396271386.925582"
-         startingColumnNumber = "9223372036854775807"
-         endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "687"
-         endingLineNumber = "687"
-         landmarkName = "CameraTrap::CapturesIntersection(double location_x_animal, double location_y_animal, double previous_x_animal, double previous_y_animal, int Individual_ID, double call_halfwidth, double move_angle, int itnumber)"
-         landmarkType = "5">
-      </FileBreakpoint>
-      <FileBreakpoint
-         shouldBeEnabled = "No"
-         ignoreCount = "0"
-         continueAfterRunningActions = "No"
          filePath = "Test2/main.cpp"
          timestampString = "396268587.520491"
          startingColumnNumber = "9223372036854775807"
@@ -221,19 +195,6 @@
          endingLineNumber = "62"
          landmarkName = "make_directory( const std::string&amp; directory)"
          landmarkType = "7">
-      </FileBreakpoint>
-      <FileBreakpoint
-         shouldBeEnabled = "No"
-         ignoreCount = "0"
-         continueAfterRunningActions = "No"
-         filePath = "Test2/CameraTraps.cpp"
-         timestampString = "396271386.925582"
-         startingColumnNumber = "9223372036854775807"
-         endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "514"
-         endingLineNumber = "514"
-         landmarkName = "CameraTrap::CapturesIntersection(double location_x_animal, double location_y_animal, double previous_x_animal, double previous_y_animal, int Individual_ID, double call_halfwidth, double move_angle, int itnumber)"
-         landmarkType = "5">
       </FileBreakpoint>
       <FileBreakpoint
          shouldBeEnabled = "No"
