@@ -649,7 +649,7 @@ int main(){
 
         for(int NoCT=0; NoCT<NoCameraTraps; NoCT++){ //Checks all CT for presence of animal
             
-            //std::cout <<"CT:" << NoCT+1 <<"/" <<NoCameraTraps << std::endl;
+            std::cout <<"CT:" << NoCT+1 <<"/" <<NoCameraTraps << std::endl;
             
             // The camera only start after the the "Run in period"
             // Then they are only on at the corresponding the time step
@@ -711,12 +711,13 @@ int main(){
         std::cout <<AllAnimals[4]->getID() <<std::endl;
 
     // Destructors For Animals
+    /*
     for(int k=0; k<NoAnimal; k++){
         std::cout<< k <<std::endl;
         delete AllAnimals[k];
     };
          std::cout<< "HERE??"<<std::endl;
-    
+    */
     // Destructors For HomeRange
     for(int i=0; i<NoHR; i++){
         delete AllHR[i];
