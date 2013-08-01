@@ -40,7 +40,7 @@ const double Sq_MaxY = 7500;
 const double Cir_CntX = (Sq_MaxX-Sq_MinX)/2+Sq_MinX;
 const double Cir_CntY = (Sq_MaxY-Sq_MinY)/2+Sq_MinY;
 
-const double CameraWidth = 45*M_PI/180;
+const double CameraWidth = 90*M_PI/180;
 
 //HR set up value
 const double HR_AverageRadius = 1000; //meters

@@ -34,7 +34,7 @@ CameraTrap::CameraTrap(int a//CT_identifier;
         */
         location_x = (Sq_MaxX-Sq_MinX)/2;
         location_y = (Sq_MaxX-Sq_MinX)/2;
-        angle = 0;
+        angle = M_PI/2;
         //if(angle<0){angle = 2*M_PI + angle;};
         //std::cout<<"END RCP: "<< a << std::endl;
         
@@ -90,7 +90,7 @@ CameraTrap::CameraTrap(int a//CT_identifier;
     // 90 degrees minus the number of degrees between the start and the current camera
     // because of the anti-clockwise motion
     // After passes zero - then
-    angle = tempangle;
+    angle = M_PI/2;//tempangle;
     if(angle<0){angle = 2*M_PI + tempangle;};
     
     //Assigning varaibles
@@ -529,6 +529,8 @@ int CameraTrap::CameraAndMovement(double location_x_animal,
     // TandA is Time and Angle 
     std::vector<double> TandA(2);
     std::vector<double> XandY(2);
+    double Y;
+    double X;
     
     //Animal has vertical movement
     if(location_x_animal == previous_x_animal){
@@ -558,10 +560,11 @@ int CameraTrap::CameraAndMovement(double location_x_animal,
             } // END IF DET==1
         // Detcteor at angle
         else{
-            TandA = TimeAndAngleCal(location_y_animal, location_x_animal, previous_y_animal, previous_x_animal, disttotal);
+            Y = HorzAndAngleInteraction(location_x_animal, m_animal, c_animal);
+            TandA = TimeAndAngleCal(Y, location_x_animal, previous_y_animal, previous_x_animal, disttotal);
             if(TandA[0]<=1 && approximatelyequal(TandA[1],move_angle)==1){
                 captured += CapturesIndividual(location_x_animal,
-                                               location_y_animal,
+                                               Y,
                                                Individual_ID,
                                                call_halfwidth,
                                                move_angle,
@@ -596,11 +599,12 @@ int CameraTrap::CameraAndMovement(double location_x_animal,
                                                itnumber,
                                                TandA[0]);}
         } // END OF IF DET ==1
-        // Detcteor at angle
+        // Detecteor at angle
         else {
-            TandA = TimeAndAngleCal(location_y_animal, location_x_animal, previous_y_animal, previous_x_animal, disttotal);
+            X = VertAndAngleInteraction(location_y_animal, m_animal, c_animal);
+            TandA = TimeAndAngleCal(X, location_x_animal, previous_y_animal, previous_x_animal, disttotal);
             if(TandA[0]<=1 && approximatelyequal(TandA[1],move_angle)==1){
-                captured += CapturesIndividual(location_x_animal,
+                captured += CapturesIndividual(X,
                                                location_y_animal,
                                                Individual_ID,
                                                call_halfwidth,
@@ -636,9 +640,36 @@ int CameraTrap::CameraAndMovement(double location_x_animal,
         }//--------END OF SAME ANGLE ANIMAL MOVEMENT ---------------//
     
     else if(m_detector != m_animal){
+        
+        //Horzontal detector
+        if(det==2){
+            X = HorzAndAngleInteraction(location_y, m_animal, c_animal);
+            TandA = TimeAndAngleCal(location_y, X, previous_y_animal, previous_x_animal, disttotal);
+            if(TandA[0]<=1 && approximatelyequal(TandA[1],move_angle)==1){
+                captured += CapturesIndividual(X,
+                                               location_y,
+                                               Individual_ID,
+                                               call_halfwidth,
+                                               move_angle,
+                                               itnumber,
+                                               TandA[0]);}
+        } // END OF IF DET ==2
+        // Vertical detector
+        else if(det==1){
+            Y = VertAndAngleInteraction(location_x, m_animal, c_animal);
+            TandA = TimeAndAngleCal(Y, location_x, previous_y_animal, previous_x_animal, disttotal);
+            if(TandA[0]<=1 && approximatelyequal(TandA[1],move_angle)==1){
+                captured += CapturesIndividual(location_x,
+                                               Y,
+                                               Individual_ID,
+                                               call_halfwidth,
+                                               move_angle,
+                                               itnumber,
+                                               TandA[0]);}
+        } // END OF IF DET ==1
 
+        else{
         XandY =AngleAndAngleInteraction(m_detector, c_detector, m_animal, c_animal);
-
         TandA = TimeAndAngleCal(XandY[1], XandY[0], previous_y_animal, previous_x_animal, disttotal);
         
         /*if(Individual_ID== 326 && CT_StepOn>901 && CT_StepOn<903){
@@ -656,6 +687,7 @@ int CameraTrap::CameraAndMovement(double location_x_animal,
                                            itnumber,
                                            TandA[0]);
              //if(Individual_ID== 326 && CT_StepOn>901 && CT_StepOn<903){ std::cout<<"END"<<std::endl;}
+            }
         }
         
     }//--------END OF DIFFERENT ANGLE ANIMAL MOVEMENT ---------------//
