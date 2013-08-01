@@ -81,7 +81,7 @@ std::string make_directory( const std::string& directory){
 // - The boundary
 // - The movement type
 // - The animal denisty
-std::string SaveDirectory = make_directory("/Users/student/Documents/Bats/Simulations/TestForCapture");
+std::string SaveDirectory = make_directory("/Users/student/Documents/Bats/Simulations/Temporary");
 
 /// END OF FILE NAMES
 
@@ -180,7 +180,7 @@ int main(){
     "," << "Camera Speed" <<
     "\n";
     
-    /* ------------------------------------------------------------------------------
+    ///* ------------------------------------------------------------------------------
     // Named such the that the each simulation can be correctly identified
     std::ofstream Movement;
     Movement.open(make_filenamesettings(SaveDirectory, ",Movement", ".csv" ).c_str());
@@ -196,7 +196,7 @@ int main(){
     "," << "Re-enterWorld" <<
     "," << "Iternation number" <<
     "\n";
-    ---------------------------------------------------------------------------------*/
+    //---------------------------------------------------------------------------------*/
     
     
 
@@ -584,15 +584,15 @@ int main(){
                 AllAnimals[i] -> UpdateLocation(RandomNumberCurrentAnimal[count]);
             }; //End of j loop for Steps
         
-        /* -------------------------------------------------------
+        ///* -------------------------------------------------------
          ////////////////// SAVES MOVEMENT \\\\\\\\\\\\\\\\\\\\\\\
          //
          // This section saves the movement of the animals to CSV
          // This can be VERY space consuming so it has been commented
          // out.
          // REMEMBER TO UNCOMMENT OPEN MOVEMENT AND CLOSE MOVEMENT
-         */
-        /*
+        // */
+        ///*
         //std::cout <<"Update all locations"<< std::endl;
         // Creates a temp matrix for "all locations"
         std::vector<std::vector<double>> TempAllLocations = AllAnimals[i]->getAllLocations();
@@ -614,7 +614,7 @@ int main(){
                     
             }; //END of STEPCOUNTER LOOP
             }; //END OF FOR LOOP
-          ---------------------------------------------------- */
+       //   ---------------------------------------------------- */
         
         }; //End of i loop for EACH ANIMALS
     
@@ -768,7 +768,7 @@ int main(){
     
     //Closes the files Movement files
     // TO BE UNCOMMENTED WITH MOVEMENT SECTION!!
-    //Movement.close();
+        Movement.close();
         
     }; //end if test
     // Prints to screem to inform finished calculating captures

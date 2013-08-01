@@ -52,11 +52,6 @@ public:
     double getHalfAngle(){return angle_HalfWidth;};
     clock_t gettime(){return time1;};
     
-    int VertAndAngleInteraction(double, double, double);
-    int HorzAndAngleInteraction(double, double, double);
-    int HorzAndCircInteraction(double, double, double, double);
-    int VertAndCircInteraction(double, double, double, double);
-    
     int CapturesIndividual(double  //x location animal
                             ,double //y location animal
                             ,int // Animal ID
@@ -75,21 +70,33 @@ public:
                           , int //iternation number
                           );
     
-    int CameraAndMovementAtAngle(double,
-                                 double,
-                                 double,
-                                 double,
-                                 int,
-                                 double,
-                                 double,
-                                 int,
-                                 double,
-                                 double,
-                                 double,
-                                 double,
-                                 double,
-                                 double,
-                                 double);
+    int CameraAndMovement(double,
+                        double,
+                        double,
+                        double,
+                        int,
+                        double,
+                        double,
+                        int,
+                        double,
+                        double,
+                        double,
+                        double,
+                        int,
+                        double);
+    
+    int CameraCircAndMovement(double, //location_x_animal,
+                            double, //location_y_animal,
+                            double, // previous_x_animal,
+                            double, // previous_y_animal,
+                            int, // Individual_ID,
+                            double, // call_halfwidth,
+                            double, // move_angle,
+                            int, // itnumber,
+                            double, // m_animal,
+                            double, // c_animal,
+                            double // disttotal
+                            );
     
     void TestCapturesIndividual(int
                                 ,double
