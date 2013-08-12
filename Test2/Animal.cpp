@@ -44,8 +44,8 @@ Animal::Animal( int a, int b,
     
     // Variables to do with calls
     //Set up like this so in the future can be initalized as RV??
-    Call_amp = Amp;
-    Call_freq = Freq;
+    //Call_amp = Amp;
+    //Call_freq = Freq;
     Call_width = Call_halfwidth;
     
     // Variables to do with HR

@@ -71,7 +71,8 @@ std::string make_directory( const std::string& directory){
             << ",StepLength="   << StepLength
             << ",CallHalfwidth=" << Call_halfwidth
             << ",CameraHalfwidth=" << CameraWidth
-            << ",Freq="         << Freq ;
+           // << ",Freq="         << Freq
+    ;
     return result.str();
 };
 
@@ -103,15 +104,27 @@ int main(){
     //Calculates some values before the before the iteration of loop starts//
     /////////////////////////////////////////////////////////////////////////
     
+    int NoCameraTraps =0;
+    if(DetectorLayOut == 2){
+        // The number of cameras and the number of steps
+        // The camera moves around the in a circle switching on and off
+        // (switching on for 0.35 seconds and off for 3.5 seconds)
+        // I assume the camera is on for an infinately small length of time during which it can capture
+        // everything in it's detection area.
+        // The step length is equal to the length of time the camera is off
+        // => The number of times the camera switches on is calculated as:
+        //          length of the study/ step length
+        // The number of steps is the number of times the camer switches on + the amount of run in time
+        NoCameraTraps = round(LengthMonitoring/StepLength);
+    }
 
-
-    //int NoSteps = NoCameraTraps + NoRunIn;
-    
-
-    
     
     //Tim's code for calucalting the attentuation of sound in order to calucalte the
     // maximum distance, here refered to as Radius, that the detector can detect a bat call
+    //
+    // !! This can be done outside of this code. !!
+    //
+    /*
     double T = 273.15+Temp ; //Convert celsius to kelvin
     double T01 = 273.16;
     double T0 = 293.15;
@@ -128,8 +141,8 @@ int main(){
     for(int i=0;  i<6; i++){ // Newton-raphson
         CallRadius = CallRadius - (Amp-It-Attenuation*CallRadius-20*log10(10*CallRadius))/(-Attenuation-20/(log(10)*CallRadius));
     }
-
-    std::cout<<CallRadius<<std::endl;
+    */
+    std::cout<<DetectorRadius<<std::endl;
     //
     // End of Tim's code
     
@@ -146,13 +159,15 @@ int main(){
     // one home range radius of a camera
     // If the radius of the camera movement is less than the average home range then there is no hole
     // in the middle of the camera circle
+        /*
         if(HR_AverageRadius>=RadiusCameraCircle){
             area = pow(RadiusCameraCircle+HR_AverageRadius,2)*M_PI;
             NoAnimal = floor(DensityAnimals*area);}
         else{
             area = pow(RadiusCameraCircle+HR_AverageRadius,2)*M_PI - pow(RadiusCameraCircle-HR_AverageRadius,2)*M_PI;
             NoAnimal = floor(DensityAnimals*area);}
-        }
+         */
+    }// END OF IF HRBOUNDARIES
     
 
 
@@ -222,8 +237,8 @@ int main(){
         exit (EXIT_FAILURE);
     };
     
-    if(CallRadius>200){
-        std::cout<<"Improbable camera radius. Camera radius= "<<CallRadius<< ". Check input in correct units"<< std::endl;
+    if(DetectorRadius>200){
+        std::cout<<"Improbable camera radius. Camera radius= "<<DetectorRadius<< ". Check input in correct units"<< std::endl;
         exit (EXIT_FAILURE);
     };
     /*
@@ -272,7 +287,7 @@ int main(){
             double tempvarCamerawidth = 89*M_PI/180;
                 CameraTrap CT1;
                  CT1 = CameraTrap(1 //identifier;
-                                    ,CallRadius //radius
+                                    ,DetectorRadius //radius
                                      ,60*M_PI/180
                                      ,tempvarCamerawidth //tempCameraWidth
                                     );
@@ -285,6 +300,19 @@ int main(){
     else{std::cout<<"Hello"<<std::endl;}
     };
     
+    
+    // The radius of the camera circle - to calucalte the locations of the cameras
+    // The circumferance of the circle is: total distnace = total time * camera speed
+    // The radius is: (circumference/pi)/2 = (circumference/(pi*2))
+    // => radius = (total time * camera speed/(pi*2))
+    double RadiusCameraCircle = (LengthMonitoring*SpeedCamera)/(2*M_PI);
+    
+    // The angle between camera as seen from the centre of the circle
+    // Assuming equal distance between the cameras
+    // Assume the first one is occurs at 0
+    double AngleBetweenCameras = (2*M_PI)/(NoCameraTraps-1);
+    
+    
     //Creates a list of pointers to the CTs
     std::vector<CameraTrap*> All_CT(NoCameraTraps);
     //Caluclates the location of all the camera traps
@@ -294,7 +322,9 @@ int main(){
         // The cameras start at 3o'clock and move in a anti-clockwise direction
         // This is for the simplicity of calculation
         All_CT[i] = new CameraTrap(i //identifier;
-                                   , CallRadius //radius
+                                   , DetectorRadius //radius
+                                   , RadiusCameraCircle //FOR TRANSECTS
+                                   , AngleBetweenCameras //FOR TRANSECTS
                                    );
         
         //Saves the locations and the angle of the camera
@@ -356,13 +386,15 @@ int main(){
     //Call parameters
         << "Call_halfwidth" << ","<< Call_halfwidth << "\n"
     //For the attenuation of sound
+    /*
         << "Temp" << ","<< Temp << "\n"
         << "Hum"  << ","<< Hum<< "\n"
         << "Freq" << ","<< Freq << "\n"
         << "Amp"  << ","<< Amp<< "\n"
         << "It"   << ","<< It << "\n"
+     */
     //Calculated values
-        <<"CallRadius"<<","<<CallRadius<<"\n";
+        <<"DetectorRadius"<<","<<DetectorRadius<<"\n";
     //Closes file
      Settings.close();
     
@@ -505,8 +537,6 @@ int main(){
     /*
     std::ofstream Animals;
     Animals.open(make_filename(SaveDirectory, ",Animals",iterationnumber,".csv" ).c_str());
-     */
-    /*
     Animals << "ID" <<
         "," << "HomeRangeID" <<
         "," << "XLocation" <<
@@ -540,7 +570,6 @@ int main(){
         double CurrentAngleTemp = (double(rand())/RAND_MAX)*2*M_PI;
         
         //std::cout <<"Create animal"<< std::endl;
-
         //std::cout <<"HrId "<< HrId << std::endl;
 
         // New animal given start locations - at the centre of the home range
@@ -591,8 +620,7 @@ int main(){
          // This can be VERY space consuming so it has been commented
          // out.
          // REMEMBER TO UNCOMMENT OPEN MOVEMENT AND CLOSE MOVEMENT
-         */
-        /*
+        
         //std::cout <<"Update all locations"<< std::endl;
         // Creates a temp matrix for "all locations"
         std::vector<std::vector<double>> TempAllLocations = AllAnimals[i]->getAllLocations();
@@ -650,48 +678,74 @@ int main(){
             
             //std::cout <<"CT:" << NoCT+1 <<"/" <<NoCameraTraps << std::endl;
             
+            int TimeStepTrap =0;
+            double previousx;
+            double previousy;
+            double currentx;
+            double currenty;
+            double currentangle;
+            if(DetectorLayOut == 0 | DetectorLayOut ==2){
             // The camera only start after the the "Run in period"
             // Then they are only on at the corresponding the time step
             // Camera 0 is only on at NoRunIn, Camera 1 is only on at NoRunIn+1,....
             // The one is added on becuase start counting the number of steps at 0
-            int TimeStepTrap = NoCT+NoRunIn+1;
+            TimeStepTrap = NoCT+NoRunIn+1;
 
             if(TempAllLocations[TimeStepTrap].size()>0){
                 //std::cout<<TempAllLocations.size()<<std::endl;
                 //std::cout<<TimeStepTrap<<std::endl;
             //int currentid = TempAllLocations[TimeStepTrap][0];
-            double previousx = TempAllLocations[TimeStepTrap-1][2];
-            double previousy = TempAllLocations[TimeStepTrap-1][3];
-            double currentx = TempAllLocations[TimeStepTrap][2];
-            double currenty = TempAllLocations[TimeStepTrap][3];
-            double currentangle = TempAllLocations[TimeStepTrap][4];
-            
-            /*
-            // !!!!Check!!!!
-            // Check whether the animal location is matched against the correct CT
-            double CameraCT_StepOn  = All_CT[NoCT]->getStepOn();
-            if(TempAllLocations[TimeStepTrap][1]!=CameraCT_StepOn){
-                std::cout << "Wrong Camera"
-                          << TempAllLocations[TimeStepTrap][1]
-                          << "!="
-                          << CameraCT_StepOn
-                          << std::endl;
-                exit (EXIT_FAILURE);};
-             */
+            previousx = TempAllLocations[TimeStepTrap-1][2];
+            previousy = TempAllLocations[TimeStepTrap-1][3];
+            currentx = TempAllLocations[TimeStepTrap][2];
+            currenty = TempAllLocations[TimeStepTrap][3];
+            currentangle = TempAllLocations[TimeStepTrap][4];
            
             // Calcualtes whether the animal is captured
-            All_CT[NoCT]->CapturesIntersection( currentx
-                                   , currenty
-                                   , previousx
-                                   , previousy
-                                   , Individual
-                                   , callangle
-                                   , currentangle
-                                   , iterationnumber
-                                  );
+            All_CT[NoCT]->CapturesIntersection(currentx
+                                               ,currenty
+                                               ,previousx
+                                               ,previousy
+                                               ,Individual
+                                               ,callangle
+                                               ,currentangle
+                                               ,iterationnumber
+                                               );
                 
             
+            } //END OF IF TempAllLocations
             }
+            // If the detector layout is a grid, then every detector needs to be checked at every time step.
+            // This invloves an extra loop.
+            else if(DetectorLayOut == 1){
+                // The camera only start after the the "Run in period"
+                // Then they are only on at the corresponding the time step
+                // Camera 0 is only on at NoRunIn, Camera 1 is only on at NoRunIn+1,....
+                // The one is added on becuase start counting the number of steps at 0
+                for(int time =0; time<NoSteps; time++ )
+                    TimeStepTrap= time;
+                
+                if(TempAllLocations[TimeStepTrap].size()>0){
+                    previousx = TempAllLocations[TimeStepTrap-1][2];
+                    previousy = TempAllLocations[TimeStepTrap-1][3];
+                    currentx = TempAllLocations[TimeStepTrap][2];
+                    currenty = TempAllLocations[TimeStepTrap][3];
+                    currentangle = TempAllLocations[TimeStepTrap][4];
+                    
+                    // Calcualtes whether the animal is captured
+                    All_CT[NoCT]->CapturesIntersection(currentx
+                                                       ,currenty
+                                                       ,previousx
+                                                       ,previousy
+                                                       ,Individual
+                                                       ,callangle
+                                                       ,currentangle
+                                                       ,iterationnumber
+                                                       );
+                    
+                    
+                } //END OF IF TempAllLocations
+            } // END ELSE IF Detctlayout ==1
          }; // End on camera loop (NoCT)
      }; //End of Individual loop
 

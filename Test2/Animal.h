@@ -40,8 +40,8 @@ class Animal {
     double Home_y;
     double Home_r;
     
-    double Call_amp;
-    double Call_freq;
+    //double Call_amp;
+    //double Call_freq;
     double Call_width;
     
     clock_t timeLE1;

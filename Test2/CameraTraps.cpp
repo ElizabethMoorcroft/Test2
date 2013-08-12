@@ -16,91 +16,54 @@
 CameraTrap::CameraTrap(){};
 CameraTrap::CameraTrap(int a//CT_identifier;
                        ,double d//radius;
+                       ,double RadiusCameraCircle
+                       ,double AngleBetweenCameras
                        //,std::vector<std::vector<int>> //::Captures()
                        ){
     
     // Renames variables
     time1=0;
-
-    if(RandomCameraPlacement==1){
-        //std::cout<<"Inside RCP"<<std::endl;
-        //List of random number
-        
-        /*
-        RandNum Number1;
-        location_x = Number1.AtoBUnif(RandomNumberStreamCPx[RandomNumberStreamCPpick[0]],Sq_MinX+20,Sq_MaxX-20);
-        location_y = Number1.AtoBUnif(RandomNumberStreamCPy[RandomNumberStreamCPpick[50]],Sq_MinY+20,Sq_MaxY-20);
-        angle = Number1.AtoBUnif(RandomNumberStreamCPa[RandomNumberStreamCPpick[100]],0,2*M_PI);
-        */
-        location_x = (Sq_MaxX-Sq_MinX)/2;
-        location_y = (Sq_MaxX-Sq_MinX)/2;
-        angle = M_PI/2;
-        //if(angle<0){angle = 2*M_PI + angle;};
-        //std::cout<<"END RCP: "<< a << std::endl;
-        
-    } else{
+    
+    
     //////////////////////////
     /// Location of camera ///
     //////////////////////////
-    // Using polar to cartesian co-ordinates
-    // This means that the cameras start at 3o'clock and move in a anti-clockwise direction
-    location_x = (RadiusCameraCircle  * cos(a*AngleBetweenCameras)) + Cir_CntX ;
-    location_y = (RadiusCameraCircle  * sin(a*AngleBetweenCameras)) + Cir_CntY ;
+    if(DetectorLayOut ==0){ //Single sationary detector
+        location_x = (Sq_MaxX-Sq_MinX)/2;
+        location_y = (Sq_MaxX-Sq_MinX)/2;
+        angle = 0;
+        CT_StepOn = a + NoRunIn;
+    } //End OF Single sationary detector
+    else if(DetectorLayOut ==2){ //Camera transect
+        // Using polar to cartesian co-ordinates
+        // This means that the cameras start at 3o'clock and move in a anti-clockwise direction
+        location_x = (RadiusCameraCircle  * cos(a*AngleBetweenCameras)) + Cir_CntX ;
+        location_y = (RadiusCameraCircle  * sin(a*AngleBetweenCameras)) + Cir_CntY ;
     
-    
-    // The angle (with respect to "north") the camera is facing is:
-    // 90 degrees minus the number of degrees between the start and the current camera
-    // because of the anti-clockwise motion
-    // After passes zero - then
-    angle = M_PI/2 - a*AngleBetweenCameras;
-    if(angle<0){angle = 2*M_PI + angle;};
+        // The angle (with respect to "north") the camera is facing is:
+        // 90 degrees minus the number of degrees between the start and the current camera
+        // because of the anti-clockwise motion
+        // After passes zero - then
+        angle = M_PI/2 - a*AngleBetweenCameras;
+        if(angle<0){angle = 2*M_PI + angle;};
+        CT_StepOn = a + NoRunIn;
+    } //End OF Camera transect
+    else if(DetectorLayOut ==1){ // cameras in a GRID formation 
+                
+        location_x = remainder(a,MaxNoX)*MaxNoX + Sq_MinX;
+        location_y = floor(a+1/MaxNoX)*Yspace + Sq_MinY;
+        
+        CT_StepOn = 0 + NoRunIn; // The cameras are on at all steps!!
     };
-    
 
     //Assigning varaibles
     CT_identifier = a;
-    CT_StepOn = a + NoRunIn;
     radius =d;
     angle_HalfWidth = CameraWidth;
     Captures.resize(round(DensityAnimals*((Sq_MaxX-Sq_MinX)*(Sq_MaxY-Sq_MinY))));
     capturecount=0;
     myvector.resize(7);
     //std::cout<<"END create"<< std::endl;
-};
-
-CameraTrap::CameraTrap(int a//CT_identifier;
-                       ,double d//radius;
-                        , double tempangle
-                       ,double tempCameraWidth
-                       //,std::vector<std::vector<int>> //::Captures()
-                       ){
-    
-    // Renames variables
-    time1=0;
-    
-    //////////////////////////
-    /// Location of camera ///
-    //////////////////////////
-    // Using polar to cartesian co-ordinates
-    // This means that the cameras start at 3o'clock and move in a anti-clockwise direction
-    location_x = 0 ;
-    location_y = 0 ;
-    
-    // The angle (with respect to "north") the camera is facing is:
-    // 90 degrees minus the number of degrees between the start and the current camera
-    // because of the anti-clockwise motion
-    // After passes zero - then
-    angle = M_PI/2;//tempangle;
-    if(angle<0){angle = 2*M_PI + tempangle;};
-    
-    //Assigning varaibles
-    CT_identifier = a;
-    CT_StepOn = 0;
-    radius =d;
-    angle_HalfWidth = tempCameraWidth;
-    Captures.resize((Sq_MaxX-Sq_MinX)*(Sq_MaxY-Sq_MinY)*DensityAnimals);
-    capturecount=0;
-    myvector.resize(6);
 };
 
 
@@ -316,6 +279,8 @@ int CameraTrap::CapturesIntersection(double location_x_animal,
     m_animal  = 1/(tan(move_angle));
     c_animal  = location_y_animal-location_x_animal*m_animal;
     
+    // Detector 1 is line represneting the left hand slide of the detector range
+    // Detector 2 is line represnting the RHS of the detector range
     // If the lines of the detcetor were lines of graphs with garident and intercepts, Y=mX+c, then:
     //  - gradient if theta is the ange of the line then, m=1/tan(theta)
     //  - intercpet would be: y-mx=c (where y and x are known)
@@ -337,6 +302,7 @@ int CameraTrap::CapturesIntersection(double location_x_animal,
     else if(detector2 == M_PI/2 || detector2== 3*M_PI/2){det2 = 2;} //Line is Horizontal
     
     // Checks for crossing the boundaries for detector 1
+    if(Individual_ID== 77 && CT_StepOn>769 && CT_StepOn<771){std::cout<<"Dect1"<<std::endl;}
     captured += CameraAndMovement(location_x_animal,
                                   location_y_animal,
                                   previous_x_animal,
@@ -351,7 +317,14 @@ int CameraTrap::CapturesIntersection(double location_x_animal,
                                   c_detector1,
                                   det1,
                                   disttotal);
+    
     // Checks for crossing the boundaries for detector 2
+    if(Individual_ID== 77 && CT_StepOn>769 && CT_StepOn<771){
+        std::cout<<"Dect2 "<< CT_StepOn <<std::endl;
+        std::cout<<"Dect grad = "<<m_detector2<<std::endl;
+        std::cout<<"Dect int = "<<c_detector2<<std::endl;
+        std::cout<<"Animal grad = "<<m_animal<<std::endl;
+        std::cout<<"Animal int = "<<c_animal<<std::endl;}
     captured += CameraAndMovement(location_x_animal,
                                   location_y_animal,
                                   previous_x_animal,
@@ -367,6 +340,7 @@ int CameraTrap::CapturesIntersection(double location_x_animal,
                                   det2,
                                   disttotal);
     
+    if(Individual_ID== 77 && CT_StepOn>769 && CT_StepOn<771){std::cout<<"Circ"<<std::endl;}
     // Checks for crossing the boundaries for circular edge of detector
     captured += CameraCircAndMovement(location_x_animal,
                                       location_y_animal,
@@ -380,9 +354,9 @@ int CameraTrap::CapturesIntersection(double location_x_animal,
                                       c_animal,
                                       disttotal);
     
-    
+    if(Individual_ID== 77 && CT_StepOn>769 && CT_StepOn<771){std::cout<<"End"<<std::endl;}
     // Checks for at the end of the step if in/out of detection area
-    captured += CapturesIndividual( location_x_animal,
+    captured += CapturesIndividual(location_x_animal,
                                    location_y_animal,
                                    Individual_ID,
                                    call_halfwidth,
@@ -672,8 +646,10 @@ int CameraTrap::CameraAndMovement(double location_x_animal,
         XandY =AngleAndAngleInteraction(m_detector, c_detector, m_animal, c_animal);
         TandA = TimeAndAngleCal(XandY[1], XandY[0], previous_y_animal, previous_x_animal, disttotal);
         
-        /*if(Individual_ID== 326 && CT_StepOn>901 && CT_StepOn<903){
+        /*
+        if(Individual_ID== 77 && CT_StepOn>769 && CT_StepOn<774){
             std::cout<<"X ="<<XandY[0] <<", Y=" << XandY[1]<<std::endl;
+            std::cout<<"PrevX ="<<previous_x_animal <<", PrevY=" << previous_y_animal<<std::endl;
             std::cout<<"T ="<<TandA[0] <<", A=" << TandA[1]<<std::endl;
             std::cout<<"Time ="<<1 <<", Angle=" << move_angle<<std::endl;}*/
         
@@ -686,7 +662,7 @@ int CameraTrap::CameraAndMovement(double location_x_animal,
                                            move_angle,
                                            itnumber,
                                            TandA[0]);
-             //if(Individual_ID== 326 && CT_StepOn>901 && CT_StepOn<903){ std::cout<<"END"<<std::endl;}
+             //if(Individual_ID== 77 && CT_StepOn>769 && CT_StepOn<771){ std::cout<<"END"<<std::endl;}
             }
         }
         
@@ -755,7 +731,7 @@ int CameraTrap::CapturesIndividual(double location_x_animal,
        diff_animal_camera<=radius){
         //std::cout<< "RADIUS"<<std::endl;
         
-        //if(Individual_ID== 326 && CT_StepOn>901 && CT_StepOn<903){std::cout<<"in camera Radius"<<std::endl;}
+        if(Individual_ID== 77 && CT_StepOn>769 && CT_StepOn<771){std::cout<<"in camera Radius"<<std::endl;}
        
         // If in range, is it in the angle?
         // (atan calculates radians)
@@ -774,6 +750,7 @@ int CameraTrap::CapturesIndividual(double location_x_animal,
         if(AngleFromCamera <0){AngleFromCamera = AngleFromCamera +2*M_PI;};
         
         /*
+        if(Individual_ID== 77 && CT_StepOn>769 && CT_StepOn<771){
         std::cout<< "location_x_animal: "<<location_x_animal<<std::endl;
         std::cout<< "location_y_animal: "<<location_y_animal<<std::endl;
         std::cout<< "Angle of camera: "<<angle<<std::endl;
@@ -793,7 +770,7 @@ int CameraTrap::CapturesIndividual(double location_x_animal,
            (AngleFromCamera >= Min_angle && AngleFromCamera <= Max_angle)){
               //std::cout<< "IN CAM ANGEL"<<std::endl;
             
-            //if(Individual_ID== 326 && CT_StepOn>901 && CT_StepOn<903){std::cout<<"In Camera angle"<<std::endl;}
+            //if(Individual_ID== 77 && CT_StepOn>769 && CT_StepOn<771){std::cout<<"In Camera angle"<<std::endl;}
             
             if(call_halfwidth==M_PI){
                 //std::cout<< "360 call"<<std::endl;

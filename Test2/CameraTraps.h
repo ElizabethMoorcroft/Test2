@@ -36,9 +36,6 @@ private:
 public:
     CameraTrap();
     CameraTrap( int //ID No (Also time step)
-               ,double
-               );
-    CameraTrap( int //ID No (Also time step)
                 ,double
                 ,double
                ,double);
