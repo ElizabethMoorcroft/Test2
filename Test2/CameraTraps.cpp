@@ -23,7 +23,7 @@ CameraTrap::CameraTrap(int a//CT_identifier;
     
     // Renames variables
     time1=0;
-    
+    //std::cout<<DetectorLayOut<<std::endl;
     
     //////////////////////////
     /// Location of camera ///
@@ -45,14 +45,17 @@ CameraTrap::CameraTrap(int a//CT_identifier;
         // because of the anti-clockwise motion
         // After passes zero - then
         angle = M_PI/2 - a*AngleBetweenCameras;
-        if(angle<0){angle = 2*M_PI + angle;};
+        if(angle<0){angle = 2*M_PI + angle;} else if(angle>=2*M_PI){angle = angle - 2*M_PI;};
         CT_StepOn = a + NoRunIn;
-    } //End OF Camera transect
-    else if(DetectorLayOut ==1){ // cameras in a GRID formation 
-                
-        location_x = remainder(a,MaxNoX)*MaxNoX + Sq_MinX;
-        location_y = floor(a+1/MaxNoX)*Yspace + Sq_MinY;
-        
+    }// End OF Camera transect
+    //  Cameras in a Grid formation
+    else if(DetectorLayOut ==1){
+        double temp =floor((a+1)/MaxNoX);
+        location_x = (((a+1)/MaxNoX)-temp)*MaxNoX*Xspace + Xgridmin;
+        location_y = temp*Yspace + Ygridmin;
+        std::cout<<temp<<std::endl;
+        angle = 0;
+        if(angle<0){angle = 2*M_PI + angle;} else if(angle>=2*M_PI){angle = angle - 2*M_PI;};
         CT_StepOn = 0 + NoRunIn; // The cameras are on at all steps!!
     };
 
@@ -67,6 +70,8 @@ CameraTrap::CameraTrap(int a//CT_identifier;
 };
 
 
+void CameraTrap::Add1StepOn(){CT_StepOn=CT_StepOn+1;};
+void CameraTrap::ResetStepOn(){CT_StepOn=0;};
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -259,8 +264,18 @@ int CameraTrap::CapturesIntersection(double location_x_animal,
                                      double move_angle,
                                      int itnumber){
     int captured = 0;
+    /*
+    // If it's in the possible angle then record in vector
+    myvector[0] = Individual_ID;
+    myvector[1] = CT_StepOn;
+    myvector[2] = CT_identifier;
+    myvector[3] = itnumber;
+    myvector[4] = location_x_animal;
+    myvector[5] = location_y_animal;
+    myvector[6] = 100;
     
-    
+    Captures[capturecount]=myvector;
+    */
     // finds the total distance travelled between it's new location and it's old location
     double disttotal = sqrt(pow(previous_x_animal-location_x_animal,2)+
                             pow(previous_y_animal-location_y_animal,2));

@@ -49,6 +49,9 @@ public:
     double getHalfAngle(){return angle_HalfWidth;};
     clock_t gettime(){return time1;};
     
+    void Add1StepOn();
+    void ResetStepOn();
+    
     int CapturesIndividual(double  //x location animal
                             ,double //y location animal
                             ,int // Animal ID

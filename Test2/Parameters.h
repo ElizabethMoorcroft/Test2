@@ -22,7 +22,7 @@
 //////////////////////////////////////////////////
 
 //Simulation values - #Animals, #Steps, #HR, #CT
-const double DensityAnimals = 5*pow(10,-6); // XX*10^-6 Density/m^2  => XX Density/KM^2
+const double DensityAnimals = 0.5*pow(10,-6); // XX*10^-6 Density/m^2  => XX Density/KM^2
 const double LengthMonitoring = 1.5*(60*60); //Length of monitoring in seconds. XX*(60*60)secs => XX hrs
 const double AverageSizeHR = 1; //Average number of animals per roost
 const double SpeedCamera  = 30*0.06 ; // => XX m/s =  XX/ 0.06 KM/h  => XX*0.06 m/s =  XX KM/h
@@ -40,19 +40,19 @@ const double Sq_MinY = 0;
 const double Sq_MaxY = 7500;
 
 // Centre of the camera circle is in the centre of the environment
-const double DetectorLayOut = 0; // 0 is a single stationary; 1 is a grid; 2 is a transect
+const double DetectorLayOut = 1; // 0 is a single stationary; 1 is a grid; 2 is a transect
 // If DetectorLayOut = 0 (single stationary), 2 (a transect)
 const double Cir_CntX = (Sq_MaxX-Sq_MinX)/2+Sq_MinX; 
 const double Cir_CntY = (Sq_MaxY-Sq_MinY)/2+Sq_MinY;
 // If DetectorLayOut = 1; Max Grid size
 // The grid will be a  a standard HR away from the edge of the world
 // A value for HR must be entered even if this is not required for movement
-const double MaxNoX = 100;
-const double MaxNoY = 100;
+const double MaxNoX = 10;
+const double MaxNoY = 10;
 const double Xgridmin = Sq_MinX + HR_AverageRadius;
 const double Ygridmin = Sq_MinY + HR_AverageRadius;
-const double Xspace = (MaxNoX+1)/(Sq_MaxX - Sq_MinX - 2*HR_AverageRadius);
-const double Yspace = (MaxNoY+1)/(Sq_MaxY - Sq_MinY - 2*HR_AverageRadius);
+const double Xspace = (Sq_MaxX - Sq_MinX - 2*HR_AverageRadius)/(MaxNoX+1);
+const double Yspace = (Sq_MaxY - Sq_MinY - 2*HR_AverageRadius)/(MaxNoY+1);
 
 // Camera width/Radius
 const double CameraWidth = 45*M_PI/180;
@@ -74,16 +74,18 @@ const double CorrWalkMaxAngleChange = M_PI/36;
 
 
 //Call parameters
-const double Call_halfwidth = 45*M_PI/180;   //Call_halfwidth
+const double Call_halfwidth = 180*M_PI/180;   //Call_halfwidth
 
-//For the attenuation of sound
 /*
+//For the attenuation of sound
 const double Temp = 25;
 const double Hum = 30;
 const double Freq = 45.11*pow(10,3);
 const double Amp = 126; //Amplitude
 const double It = 0;
 */
+
+// TOtal number of steps calculated from values above
 const int NoSteps = round(LengthMonitoring/StepLength)+ NoRunIn;
 
 

@@ -104,7 +104,7 @@ int main(){
     //Calculates some values before the before the iteration of loop starts//
     /////////////////////////////////////////////////////////////////////////
     
-    int NoCameraTraps =0;
+    int NoCameraTraps = 0;
     if(DetectorLayOut == 2){
         // The number of cameras and the number of steps
         // The camera moves around the in a circle switching on and off
@@ -117,7 +117,7 @@ int main(){
         // The number of steps is the number of times the camer switches on + the amount of run in time
         NoCameraTraps = round(LengthMonitoring/StepLength);
     }
-
+    else if(DetectorLayOut == 1){NoCameraTraps = MaxNoX *MaxNoY;}
     
     //Tim's code for calucalting the attentuation of sound in order to calucalte the
     // maximum distance, here refered to as Radius, that the detector can detect a bat call
@@ -317,7 +317,8 @@ int main(){
     std::vector<CameraTrap*> All_CT(NoCameraTraps);
     //Caluclates the location of all the camera traps
     for(int i=0; i<NoCameraTraps; i++){
-        //std::cout<<"Camera: "<<i+1 <<"/"<<NoCameraTraps <<std::endl;
+        std::cout<<"Camera: "<<i+1 <<"/"<<NoCameraTraps <<std::endl;
+        std::cout<<DetectorLayOut<<std::endl;
         // Calculate the starting position of all Camera traps
         // The cameras start at 3o'clock and move in a anti-clockwise direction
         // This is for the simplicity of calculation
@@ -685,52 +686,56 @@ int main(){
             double currenty;
             double currentangle;
             if(DetectorLayOut == 0 | DetectorLayOut ==2){
-            // The camera only start after the the "Run in period"
-            // Then they are only on at the corresponding the time step
-            // Camera 0 is only on at NoRunIn, Camera 1 is only on at NoRunIn+1,....
-            // The one is added on becuase start counting the number of steps at 0
-            TimeStepTrap = NoCT+NoRunIn+1;
-
-            if(TempAllLocations[TimeStepTrap].size()>0){
-                //std::cout<<TempAllLocations.size()<<std::endl;
-                //std::cout<<TimeStepTrap<<std::endl;
-            //int currentid = TempAllLocations[TimeStepTrap][0];
-            previousx = TempAllLocations[TimeStepTrap-1][2];
-            previousy = TempAllLocations[TimeStepTrap-1][3];
-            currentx = TempAllLocations[TimeStepTrap][2];
-            currenty = TempAllLocations[TimeStepTrap][3];
-            currentangle = TempAllLocations[TimeStepTrap][4];
-           
-            // Calcualtes whether the animal is captured
-            All_CT[NoCT]->CapturesIntersection(currentx
-                                               ,currenty
-                                               ,previousx
-                                               ,previousy
-                                               ,Individual
-                                               ,callangle
-                                               ,currentangle
-                                               ,iterationnumber
-                                               );
-                
-            
-            } //END OF IF TempAllLocations
-            }
-            // If the detector layout is a grid, then every detector needs to be checked at every time step.
-            // This invloves an extra loop.
-            else if(DetectorLayOut == 1){
                 // The camera only start after the the "Run in period"
                 // Then they are only on at the corresponding the time step
                 // Camera 0 is only on at NoRunIn, Camera 1 is only on at NoRunIn+1,....
                 // The one is added on becuase start counting the number of steps at 0
-                for(int time =0; time<NoSteps; time++ )
-                    TimeStepTrap= time;
+                TimeStepTrap = NoCT+NoRunIn+1;
+
+                if(TempAllLocations[TimeStepTrap].size()>0){
+                    //std::cout<<TempAllLocations.size()<<std::endl;
+                    //std::cout<<TimeStepTrap<<std::endl;
+                    //int currentid = TempAllLocations[TimeStepTrap][0];
+                    previousx = TempAllLocations[TimeStepTrap-1][2];
+                    previousy = TempAllLocations[TimeStepTrap-1][3];
+                    currentx = TempAllLocations[TimeStepTrap][2];
+                    currenty = TempAllLocations[TimeStepTrap][3];
+                    currentangle = TempAllLocations[TimeStepTrap][4];
+           
+                    // Calcualtes whether the animal is captured
+                    All_CT[NoCT]->CapturesIntersection(currentx
+                                                   ,currenty
+                                                   ,previousx
+                                                   ,previousy
+                                                   ,Individual
+                                                   ,callangle
+                                                   ,currentangle
+                                                   ,iterationnumber
+                                                   );
                 
+                } //END OF IF TempAllLocations
+            }
+        // If the detector layout is a grid, then every detector needs to be checked at every time step.
+        // This invloves an extra loop.
+        else if(DetectorLayOut == 1){
+            std::cout<<"Inside loop1 "<<Individual<<" "<<NoCT<<" "<< All_CT[NoCT]->getStepOn()<<std::endl;
+            // The camera only start after the the "Run in period"
+            // Then they are only on at the corresponding the time step
+            // Camera 0 is only on at NoRunIn, Camera 1 is only on at NoRunIn+1,....
+            // The one is added on becuase start counting the number of steps at 0
+            for(int time =0; time<NoSteps; time++ ){
+                TimeStepTrap= time+1;
+                //std::cout<<"Time: "<<NoSteps<<std::endl;
+                //std::cout<<"Time: "<<time<<std::endl;
+                std::cout<<Individual<<" "<<NoCT<<" "<< All_CT[NoCT]->getStepOn()<<std::endl;
                 if(TempAllLocations[TimeStepTrap].size()>0){
                     previousx = TempAllLocations[TimeStepTrap-1][2];
                     previousy = TempAllLocations[TimeStepTrap-1][3];
                     currentx = TempAllLocations[TimeStepTrap][2];
                     currenty = TempAllLocations[TimeStepTrap][3];
                     currentangle = TempAllLocations[TimeStepTrap][4];
+                    
+                    
                     
                     // Calcualtes whether the animal is captured
                     All_CT[NoCT]->CapturesIntersection(currentx
@@ -743,10 +748,15 @@ int main(){
                                                        ,iterationnumber
                                                        );
                     
-                    
+                
                 } //END OF IF TempAllLocations
+                All_CT[NoCT]->Add1StepOn();
+            }
             } // END ELSE IF Detctlayout ==1
          }; // End on camera loop (NoCT)
+        for(int NoCT=0; NoCT<NoCameraTraps; NoCT++){
+            All_CT[NoCT]->ResetStepOn();
+        };
      }; //End of Individual loop
 
         
