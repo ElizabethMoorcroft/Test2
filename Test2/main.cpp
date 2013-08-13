@@ -263,7 +263,8 @@ int main(){
     
     
     //Test on the camera trap
-    int test=0;
+    ///////////THIS NEEDS UPDATING!!!!
+    int test=1;
     if(test==1){
         std::cout<<"Start Test"<<std::endl;
     int a;
@@ -299,7 +300,21 @@ int main(){
     } // END OF CAMERA CHECK 
     else{std::cout<<"Hello"<<std::endl;}
     };
-    
+    if(test==1){
+        CameraTrap CT1;
+        CT1 = CameraTrap(1 //identifier;
+                         ,DetectorRadius //radius
+                         ,0
+                         ,0
+                         );
+        //    std::cout<<i<<std::endl;
+        CT1.TestVertAndAngleInteraction();
+        CT1.TestHorzAndAngleInteraction();
+        CT1.TestAngleAndAngleInteraction();
+        CT1.TestHorzAndCircInteraction();
+        CT1.TestVertAndCircInteraction();
+        CT1.TestAngleAndCircInteraction();
+    };
     
     // The radius of the camera circle - to calucalte the locations of the cameras
     // The circumferance of the circle is: total distnace = total time * camera speed
@@ -399,6 +414,21 @@ int main(){
     //Closes file
      Settings.close();
     
+    ///////////////////////////////
+    /// Saves the capture lists ///
+    ///////////////////////////////
+    // Creates file and saves it in with name refering the simulation number in the "SaveDirectory"
+    std::ofstream Captures;
+    Captures.open(make_filenamesettings(SaveDirectory, ",Captures",".csv" ).c_str());
+    // Header for the file
+    Captures << "AnimalNumber" <<
+        "," << "Time_step" <<
+        "," << "CameraID" <<
+        "," << "Iteration number" <<
+        "," << "X location" <<
+        "," << "Ylocation" <<
+        "," << "% time" <<
+        "\n";
     
     //////////////////////////////////////////////////////////////////////////////////////////////////
     // Starts a loop for the rest of the code                                                       //
@@ -668,8 +698,6 @@ int main(){
     //Each camera is only at a their location for one time interval
     for(int Individual=0; Individual<NoAnimal; Individual++){
         //std::cout <<"Animal:" << Individual+1 <<"/" << NoAnimal << std::endl;
-
-        
         // The call width of each individual does not change throughout the simulation
         // Therefore it doesn't need to be called for each camera
         double callangle = AllAnimals[Individual]->getCallWidth();
@@ -718,7 +746,7 @@ int main(){
         // If the detector layout is a grid, then every detector needs to be checked at every time step.
         // This invloves an extra loop.
         else if(DetectorLayOut == 1){
-            std::cout<<"Inside loop1 "<<Individual<<" "<<NoCT<<" "<< All_CT[NoCT]->getStepOn()<<std::endl;
+            //std::cout<<"Inside loop1 "<<Individual<<" "<<NoCT<<" "<< All_CT[NoCT]->getStepOn()<<std::endl;
             // The camera only start after the the "Run in period"
             // Then they are only on at the corresponding the time step
             // Camera 0 is only on at NoRunIn, Camera 1 is only on at NoRunIn+1,....
@@ -727,7 +755,7 @@ int main(){
                 TimeStepTrap= time+1;
                 //std::cout<<"Time: "<<NoSteps<<std::endl;
                 //std::cout<<"Time: "<<time<<std::endl;
-                std::cout<<Individual<<" "<<NoCT<<" "<< All_CT[NoCT]->getStepOn()<<std::endl;
+                //std::cout<<Individual<<" "<<NoCT<<" "<< All_CT[NoCT]->getStepOn()<<std::endl;
                 if(TempAllLocations[TimeStepTrap].size()>0){
                     previousx = TempAllLocations[TimeStepTrap-1][2];
                     previousy = TempAllLocations[TimeStepTrap-1][3];
@@ -753,12 +781,40 @@ int main(){
                 All_CT[NoCT]->Add1StepOn();
             }
             } // END ELSE IF Detctlayout ==1
+            
+            
+            /////////////SAVING THE CAPTURES///////////////////
+            // Retreaves all of the captures
+            std::vector<std::vector<double>> TempCaptures = All_CT[NoCT]->getCaptures();
+            
+            //STarts looking dor the first entry
+            int stepcounter=0;
+            //std::cout<<"Length of the first entry ="<<TempCaptures[stepcounter].size()<<std::endl;
+            // Temp location file is written in csv file
+            while(TempCaptures[stepcounter].size()==7){
+                //std::cout<<"Length of the current entry  = "<<TempCaptures[stepcounter].size()<<std::endl;
+                Captures<< TempCaptures[stepcounter][0] << //1st column, row
+                "," << TempCaptures[stepcounter][1] << //2nd column, row "stepcounter"
+                "," << TempCaptures[stepcounter][2] << //...
+                "," << TempCaptures[stepcounter][3] <<
+                "," << TempCaptures[stepcounter][4] <<
+                "," << TempCaptures[stepcounter][5] <<
+                "," << TempCaptures[stepcounter][6] <<
+                "\n";// New line
+                
+                stepcounter+=1;
+                //std::cout<<"next entry"<<stepcounter<<std::endl;
+            }; //End of step counter loop
+            All_CT[NoCT]->resetCaptures();
+            
          }; // End on camera loop (NoCT)
-        for(int NoCT=0; NoCT<NoCameraTraps; NoCT++){
-            All_CT[NoCT]->ResetStepOn();
+        // This is done because the StepNo is changed for everytime step and needs to be reset to 0
+        if(DetectorLayOut == 1){
+            for(int NoCT=0; NoCT<NoCameraTraps; NoCT++){All_CT[NoCT]->ResetStepOn();};
         };
      }; //End of Individual loop
-
+        
+    
         
     ///////////////////////////////////////////////////////////////////////////////////////
     ///                         !!!     Destructors         !!!!                        ///
@@ -780,51 +836,6 @@ int main(){
         ///                         !!!   END OF ITERATION   !!!!                           ///
         ///////////////////////////////////////////////////////////////////////////////////////
     };//End of iteration
-    
-    
-    ///////////////////////////////
-    /// Saves the capture lists ///
-    ///////////////////////////////
-    // Creates file and saves it in with name refering the simulation number in the "SaveDirectory"
-        std::ofstream Captures;
-        Captures.open(make_filenamesettings(SaveDirectory, ",Captures",".csv" ).c_str());
-        // Header for the file
-        Captures << "AnimalNumber" <<
-            "," << "Time_step" <<
-            "," << "CameraID" <<
-            "," << "Iteration number" <<
-        "," << "X location" <<
-        "," << "Ylocation" <<
-        "," << "% time" <<
-        "\n";
-    
-    //For all camera traps get there capture lists
-    //Write that to CSV file
-    for(int NoCT=0; NoCT<NoCameraTraps; NoCT++){
-         //std::cout<<"CT no."<< NoCT<<std::endl;
-        
-        // Retreaves all of the captures
-        std::vector<std::vector<double>> TempCaptures = All_CT[NoCT]->getCaptures();
-        
-        //STarts looking dor the first entry
-        int stepcounter=0;
-        //std::cout<<"Length of the first entry ="<<TempCaptures[stepcounter].size()<<std::endl;
-        // Temp location file is written in csv file
-        while(TempCaptures[stepcounter].size()==7){
-        //std::cout<<"Length of the current entry  = "<<TempCaptures[stepcounter].size()<<std::endl;
-                Captures<< TempCaptures[stepcounter][0] << //1st column, row
-                "," << TempCaptures[stepcounter][1] << //2nd column, row "stepcounter"
-                "," << TempCaptures[stepcounter][2] << //...
-                "," << TempCaptures[stepcounter][3] <<
-                "," << TempCaptures[stepcounter][4] <<
-                "," << TempCaptures[stepcounter][5] <<
-                "," << TempCaptures[stepcounter][6] <<
-                "\n";// New line
-            
-            stepcounter+=1;
-            std::cout<<"next entry"<<stepcounter<<std::endl;
-        }; //End of step counter loop
-    }; //End of NoCT loop
     
     
     // Closes captures CSV file

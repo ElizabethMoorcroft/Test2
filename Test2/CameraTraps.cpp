@@ -63,7 +63,7 @@ CameraTrap::CameraTrap(int a//CT_identifier;
     CT_identifier = a;
     radius =d;
     angle_HalfWidth = CameraWidth;
-    Captures.resize(round(DensityAnimals*((Sq_MaxX-Sq_MinX)*(Sq_MaxY-Sq_MinY))));
+    Captures.resize(round(DensityAnimals*((Sq_MaxX-Sq_MinX)*(Sq_MaxY-Sq_MinY)))*3);
     capturecount=0;
     myvector.resize(7);
     //std::cout<<"END create"<< std::endl;
@@ -72,6 +72,10 @@ CameraTrap::CameraTrap(int a//CT_identifier;
 
 void CameraTrap::Add1StepOn(){CT_StepOn=CT_StepOn+1;};
 void CameraTrap::ResetStepOn(){CT_StepOn=0;};
+void CameraTrap::resetCaptures(){
+    Captures.clear();
+    Captures.resize(round(DensityAnimals*((Sq_MaxX-Sq_MinX)*(Sq_MaxY-Sq_MinY)))*3);
+};
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -158,7 +162,7 @@ std::vector <double> VertAndCircInteraction(double Vert, double y_centre, double
     // y = (+/-)sqrt (r^2 - (x-b)^2) +a
     std::vector <double> Coord(2);
     double Coordinate1 = sqrt(pow(radius,2) - pow((Vert - x_centre),2))+ y_centre;
-    double Coordinate2 = sqrt(pow(radius,2) - pow((Vert - x_centre),2))+ y_centre;
+    double Coordinate2 = -sqrt(pow(radius,2) - pow((Vert - x_centre),2))+ y_centre;
     Coord[0] = Coordinate1;
     Coord[1] = Coordinate2;
     return(Coord);
@@ -317,7 +321,7 @@ int CameraTrap::CapturesIntersection(double location_x_animal,
     else if(detector2 == M_PI/2 || detector2== 3*M_PI/2){det2 = 2;} //Line is Horizontal
     
     // Checks for crossing the boundaries for detector 1
-    if(Individual_ID== 77 && CT_StepOn>769 && CT_StepOn<771){std::cout<<"Dect1"<<std::endl;}
+    //if(Individual_ID== 77 && CT_StepOn>769 && CT_StepOn<771){std::cout<<"Dect1"<<std::endl;}
     captured += CameraAndMovement(location_x_animal,
                                   location_y_animal,
                                   previous_x_animal,
@@ -334,12 +338,12 @@ int CameraTrap::CapturesIntersection(double location_x_animal,
                                   disttotal);
     
     // Checks for crossing the boundaries for detector 2
-    if(Individual_ID== 77 && CT_StepOn>769 && CT_StepOn<771){
+    /*if(Individual_ID== 77 && CT_StepOn>769 && CT_StepOn<771){
         std::cout<<"Dect2 "<< CT_StepOn <<std::endl;
         std::cout<<"Dect grad = "<<m_detector2<<std::endl;
         std::cout<<"Dect int = "<<c_detector2<<std::endl;
         std::cout<<"Animal grad = "<<m_animal<<std::endl;
-        std::cout<<"Animal int = "<<c_animal<<std::endl;}
+        std::cout<<"Animal int = "<<c_animal<<std::endl;}*/
     captured += CameraAndMovement(location_x_animal,
                                   location_y_animal,
                                   previous_x_animal,
@@ -355,7 +359,7 @@ int CameraTrap::CapturesIntersection(double location_x_animal,
                                   det2,
                                   disttotal);
     
-    if(Individual_ID== 77 && CT_StepOn>769 && CT_StepOn<771){std::cout<<"Circ"<<std::endl;}
+    //if(Individual_ID== 77 && CT_StepOn>769 && CT_StepOn<771){std::cout<<"Circ"<<std::endl;}
     // Checks for crossing the boundaries for circular edge of detector
     captured += CameraCircAndMovement(location_x_animal,
                                       location_y_animal,
@@ -369,7 +373,7 @@ int CameraTrap::CapturesIntersection(double location_x_animal,
                                       c_animal,
                                       disttotal);
     
-    if(Individual_ID== 77 && CT_StepOn>769 && CT_StepOn<771){std::cout<<"End"<<std::endl;}
+    //if(Individual_ID== 77 && CT_StepOn>769 && CT_StepOn<771){std::cout<<"End"<<std::endl;}
     // Checks for at the end of the step if in/out of detection area
     captured += CapturesIndividual(location_x_animal,
                                    location_y_animal,
@@ -746,7 +750,7 @@ int CameraTrap::CapturesIndividual(double location_x_animal,
        diff_animal_camera<=radius){
         //std::cout<< "RADIUS"<<std::endl;
         
-        if(Individual_ID== 77 && CT_StepOn>769 && CT_StepOn<771){std::cout<<"in camera Radius"<<std::endl;}
+        //if(Individual_ID== 77 && CT_StepOn>769 && CT_StepOn<771){std::cout<<"in camera Radius"<<std::endl;}
        
         // If in range, is it in the angle?
         // (atan calculates radians)
@@ -876,6 +880,156 @@ int CameraTrap::CapturesIndividual(double location_x_animal,
                                                 Tests 
  
  --------------------------------------------------------------------------------------------------------*/
+
+//--------TEST FOR INTERSECTION  ---------------//
+void CameraTrap::TestVertAndAngleInteraction(){
+    if(VertAndAngleInteraction(0, 1, 5)!=5){
+        std::cout<<"Error! Failed camera test - TestVertAndAngleInteraction: "<<"1" <<std::endl;
+        exit (EXIT_FAILURE);
+    }
+    if(VertAndAngleInteraction(1, 1, 5)!=6){
+        std::cout<<"Error! Failed camera test - TestVertAndAngleInteraction: "<<"2"<< std::endl;
+        exit (EXIT_FAILURE);
+    }
+    if(VertAndAngleInteraction(1, 2, 5)!=7){
+        std::cout<<"Error! Failed camera test - TestVertAndAngleInteraction: "<<"3"<< std::endl;
+        exit (EXIT_FAILURE);
+    }
+    std::cout<<"Passed! Camera test - TestVertAndAngleInteraction"<< std::endl;
+}
+
+void CameraTrap::TestHorzAndAngleInteraction(){
+    if(HorzAndAngleInteraction(0, 1, 5)!=-5){
+        std::cout<<"Error! Failed camera test - TestHorzAndAngleInteraction: "<<"1" <<std::endl;
+        exit (EXIT_FAILURE);
+    }
+    if(HorzAndAngleInteraction(1, 1, 5)!=-4){
+        std::cout<<"Error! Failed camera test - TestHorzAndAngleInteraction: "<<"2"<< std::endl;
+        exit (EXIT_FAILURE);
+    }
+    if(HorzAndAngleInteraction(1, 2, 5)!=-2){
+        std::cout<<"Error! Failed camera test - TestHorzAndAngleInteraction: "<<"3"<< std::endl;
+        exit (EXIT_FAILURE);
+    }
+    std::cout<<"Passed! Camera test - TestHorzAndAngleInteraction "<< std::endl;
+}
+
+
+void CameraTrap::TestAngleAndAngleInteraction(){
+    
+    std::vector <double> Estimate(2);
+    
+    Estimate = AngleAndAngleInteraction(1, 0, -1, 0);
+    if(Estimate[0]!=0 && Estimate[1]!=0){
+        std::cout<<"Error! Failed camera test - TestAngleAndAngleInteraction: "<<"1" <<std::endl;
+        exit (EXIT_FAILURE);
+    }
+    Estimate = AngleAndAngleInteraction(1,0, 2, 0);
+    if(Estimate[0]!=0 && Estimate[1]!=0){
+        std::cout<<"Error! Failed camera test - TestAngleAndAngleInteraction: "<<"2"<< std::endl;
+        exit (EXIT_FAILURE);
+    }
+    Estimate = AngleAndAngleInteraction(1,10, -1, 5);
+    if(Estimate[0]!=-2.5 && Estimate[1]!=7){
+        std::cout<<"Error! Failed camera test - TestAngleAndAngleInteraction: "<<"3"<< std::endl;
+        exit (EXIT_FAILURE);
+    }
+    std::cout<<"Passed! Camera test - TestAngleAndAngleInteraction"<< std::endl;
+}
+
+
+void CameraTrap::TestHorzAndCircInteraction(){
+    std::vector <double> Estimate(2);
+    
+    Estimate = HorzAndCircInteraction(1, 0, 0, 1);
+    if(Estimate[0]!=0 && Estimate[1]!=0){
+        std::cout<<"Error! Failed camera test - TestHorzAndCircInteraction: "<<"1" <<std::endl;
+        exit (EXIT_FAILURE);
+    }
+    Estimate = HorzAndCircInteraction(0, 0, 0, 1);
+    if((Estimate[0]!=-1 && Estimate[1]!=1)&&(Estimate[0]!=1 && Estimate[1]!=-1)){
+        std::cout<< Estimate[0] <<" " <<Estimate[1] << " "<<std::endl;
+        std::cout<<"Error! Failed camera test - TestHorzAndCircInteraction: "<<"2" <<std::endl;
+        exit (EXIT_FAILURE);
+    }
+    Estimate = HorzAndCircInteraction(0.5, 0, 0, 1);
+    double temp = sqrt(1-pow(0.5,2));
+    if((Estimate[0]!= temp && Estimate[1]!=-temp) && (Estimate[0]!=-temp && Estimate[1]!=temp)){
+        std::cout<< temp << " "<<std::endl;
+        std::cout<< Estimate[0] <<" " <<Estimate[1] << " "<<std::endl;
+        std::cout<<"Error! Failed camera test - TestHorzAndCircInteraction: "<<"3" <<std::endl;
+        exit (EXIT_FAILURE);
+    }
+    std::cout<<"Passed! Camera test - TestHorzAndCircInteraction"<< std::endl;
+    
+};
+
+void CameraTrap::TestVertAndCircInteraction(){
+    std::vector <double> Estimate(2);
+    
+    Estimate = VertAndCircInteraction(1, 0, 0, 1);
+    if(Estimate[0]!=0 && Estimate[1]!=0){
+        std::cout<<"Error! Failed camera test - TestVertAndCircInteraction: "<<"1" <<std::endl;
+        exit (EXIT_FAILURE);
+    }
+    Estimate = VertAndCircInteraction(0, 0, 0, 1);
+    if((Estimate[0]!=-1 && Estimate[1]!=1)&&(Estimate[0]!=1 && Estimate[1]!=-1)){
+        std::cout<<"Error! Failed camera test - TestVertAndCircInteraction: "<<"2" <<std::endl;
+        exit (EXIT_FAILURE);
+    }
+    Estimate = VertAndCircInteraction(0.5, 0, 0, 1);
+    double temp = sqrt(1-pow(0.5,2));
+    if((Estimate[0]!=-temp && Estimate[1]!=temp)&&(Estimate[0]!=temp && Estimate[1]!=-temp)){
+        std::cout<<"Error! Failed camera test - TestVertAndCircInteraction: "<<"3" <<std::endl;
+        exit (EXIT_FAILURE);
+    }
+    std::cout<<"Passed! Camera test - TestVertAndCircInteraction"<< std::endl;
+    
+};
+
+
+void CameraTrap::TestAngleAndCircInteraction(){
+    std::vector <double> Estimate(4);
+    
+    Estimate = AngleAndCircInteraction(1,0, 0, 0, 1);
+    double temp = cos(M_PI/4);
+    if(((approximatelyequal(Estimate[0],-temp)==1 && (approximatelyequal(Estimate[2],-temp)==1))
+            &&
+         (approximatelyequal(Estimate[2],temp)==1 && (approximatelyequal(Estimate[3],temp)==1)))
+        &&
+       ((approximatelyequal(Estimate[0],temp)==1 && (approximatelyequal(Estimate[2],temp)==1))
+        &&
+        (approximatelyequal(Estimate[2],-temp)==1 && (approximatelyequal(Estimate[3],-temp)==1)))){
+        std::cout<< temp<<std::endl;
+        std::cout<< Estimate[0]<<std::endl;
+        std::cout<<"Error! Failed camera test - TestAngleAndCircInteraction: "<<"1" <<std::endl;
+        exit (EXIT_FAILURE);
+    }
+    
+    Estimate = AngleAndCircInteraction(-1,0 , 0, 0, 1);
+    if(((approximatelyequal(Estimate[0],-temp)==1 && (approximatelyequal(Estimate[2],temp)==1))
+        &&
+        (approximatelyequal(Estimate[2],temp)==1 && (approximatelyequal(Estimate[3],-temp)==1)))
+       &&
+       ((approximatelyequal(Estimate[0],temp)==1 && (approximatelyequal(Estimate[2],-temp)==1))
+        &&
+        (approximatelyequal(Estimate[2],-temp)==1 && (approximatelyequal(Estimate[3],temp)==1)))){
+        std::cout<<"Error! Failed camera test - TestAngleAndCircInteraction: "<<"2" <<std::endl;
+        exit (EXIT_FAILURE);
+    }
+    
+    Estimate = AngleAndCircInteraction(1, sqrt(2), 0, 0, 1);
+    if(((Estimate[0]!=-1/sqrt(2) && Estimate[1]!=1/sqrt(2))&&(Estimate[2]!=-1/sqrt(2) && Estimate[3]!=1/sqrt(2)))){
+        std::cout<< Estimate[0] <<" " << (1/sqrt(2))<<std::endl;
+        std::cout<< Estimate[0] <<" " << Estimate[1] <<" "<< Estimate[2] <<" " << Estimate[3] <<" "<<std::endl;
+        std::cout<<"Error! Failed camera test - TestAngleAndCircInteraction: "<<"3" <<std::endl;
+        exit (EXIT_FAILURE);
+    }
+    std::cout<<"Passed! Camera test - TestAngleAndCircInteraction"<< std::endl;
+};
+/*
+ END OF INTERSECPT TESTS
+ */
 
 //--------TEST FOR CAPTURING WITHIN RADIUS AND ANGLE  ---------------//
 void CameraTrap::TestCapturesIndividual(int ID

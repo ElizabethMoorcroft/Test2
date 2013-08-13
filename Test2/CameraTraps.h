@@ -40,6 +40,7 @@ public:
                 ,double
                ,double);
     std::vector<std::vector<double>> getCaptures(){return Captures;};
+    void resetCaptures();
     
     double getID(){return CT_identifier;};
     double getStepOn(){return CT_StepOn;};
@@ -106,6 +107,14 @@ public:
                                 , double
                                 , double
                                 , double);
+    
+    void TestVertAndAngleInteraction();
+    void TestHorzAndAngleInteraction();
+    void TestAngleAndAngleInteraction();
+    void TestHorzAndCircInteraction();
+    void TestVertAndCircInteraction();
+    void TestAngleAndCircInteraction();
+    
     
 
     
