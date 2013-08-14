@@ -314,6 +314,8 @@ int main(){
         CT1.TestHorzAndCircInteraction();
         CT1.TestVertAndCircInteraction();
         CT1.TestAngleAndCircInteraction();
+        CT1.TestTimeAndAngleCal();
+        CT1.TestGradientFromAngle();
     };
     
     // The radius of the camera circle - to calucalte the locations of the cameras
@@ -332,8 +334,8 @@ int main(){
     std::vector<CameraTrap*> All_CT(NoCameraTraps);
     //Caluclates the location of all the camera traps
     for(int i=0; i<NoCameraTraps; i++){
-        std::cout<<"Camera: "<<i+1 <<"/"<<NoCameraTraps <<std::endl;
-        std::cout<<DetectorLayOut<<std::endl;
+        //std::cout<<"Camera: "<<i+1 <<"/"<<NoCameraTraps <<std::endl;
+        //std::cout<<DetectorLayOut<<std::endl;
         // Calculate the starting position of all Camera traps
         // The cameras start at 3o'clock and move in a anti-clockwise direction
         // This is for the simplicity of calculation

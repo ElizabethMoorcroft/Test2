@@ -28,6 +28,13 @@ private:
     double angle_HalfWidth; // Half width of the camera 
     int capturecount;
     
+    double m_detector1;
+    double m_detector2;
+    double c_detector1;
+    double c_detector2;
+    double vh_det1; // If the line describing detctor1 is vertical =1; horozonatl =2; else=0
+    double vh_det2; // If the line describing detctor1 is vertical =1; horozonatl =2; else=0
+    
     clock_t time1;
     
     std::vector<std::vector<double>> Captures;
@@ -42,6 +49,20 @@ public:
     std::vector<std::vector<double>> getCaptures(){return Captures;};
     void resetCaptures();
     
+    // "Set functions"
+    void setXLoc(double);
+    void setYLoc(double);
+    void setAngle(double);
+    void setHalfAngle(double);
+    void setRadius(double);
+    void setM_detector1(double);
+    void setM_detector2(double);
+    void setC_detector1(double);
+    void setC_detector2(double);
+    void setVH_det1(double); // If the line describing detctor1 is vertical =1; horozonatl =2; else=0
+    void setVH_det2(double);
+    
+    // "Get" functions
     double getID(){return CT_identifier;};
     double getStepOn(){return CT_StepOn;};
     double getXloc(){return location_x;};
@@ -50,8 +71,11 @@ public:
     double getHalfAngle(){return angle_HalfWidth;};
     clock_t gettime(){return time1;};
     
+    // Functions to alter StepOn
     void Add1StepOn();
     void ResetStepOn();
+    
+    double GradientFromAngle(double);
     
     int CapturesIndividual(double  //x location animal
                             ,double //y location animal
@@ -63,28 +87,16 @@ public:
                        );
     
     int CapturesIntersection(double  //x location animal
-                 ,double //y location animal
-                ,double,double //previous x/y
-                          ,int // Animal ID
-                          ,double //Call angle
-                          , double//Movement angle
-                          , int //iternation number
+                             , double //y location animal
+                             , double,double //previous x/y
+                             , int // Animal ID
+                             , double //Call angle
+                             , double//Movement angle
+                             , int //iternation number
                           );
     
-    int CameraAndMovement(double,
-                        double,
-                        double,
-                        double,
-                        int,
-                        double,
-                        double,
-                        int,
-                        double,
-                        double,
-                        double,
-                        double,
-                        int,
-                        double);
+    int CameraAndMovement(double, double, double, double,  int,  double,   double,
+                        int, double, double, double, double, int, double);
     
     int CameraCircAndMovement(double, //location_x_animal,
                             double, //location_y_animal,
@@ -99,23 +111,20 @@ public:
                             double // disttotal
                             );
     
-    void TestCapturesIndividual(int
-                                ,double
-                                , double
-                                , double
-                                , double
-                                , double
-                                , double
-                                , double);
     
+    /* ---------------------------------------- */
+    // ------------ Test functions ------------ //
+    /* ---------------------------------------- */
+    void TestCapturesIndividual(int, double, double, double, double,
+                                double, double, double);
     void TestVertAndAngleInteraction();
     void TestHorzAndAngleInteraction();
     void TestAngleAndAngleInteraction();
     void TestHorzAndCircInteraction();
     void TestVertAndCircInteraction();
     void TestAngleAndCircInteraction();
-    
-    
+    void TestTimeAndAngleCal();
+    void TestGradientFromAngle();
 
     
 };
