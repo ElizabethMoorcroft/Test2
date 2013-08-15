@@ -32,8 +32,8 @@ private:
     double m_detector2;
     double c_detector1;
     double c_detector2;
-    double vh_det1; // If the line describing detctor1 is vertical =1; horozonatl =2; else=0
-    double vh_det2; // If the line describing detctor1 is vertical =1; horozonatl =2; else=0
+    int vh_det1; // If the line describing detctor1 is vertical =1; horozonatl =2; else=0
+    int vh_det2; // If the line describing detctor1 is vertical =1; horozonatl =2; else=0
     
     clock_t time1;
     
@@ -47,20 +47,25 @@ public:
                 ,double
                ,double);
     std::vector<std::vector<double>> getCaptures(){return Captures;};
+    
     void resetCaptures();
     
     // "Set functions"
-    void setXLoc(double);
-    void setYLoc(double);
-    void setAngle(double);
-    void setHalfAngle(double);
-    void setRadius(double);
-    void setM_detector1(double);
-    void setM_detector2(double);
-    void setC_detector1(double);
-    void setC_detector2(double);
-    void setVH_det1(double); // If the line describing detctor1 is vertical =1; horozonatl =2; else=0
-    void setVH_det2(double);
+    void setXLoc(double a){location_x = a;};
+    void setYLoc(double a){location_y = a;};
+    void setAngle(double a){angle = a;};
+    void setHalfAngle(double a){angle_HalfWidth = a;return;};
+    void setRadius(double a){radius = a;};
+    void setM_detector1(double a){m_detector1 = a;};
+    void setM_detector2(double a){m_detector2 = a;};
+    void setC_detector1(double a){c_detector1 = a;};
+    void setC_detector2(double a){c_detector2 = a;};
+    void setVH_det1(int a){vh_det1 = a;}; // If the line describing detctor1 is vertical =1; horozonatl =2; else=0
+    void setVH_det2(int a){vh_det2 = a;};
+    // Functions to alter StepOn
+    void Add1StepOn();
+    void ResetStepOn();
+    
     
     // "Get" functions
     double getID(){return CT_identifier;};
@@ -71,12 +76,15 @@ public:
     double getHalfAngle(){return angle_HalfWidth;};
     clock_t gettime(){return time1;};
     
-    // Functions to alter StepOn
-    void Add1StepOn();
-    void ResetStepOn();
-    
+
     double GradientFromAngle(double);
     
+    void UpdateCaptures(double //Individual_ID
+                        ,double //itnumber
+                        ,double //location_x_animal
+                        ,double //location_y_animal
+                        ,double //time
+                        );
     int CapturesIndividual(double  //x location animal
                             ,double //y location animal
                             ,int // Animal ID
@@ -115,15 +123,19 @@ public:
     /* ---------------------------------------- */
     // ------------ Test functions ------------ //
     /* ---------------------------------------- */
-    void TestCapturesIndividual(int, double, double, double, double,
-                                double, double, double);
+    
+    void TestCI();
+    void TestCapturesIntersection();
+    
     void TestVertAndAngleInteraction();
     void TestHorzAndAngleInteraction();
     void TestAngleAndAngleInteraction();
     void TestHorzAndCircInteraction();
     void TestVertAndCircInteraction();
     void TestAngleAndCircInteraction();
+    
     void TestTimeAndAngleCal();
+    
     void TestGradientFromAngle();
 
     

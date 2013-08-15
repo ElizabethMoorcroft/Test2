@@ -266,48 +266,10 @@ int main(){
     ///////////THIS NEEDS UPDATING!!!!
     int test=1;
     if(test==1){
-        std::cout<<"Start Test"<<std::endl;
-    int a;
-    double b, c, d, e, f, g,h;
-    std::ifstream input;
-    std::string line;
-    input.open("/Users/student/Documents/Bats/CameraTestInputs.dat");
-    if (input.is_open()) {
-        getline(input, line);
-        while (!input.eof()) {
-            std::cout<<a<<std::endl;
-            input >> a;
-            input >> b;
-            input >> c;
-            input >> d;
-            input >> e;
-            input >> f;
-            input >> g;
-            input >> h;
-           // for(int i=0; i<NoCameraTraps; i++){
-            double tempvarCamerawidth = 89*M_PI/180;
-                CameraTrap CT1;
-                 CT1 = CameraTrap(1 //identifier;
-                                    ,DetectorRadius //radius
-                                     ,60*M_PI/180
-                                     ,tempvarCamerawidth //tempCameraWidth
-                                    );
-            //    std::cout<<i<<std::endl;
-                CT1.TestCapturesIndividual(a,b,c,d,e,f,g*tempvarCamerawidth,h);
-          //  }
-        }
-        input.close();
-    } // END OF CAMERA CHECK 
-    else{std::cout<<"Hello"<<std::endl;}
-    };
-    if(test==1){
         CameraTrap CT1;
-        CT1 = CameraTrap(1 //identifier;
-                         ,DetectorRadius //radius
-                         ,0
-                         ,0
-                         );
-        //    std::cout<<i<<std::endl;
+        CT1 = CameraTrap(1,1,0,0 ); // ID, radius,2*Transect only varaibles
+        
+        CT1.TestCI();
         CT1.TestVertAndAngleInteraction();
         CT1.TestHorzAndAngleInteraction();
         CT1.TestAngleAndAngleInteraction();
@@ -316,6 +278,7 @@ int main(){
         CT1.TestAngleAndCircInteraction();
         CT1.TestTimeAndAngleCal();
         CT1.TestGradientFromAngle();
+        CT1.TestCapturesIntersection();
     };
     
     // The radius of the camera circle - to calucalte the locations of the cameras
