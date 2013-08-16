@@ -289,15 +289,19 @@ std::vector <double> TimeAndAngleCal(double Y, double X, double previous_y_anima
     double distedge = sqrt(pow(diffx,2)+ pow(diffy,2));
     double time = distedge/disttotal;
     double AngleBatCap;
-    
+    /*std::cout<<"previous_y_animal: "<<previous_y_animal <<", previous_x_animal: "<< previous_x_animal<< std::endl;
+    std::cout<<"Y: "<<Y<<", X: "<< X<< std::endl;
+    std::cout<<"diffy: "<<diffy <<", diffx: "<< diffx<< ", distedge: "<< distedge <<std::endl;*/
 
     AngleBatCap = atan((diffx)/(diffy));
-    if(diffy<=0){AngleBatCap+=M_PI;}//End if
+    //std::cout<<"AngleBatCap : "<<AngleBatCap << std::endl;
+    if(diffy<0){AngleBatCap+=M_PI;}//End if
     if(AngleBatCap <0){AngleBatCap += 2*M_PI;}
-    else if(approximatelyequal(AngleBatCap,2*M_PI)==1){ AngleBatCap -= 2*M_PI;};
-    if(Y==previous_y_animal && X==previous_x_animal){AngleBatCap=0;};
+    else if(AngleBatCap>2*M_PI){ AngleBatCap -= 2*M_PI;};
     
-    
+    if((approximatelyequal(Y,previous_y_animal)==1 && approximatelyequal(X,previous_x_animal)==1)
+       ||approximatelyequal(AngleBatCap,2*M_PI)==1){AngleBatCap=0;};
+    if(approximatelyequal(time,0)==1){time=0;};
     
     returnvalues[0] = time;
     returnvalues[1] = AngleBatCap;
@@ -312,6 +316,7 @@ double CameraTrap::GradientFromAngle(double angle){
     double Gradient = 1/tan(angle);
     return(Gradient);
 };
+
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -358,9 +363,12 @@ int CameraTrap::CapturesIntersection(double location_x_animal,
     //  - intercpet would be: y-mx=c (where y and x are known)
     double m_animal  = GradientFromAngle(move_angle);
     double c_animal  = location_y_animal-location_x_animal*m_animal;
-
+    //std::cout<<"m_animal: "<< m_animal<<std::endl;
+    //std::cout<<"c_animal: "<< c_animal<<std::endl;
     
     // Checks for crossing the boundaries for detector 1
+    //std::cout<< "Dect1"<<std::endl;
+    //std::cout<< captured<<std::endl;
     captured += CameraAndMovement(location_x_animal,
                                   location_y_animal,
                                   previous_x_animal,
@@ -375,8 +383,10 @@ int CameraTrap::CapturesIntersection(double location_x_animal,
                                   c_detector1,
                                   vh_det1,
                                   disttotal);
+    //std::cout<< captured<<std::endl;
     
     // Checks for crossing the boundaries for detector 2
+    //std::cout<< "Dect2"<<std::endl;
     captured += CameraAndMovement(location_x_animal,
                                   location_y_animal,
                                   previous_x_animal,
@@ -393,6 +403,8 @@ int CameraTrap::CapturesIntersection(double location_x_animal,
                                   disttotal);
     
     // Checks for crossing the boundaries for circular edge of detector
+    //std::cout<< "Circ"<<std::endl;
+    //std::cout<< captured<<std::endl;
     captured += CameraCircAndMovement(location_x_animal,
                                       location_y_animal,
                                       previous_x_animal,
@@ -404,8 +416,11 @@ int CameraTrap::CapturesIntersection(double location_x_animal,
                                       m_animal,
                                       c_animal,
                                       disttotal);
+    //std::cout<< captured<<std::endl;
     
     // Checks for at the end of the step if in/out of detection area
+    //std::cout<< "End"<<std::endl;
+    //std::cout<< captured<<std::endl;
     captured += CapturesIndividual(location_x_animal,
                                    location_y_animal,
                                    Individual_ID,
@@ -413,7 +428,7 @@ int CameraTrap::CapturesIntersection(double location_x_animal,
                                    move_angle,
                                    itnumber,
                                    1); // Assumes that it captures right at the end of the movement therefore time=1
-    
+    //std::cout<< captured<<std::endl;
     // If there are any captures then return 1 else return 0
     if(captured>=1){return(1);} else {return(0);};
 };
@@ -439,37 +454,56 @@ int CameraTrap::CameraCircAndMovement(double location_x_animal,
     int captured =0;
     // TandA is Time and Angle
     std::vector<double> TandA(2);
+    std::vector<double> Estimate(2);
     std::vector<double> XandY(4); // There are 2 solutions to where the line passes through the circle: (x1,y1,x2,y2)
     
     //Animal has vertical movement
     if(location_x_animal == previous_x_animal){
-        std::cout<<"Circ, Vert move"<<std::endl;
-        XandY = VertAndCircInteraction(location_x_animal, location_y, location_x, radius);
+        //std::cout<<"Circ, Vert move"<<std::endl;
+        Estimate = VertAndCircInteraction(location_x_animal, location_y, location_x, radius);
+        XandY[1] = Estimate[0]; XandY[0] = location_x_animal;
+        XandY[3] = Estimate[1]; XandY[2] = location_x_animal;
+
    }//END OF VERTICAL ANIMAL MOVEMENT
     
     //Animal has horizontal movement
     else if(location_y_animal == previous_y_animal){
-        XandY = HorzAndCircInteraction(location_y_animal, location_y, location_x, radius);
+        //std::cout<<"HorzAndCircInteraction"<<std::endl;
+        Estimate = HorzAndCircInteraction(location_y_animal, location_y, location_x, radius);
+        XandY[0] = Estimate[0]; XandY[1] = location_y_animal;
+        XandY[2] = Estimate[1]; XandY[3] = location_y_animal;
     }//END OF HORZONTAL ANIMAL MOVEMENT
     else{
+        //std::cout<<"AngleAndCircInteraction"<<std::endl;
         XandY = AngleAndCircInteraction(m_animal, c_animal, location_y, location_x, radius);
+
     }//END OF DIFFERENT ANGLE ANIMAL MOVEMENT 
     
+    //std::cout<<"XandY[0]: "<<XandY[0]<<", XandY[1]: "<<XandY[1]<<std::endl;
+    //std::cout<<"XandY[2]: "<<XandY[2]<<", XandY[3]: "<<XandY[3]<<std::endl;
     //Looking at both possible solutions for the line and the circle
     //For each sucessful capture adds a 1 to the "captured" value
-    for(int v=1; v<3; v++){
+    for(int v=0; v<2; v++){
+        //std::cout<<"V"<< v<<std::endl;
         //time and angle of the interscept
-        TandA = TimeAndAngleCal(XandY[v+1], XandY[v], previous_y_animal, previous_x_animal, disttotal);
+        TandA = TimeAndAngleCal(XandY[(v*2)+1], XandY[v*2], previous_y_animal, previous_x_animal, disttotal);
+        //std::cout<<"TandA [0]: "<<TandA[0]<<", TandA[1]: "<<TandA[1]<<std::endl;
         // The time has to be less than the total distance away form starting location
         // the angle of movement from the start location to the capture location has to be the same as the movement angle.
-        if(TandA[0]<=1 && approximatelyequal(TandA[1],move_angle)==1){
-            captured += CapturesIndividual(XandY[v],
-                                       XandY[v+1],
+        //if(TandA[0]<=1){std::cout<<"Time okay"<<std::endl;};
+        //if( approximatelyequal(TandA[1],move_angle)==1){std::cout<<"Angle okay"<<std::endl;};
+        if(((TandA[0]<=1 || approximatelyequal(TandA[0],1)==1) && approximatelyequal(TandA[1],move_angle)==1)
+            ||(TandA[0]==0 && TandA[1]==0)){
+            //std::cout<<"Circ move, CI"<<std::endl;
+            //std::cout<<captured<<std::endl;
+            captured += CapturesIndividual(XandY[v*2],
+                                       XandY[(v*2)+1],
                                        Individual_ID,
                                        call_halfwidth,
                                        move_angle,
                                        itnumber,
                                        TandA[0]);}
+            //std::cout<<captured<<std::endl;
 
     }
     return(captured);
@@ -509,7 +543,7 @@ int CameraTrap::CameraAndMovement(double location_x_animal,
     
     //Animal has vertical movement
     if(location_x_animal == previous_x_animal){
-        std::cout<<"Line, Vert move"<<std::endl;
+        //std::cout<<"Line, Vert move"<<std::endl;
         //Horzontal detector
             if(det==2){
                 XandY[0] = previous_x_animal;
@@ -526,10 +560,10 @@ int CameraTrap::CameraAndMovement(double location_x_animal,
             } // END IF DET==1
         // Detcteor at angle
         else{
-            std::cout<<"Line, Vert move, angle"<<std::endl;
+            //std::cout<<"Line, Vert move, angle"<<std::endl;
             XandY[0] = location_x_animal;
-            XandY[1] = HorzAndAngleInteraction(location_x_animal, m_animal, c_animal);
-            std::cout<<"XandY[0]: "<<XandY[0]<<", XandY[1]: "<<XandY[1]<<std::endl;
+            XandY[1] = VertAndAngleInteraction(location_x_animal, m_detector, c_detector);
+            //std::cout<<"XandY[0]: "<<XandY[0]<<", XandY[1]: "<<XandY[1]<<std::endl;
         }// END ELSE
     }//--------END OF VERTICAL ANIMAL MOVEMENT ---------------//
     
@@ -552,23 +586,30 @@ int CameraTrap::CameraAndMovement(double location_x_animal,
         } // END OF IF DET ==1
         // Detecteor at angle
         else {
-            XandY[0] = VertAndAngleInteraction(location_y_animal, m_animal, c_animal);
+            //std::cout<<"Line, Horz move, angle"<<std::endl;
+            XandY[0] = HorzAndAngleInteraction(location_y_animal, m_detector, c_detector);
             XandY[1] = location_y_animal;
+            //std::cout<<"XandY[0]: "<< XandY[0]<<", XandY[1]: "<< XandY[1] <<std::endl;
         }// END ELSE
     }//--------END OF HORZONTAL ANIMAL MOVEMENT ---------------//
     
     
     // If the angle of the movement and the detector is the same, then they have to have the same intercept
-    else if(m_detector == m_animal && c_detector == c_animal){
-        //XandY[0] = location_x_animal; //THIS IS WRONG
-        if(m_detector<M_PI){mindect=location_x; mindect=location_x+radius*sin(m_detector);}
-        else{mindect = location_x-radius*sin(m_detector); maxdect = location_x;};
+    else if(approximatelyequal(m_detector,m_animal)==1 && approximatelyequal(c_detector,c_animal)==1 ){
+        std::cout<<"Line, Same angle"<<std::endl;
+
+        if(m_detector<M_PI){mindect=location_x; maxdect=location_x+radius*sin(atan(1/m_detector));}
+        else{mindect = location_x-radius*sin(atan(1/m_detector)); maxdect = location_x;};
+        //std::cout<< m_detector<<", "<<sin(atan(1/m_detector))<<std::endl;
+        //std::cout<<"mindect "<< mindect <<", maxdect "<< maxdect<<std::endl;
+        
         if(move_angle<M_PI){
             XandY[0] = std::min(std::max(location_x_animal,previous_x_animal),mindect);
         }else{XandY[0] = std::max(std::min(location_x_animal,previous_x_animal),maxdect);};
         
-        if(m_detector<M_PI/2 ||m_detector>3*M_PI/2 ){mindect=location_y; mindect=location_y+radius*cos(m_detector);}
-        else{mindect = location_y-radius*cos(m_detector); maxdect = location_y;};
+        if(m_detector<M_PI/2 ||m_detector>3*M_PI/2 ){mindect=location_y; maxdect=location_y+radius*cos(atan(1/m_detector));}
+        else{mindect = location_y-radius*cos(atan(1/m_detector)); maxdect = location_y;};
+        //std::cout<<"mindect "<< mindect <<", maxdect "<< maxdect<<std::endl;
         if(move_angle<M_PI){
             XandY[1] = std::min(std::max(location_y_animal,previous_y_animal),mindect);
         }else{XandY[1] = std::max(std::min(location_y_animal,previous_y_animal),maxdect);};
@@ -578,7 +619,7 @@ int CameraTrap::CameraAndMovement(double location_x_animal,
         }//--------END OF SAME ANGLE ANIMAL MOVEMENT ---------------//
     
     else if(m_detector != m_animal){
-        
+        //std::cout<<"Line, Diff angle"<<std::endl;
         //Horzontal detector
         if(det==2){
             XandY[0] = HorzAndAngleInteraction(location_y, m_animal, c_animal);
@@ -590,7 +631,9 @@ int CameraTrap::CameraAndMovement(double location_x_animal,
             XandY[1] = VertAndAngleInteraction(location_x, m_animal, c_animal);
         } // END OF IF DET ==1
         else{
-        XandY =AngleAndAngleInteraction(m_detector, c_detector, m_animal, c_animal);
+            std::cout<<"Line, Diff angle, dect angle"<<std::endl;
+            XandY =AngleAndAngleInteraction(m_detector, c_detector, m_animal, c_animal);
+            std::cout<<"XandY[0]: "<<XandY[0]<<", XandY[1]: "<< XandY[1]<<std::endl;
         }
         
     }//--------END OF DIFFERENT ANGLE ANIMAL MOVEMENT ---------------//
@@ -599,12 +642,14 @@ int CameraTrap::CameraAndMovement(double location_x_animal,
         exit (EXIT_FAILURE);
     };
     
-    TandA = TimeAndAngleCal(XandY[1], XandY[0], previous_y_animal, previous_x_animal, disttotal);
+    //TandA = TimeAndAngleCal(XandY[1], XandY[0], previous_y_animal, previous_x_animal, disttotal);
     //time and angle of the interscept
     TandA = TimeAndAngleCal(XandY[1], XandY[0], previous_y_animal, previous_x_animal, disttotal);
+    //std::cout<<"TandA[0]: "<< TandA[0] <<", TandA[1]: "<< TandA[1]<<", move_angle: " <<move_angle<< std::endl;
     // The time has to be less than the total distance away form starting location
     // the angle of movement from the start location to the capture location has to be the same as the movement angle.
-    if(TandA[0]<=1 && approximatelyequal(TandA[1],move_angle)==1){
+    if((TandA[0]<=1 && approximatelyequal(TandA[1],move_angle)==1)||(TandA[0]==0 && TandA[1]==0)){
+        //std::cout<<"line"<<std::endl;
         captured += CapturesIndividual(XandY[0],
                                        XandY[1],
                                        Individual_ID,
@@ -628,8 +673,8 @@ void CameraTrap::UpdateCaptures(double Individual_ID,double itnumber,double loca
     myvector[4] = location_x_animal;
     myvector[5] = location_y_animal;
     myvector[6] = time;
-    std::cout<<"HERE"<<std::endl;
-    std::cout<<"capturecount: "<<capturecount<<std::endl;
+    //std::cout<<"HERE"<<std::endl;
+    //std::cout<<"capturecount: "<<capturecount<<std::endl;
     Captures[capturecount]=myvector;
     capturecount+=1;
 }
@@ -656,7 +701,7 @@ int CameraTrap::CapturesIndividual(double location_x_animal,
     double diffx = location_x_animal - location_x;
     double diffy = location_y_animal - location_y;
     
-    if(diffx==0 && diffy ==0){ // If on the exact same spot as the camera assume it will be captured
+    if(approximatelyequal(diffx,0)==1 && approximatelyequal(diffy,0)==1){ // If on the exact same spot as the camera assume it will be captured
         UpdateCaptures(Individual_ID,itnumber,location_x_animal,location_y_animal,time);
         captured = 1;
     } else{
@@ -1131,116 +1176,236 @@ void CameraTrap::TestCI(){
 /*-----------Test Movement Capture thing--------------*/
 
 
-//NEEDS TEST
+//NEEDS completeling
+// Vert movement Vert camera
+// Vert movement Horz camera
+// Vert movement Angle camera
+// Horz movement Vert camera
+// Horz movement Horz camera
+// Horz movement Angle camera
+// Angle movement Vert camera
+// Angle movement Horz camera
+// Angle movement Angle camera
 // Is the camera lines at a angles and is the movement also at an angle?
 
 void CameraTrap::TestCapturesIntersection(){
     
-    int captured = 0;
+    int loc1;
+    int loc2;
+    double temp;
+    
+    //-------------------------------------------------//
+    // Vertical movement through the centre of sector
+    loc1 =0; loc2 =0;
     resetCaptures();
     angle = 0; angle_HalfWidth = M_PI/4; location_x =0; location_y =0; radius = 1;
-    captured+= CapturesIntersection(0,1,0,0, // Current x/y, previous x,y
-                                    1, // ID
-                                    M_PI, //Call width - circular call (to make this easier!)
-                                    M_PI,  // move_angle,
-                                    1); // IT
-    std::cout<<captured<< std::endl;
-    std::cout<<Captures.size()<< std::endl;
-    std::cout<<Captures[0].size()<<std::endl;
-    std::cout<<Captures[0][4]<<", " //myvector[4] = location_x_animal;
-             <<Captures[0][5]<<", " //myvector[5] = location_y_animal;
-             <<Captures[0][6]<<std::endl; //myvector[6] = time;
+    m_detector1 = -1; m_detector2 = 1; c_detector1 =0;c_detector2 =0;
+    //std::cout<<"Test CapInter"<< std::endl;
+    CapturesIntersection(0,1,0,0, // Current x/y, previous x,y
+                         1, // ID
+                         M_PI, //Call width - circular call (to make this easier!)
+                         0,  // move_angle,
+                         1); // IT
+    for(int i=0; i<Captures.size(); i++){
+        if(Captures[i].size()>0){
+            // The maximum number of captures possible for any 1 movement is 5
+            if(i>4){std::cout<<"Error! Failed camera test - TestCapturesIntersection: "<<"1a" <<std::endl;exit (EXIT_FAILURE);};
+            
+            //std::cout<<Captures[i][4]<<", " <<Captures[i][5]<<", " <<Captures[i][6]<<std::endl;
+             
+            if(Captures[i][4] ==0 && Captures[i][5] ==0){loc1 += 1;};
+            if(Captures[i][4] ==0 && Captures[i][5] ==1){loc2 += 1;};
+            if(Captures[i][6]<0 || Captures[i][6]>1){
+                std::cout<<"Error! Failed camera test - TestCapturesIntersection: "<<"1b" <<std::endl;
+                exit (EXIT_FAILURE);};
+        };
+    };
+     //std::cout<<"loc1: "<< loc1<<", loc2: "<< loc1<< std::endl;
+     if(loc1!=2 || loc2!=2){
+         std::cout<<"Error! Failed camera test - TestCapturesIntersection: "<<"1c" <<std::endl;
+         exit (EXIT_FAILURE);
+     };
+    
+    //-------------------------------------------------//
+    // Horizontal movement through the centre of sector
+    resetCaptures();
+    /// this brings up ever  - because something somewhere needs an approx.equal///
+    angle = 0; angle_HalfWidth = M_PI/4; location_x =0; location_y =0; radius = 1;
+    m_detector1 = -1; m_detector2 = 1; c_detector1 =0;c_detector2 =0;
+    //std::cout<<"Test CapInter: 2"<< std::endl;
+    CapturesIntersection(0.5,0.5,-0.5,0.5, // Current x/y, previous x,y
+                         1, // ID
+                         M_PI, //Call width - circular call (to make this easier!)
+                         M_PI/2,  // move_angle,
+                         1); // IT
+    loc1 =0; loc2 =0;
+    for(int i=0; i<Captures.size(); i++){
+        if(Captures[i].size()>0){
+            // The maximum number of captures possible for any 1 movement is 5
+            if(i>4){std::cout<<"Error! Failed camera test - TestCapturesIntersection: "<<"2a" <<std::endl;exit (EXIT_FAILURE);};
+            
+            //X,Y,TIME
+            //std::cout<<Captures[i][4]<<", " <<Captures[i][5]<<", "  <<Captures[i][6]<<std::endl;
+            
+            if(Captures[i][4] ==0.5 && Captures[i][5] ==0.5){loc1 += 1;};
+            if(Captures[i][4] ==-0.5 && Captures[i][5] ==0.5){loc2 += 1;};
+            if(Captures[i][6]<0 || Captures[i][6]>1){
+                std::cout<<"Error! Failed camera test - TestCapturesIntersection: "<<"2b" <<std::endl;
+                exit (EXIT_FAILURE);};
+        };
+    };
+    //std::cout<<"loc1: "<< loc1<<", loc2: "<< loc2<< std::endl;
+    if(loc1!=2 || loc2!=1){
+        std::cout<<"Error! Failed camera test - TestCapturesIntersection: "<<"2c" <<std::endl;
+        exit (EXIT_FAILURE);
+    };
+    
+    //-------------------------------------------------//
+    // Angle movement through the centre of sector
+    resetCaptures();
+    /// this brings up ever  - because something somewhere needs an approx.equal///
+    angle = 0; angle_HalfWidth = M_PI/4; location_x =0; location_y =0; radius = 1;
+    m_detector1 = -1; m_detector2 = 1; c_detector1 =0;c_detector2 =0; vh_det1 =0; vh_det2 =0;
+    //std::cout<<"Test CapInter: 3"<< std::endl;
+    temp= 1/sqrt(2);
+    CapturesIntersection(0,1,-0.5,0.5,  // Current x/y, previous x,y
+                         1, // ID
+                         M_PI, //Call width - circular call (to make this easier!)
+                         M_PI/4,  // move_angle,
+                         1); // IT
+    loc1 =0; loc2 =0;
+    for(int i=0; i<Captures.size(); i++){
+        if(Captures[i].size()>0){
+            // The maximum number of captures possible for any 1 movement is 5
+            if(i>4){std::cout<<"Error! Failed camera test - TestCapturesIntersection: "<<"3a" <<std::endl;exit (EXIT_FAILURE);};
+            
+            //X,Y,TIME
+            //std::cout<<Captures[i][4]<<", " <<Captures[i][5]<<", "  <<Captures[i][6]<<std::endl;
+            
+            if(Captures[i][4] ==-0.5 && Captures[i][5] ==0.5){loc1 += 1;};
+            if(Captures[i][4] ==0 && Captures[i][5] ==1){loc2 += 1;};
+            if(Captures[i][6]<0 || Captures[i][6]>1){
+                std::cout<<"Error! Failed camera test - TestCapturesIntersection: "<<"3b" <<std::endl;
+                exit (EXIT_FAILURE);};
+        };
+    };
+    //std::cout<<"loc1: "<< loc1<<", loc2: "<< loc2<< std::endl;
+    if(loc1!=1 || loc2!=2){
+        std::cout<<"Error! Failed camera test - TestCapturesIntersection: "<<"3c" <<std::endl;
+        exit (EXIT_FAILURE);
+    };
+    
+    
+    //-------------------------------------------------//
+    // Horizontal movement through top of the sector, through both edges and the circle twice
+    resetCaptures();
+    /// this brings up ever  - because something somewhere needs an approx.equal///
+    angle = 0; angle_HalfWidth = M_PI/4; location_x =0; location_y =0; radius = 1;
+    m_detector1 = -1; m_detector2 = 1; c_detector1 =0;c_detector2 =0;
+    //std::cout<<"Test CapInter: 4"<< std::endl;
+    temp= 1/sqrt(2);
+    CapturesIntersection(temp,temp,-temp,temp, // Current x/y, previous x,y
+                         1, // ID
+                         M_PI, //Call width - circular call (to make this easier!)
+                         M_PI/2,  // move_angle,
+                         1); // IT
+    loc1 =0; loc2 =0;
+    for(int i=0; i<Captures.size(); i++){
+        if(Captures[i].size()>0){
+            // The maximum number of captures possible for any 1 movement is 5
+            if(i>4){std::cout<<"Error! Failed camera test - TestCapturesIntersection: "<<"4a" <<std::endl;exit (EXIT_FAILURE);};
+            
+            //X,Y,TIME
+            //std::cout<<Captures[i][4]<<", " <<Captures[i][5]<<", "  <<Captures[i][6]<<std::endl;
+            
+            if(approximatelyequal(Captures[i][4],-temp)==1 && approximatelyequal(Captures[i][5],temp)==1){loc1 += 1;};
+            if(approximatelyequal(Captures[i][4],temp)==1 && approximatelyequal(Captures[i][5],temp)==1){loc2 += 1;};
+            if(Captures[i][6]<0 || Captures[i][6]>1){
+                std::cout<<"Error! Failed camera test - TestCapturesIntersection: "<<"4b" <<std::endl;
+                exit (EXIT_FAILURE);};
+        };
+    };
+    //std::cout<<"loc1: "<< loc1<<", loc2: "<< loc2<< std::endl;
+    if(loc1!=2 || loc2!=3){
+        std::cout<<"Error! Failed camera test - TestCapturesIntersection: "<<"4c" <<std::endl;
+        exit (EXIT_FAILURE);
+    };
+    
+    
+    //-------------------------------------------------//
+    // Angle movement through on edge of sector
+    resetCaptures();
+    /// this brings up ever  - because something somewhere needs an approx.equal///
+    angle = 0; angle_HalfWidth = M_PI/4; location_x =0; location_y =0; radius = 1;
+    m_detector1 = -1; m_detector2 = 1; c_detector1 =0;c_detector2 =0;
+    //std::cout<<"Test CapInter: Number 5"<< std::endl;
+    CapturesIntersection(temp,temp,0,0, // Current x/y, previous x,y
+                         1, // ID
+                         M_PI, //Call width - circular call (to make this easier!)
+                         M_PI/4,  // move_angle,
+                         1); // IT
+    loc1 =0; loc2 =0;
+    for(int i=0; i<Captures.size(); i++){
+        if(Captures[i].size()>0){
+            // The maximum number of captures possible for any 1 movement is 5
+            if(i>4){std::cout<<"Error! Failed camera test - TestCapturesIntersection: "<<"5a" <<std::endl;exit (EXIT_FAILURE);};
+            
+            //X,Y,TIME
+            //std::cout<<Captures[i][4]<<", " <<Captures[i][5]<<", "  <<Captures[i][6]<<std::endl;
+            
+            if(approximatelyequal(Captures[i][4],0) ==1 && approximatelyequal(Captures[i][5],0) ==1 ){loc1 += 1;};
+            if(approximatelyequal(Captures[i][4],temp) ==1 && approximatelyequal(Captures[i][5],temp) ==1 ){loc2 += 1;};
+            if(Captures[i][6]<0 || Captures[i][6]>1){
+                std::cout<<"Error! Failed camera test - TestCapturesIntersection: "<<"5b" <<std::endl;
+                //exit (EXIT_FAILURE);
+            };
+        };
+    };
+    //std::cout<<"loc1: "<< loc1<<", loc2: "<< loc2<< std::endl;
+    if(loc1!=2 || loc2!=2){
+        std::cout<<"Error! Failed camera test - TestCapturesIntersection: "<<"5c" <<std::endl;
+        exit (EXIT_FAILURE);
+    };
+    
+    
+    
+    //-------------------------------------------------//
+    // Angle movement through on edge of sector
+    resetCaptures();
+    /// this brings up ever  - because something somewhere needs an approx.equal///
+    angle = 0; angle_HalfWidth = M_PI/4; location_x =0; location_y =0; radius = 1;
+    m_detector1 = -1; m_detector2 = 1; c_detector1 =0;c_detector2 =0;
+    std::cout<<"Test CapInter: Number 6"<< std::endl;
+    CapturesIntersection(-temp,temp,0,0, // Current x/y, previous x,y
+                         1, // ID
+                         M_PI, //Call width - circular call (to make this easier!)
+                         M_PI/4,  // move_angle,
+                         1); // IT
+    loc1 =0; loc2 =0;
+    for(int i=0; i<Captures.size(); i++){
+        if(Captures[i].size()>0){
+            // The maximum number of captures possible for any 1 movement is 5
+            if(i>4){std::cout<<"Error! Failed camera test - TestCapturesIntersection: "<<"6a" <<std::endl;exit (EXIT_FAILURE);};
+            
+            //X,Y,TIME
+            std::cout<<Captures[i][4]<<", " <<Captures[i][5]<<", "  <<Captures[i][6]<<std::endl;
+            
+            if(approximatelyequal(Captures[i][4],0) ==1 && approximatelyequal(Captures[i][5],0) ==1 ){loc1 += 1;};
+            if(approximatelyequal(Captures[i][4],-temp) ==1 && approximatelyequal(Captures[i][5],temp) ==1 ){loc2 += 1;};
+            if(Captures[i][6]<0 || Captures[i][6]>1){
+                std::cout<<"Error! Failed camera test - TestCapturesIntersection: "<<"6b" <<std::endl;
+                //exit (EXIT_FAILURE);
+            };
+        };
+    };
+    std::cout<<"loc1: "<< loc1<<", loc2: "<< loc2<< std::endl;
+    if(loc1!=1 || loc2!=2){
+        std::cout<<"Error! Failed camera test - TestCapturesIntersection: "<<"6c" <<std::endl;
+        exit (EXIT_FAILURE);
+    };
+    
+    
     
     std::cout<<"Passed! Camera test - TestCameraAndMovement"<< std::endl;
 };
 
-
-
-//myvector[2] = CT_identifier;
-//myvector[3] = itnumber;
-//myvector[4] = location_x_animal;
-//myvector[5] = location_y_animal;
-//myvector[6] = time;
-
-/*
- int CameraTrap::CapturesIntersection(double location_x_animal,
- double location_y_animal,
- double previous_x_animal,
- double previous_y_animal,
- int Individual_ID,
- double call_halfwidth,
- double move_angle,
- int itnumber){
- int captured = 0;
- 
- // finds the total distance travelled between it's new location and it's old location
- double disttotal = sqrt(pow(previous_x_animal-location_x_animal,2)+
- pow(previous_y_animal-location_y_animal,2));
- 
- 
- //If the animal movement was a line on a graph with a gradient and a intercept, Y=mX+c, then:
- //  - gadient would be, m=(change x/change y)
- //  - intercpet would be: y-mx=c (where y and x are known)
- double m_animal  = GradientFromAngle(move_angle);
- double c_animal  = location_y_animal-location_x_animal*m_animal;
- 
- 
- // Checks for crossing the boundaries for detector 1
- captured += CameraAndMovement(location_x_animal,
- location_y_animal,
- previous_x_animal,
- previous_y_animal,
- Individual_ID,
- call_halfwidth,
- move_angle,
- itnumber,
- m_animal,
- c_animal,
- m_detector1,
- c_detector1,
- vh_det1,
- disttotal);
- 
- // Checks for crossing the boundaries for detector 2
- captured += CameraAndMovement(location_x_animal,
- location_y_animal,
- previous_x_animal,
- previous_y_animal,
- Individual_ID,
- call_halfwidth,
- move_angle,
- itnumber,
- m_animal,
- c_animal,
- m_detector2,
- c_detector2,
- vh_det2,
- disttotal);
- 
- // Checks for crossing the boundaries for circular edge of detector
- captured += CameraCircAndMovement(location_x_animal,
- location_y_animal,
- previous_x_animal,
- previous_y_animal,
- Individual_ID,
- call_halfwidth,
- move_angle,
- itnumber,
- m_animal,
- c_animal,
- disttotal);
- 
- // Checks for at the end of the step if in/out of detection area
- captured += CapturesIndividual(location_x_animal,
- location_y_animal,
- Individual_ID,
- call_halfwidth,
- move_angle,
- itnumber,
- 1); // Assumes that it captures right at the end of the movement therefore time=1
- 
- // If there are any captures then return 1 else return 0
- if(captured>=1){return(1);} else {return(0);};
- };
-
-*/
