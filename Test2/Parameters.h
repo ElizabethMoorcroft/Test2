@@ -22,12 +22,12 @@
 //////////////////////////////////////////////////
 
 //Simulation values - #Animals, #Steps, #HR, #CT
-const double DensityAnimals = 0.1*pow(10,-6); // XX*10^-6 Density/m^2  => XX Density/KM^2
+const double DensityAnimals = 5*pow(10,-6); // XX*10^-6 Density/m^2  => XX Density/KM^2
 const double LengthMonitoring = 1.5*(60*60); //Length of monitoring in seconds. XX*(60*60)secs => XX hrs
 const double AverageSizeHR = 1; //Average number of animals per roost
 const double SpeedCamera  = 30*0.06 ; // => XX m/s =  XX/ 0.06 KM/h  => XX*0.06 m/s =  XX KM/h
 const int NoRunIn = 0; // Number of steps before cameras are "activated"
-const int NoOfIterations = 1; // No of iterations with the settings
+const int NoOfIterations = 500; // No of iterations with the settings
 
 //HR set up value
 const double HR_AverageRadius = 1000; //meters
@@ -40,7 +40,7 @@ const double Sq_MinY = 0;
 const double Sq_MaxY = 7500;
 
 // Centre of the camera circle is in the centre of the environment
-const double DetectorLayOut = 1; // 0 is a single stationary; 1 is a grid; 2 is a transect
+const double DetectorLayOut = 0; // 0 is a single stationary; 1 is a grid; 2 is a transect
 // If DetectorLayOut = 0 (single stationary), 2 (a transect)
 const double Cir_CntX = (Sq_MaxX-Sq_MinX)/2+Sq_MinX; 
 const double Cir_CntY = (Sq_MaxY-Sq_MinY)/2+Sq_MinY;
@@ -62,7 +62,7 @@ const double DetectorRadius = 11;
 const int Seed =1;
 
 //Animal parameters
-const double AnimalSpeed = 6.3; // ms^-1
+const double AnimalSpeed = 20; // ms^-1
 const int MovementType = 0;
 const double ProbChangeMoveState = 0;//Probability of switching from coorelated to non-correlated
 
