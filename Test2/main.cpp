@@ -105,19 +105,11 @@ int main(){
     /////////////////////////////////////////////////////////////////////////
     
     int NoCameraTraps = 0;
-    if(DetectorLayOut == 2){
-        // The number of cameras and the number of steps
-        // The camera moves around the in a circle switching on and off
-        // (switching on for 0.35 seconds and off for 3.5 seconds)
-        // I assume the camera is on for an infinately small length of time during which it can capture
-        // everything in it's detection area.
-        // The step length is equal to the length of time the camera is off
-        // => The number of times the camera switches on is calculated as:
-        //          length of the study/ step length
-        // The number of steps is the number of times the camer switches on + the amount of run in time
-        NoCameraTraps = round(LengthMonitoring/StepLength);
-    }
+    if(DetectorLayOut == 0 | DetectorLayOut == 2){NoCameraTraps = NoSteps -NoRunIn;}
     else if(DetectorLayOut == 1){NoCameraTraps = MaxNoX *MaxNoY;}
+    //else if(DetectorLayOut == 0){NoCameraTraps =1;}
+    else{std::cout<<"Error! DetectorLayOut has not been specified."<< std::endl;
+        exit (EXIT_FAILURE);}
     
     //Tim's code for calucalting the attentuation of sound in order to calucalte the
     // maximum distance, here refered to as Radius, that the detector can detect a bat call
@@ -663,6 +655,7 @@ int main(){
     //Each camera is only at a their location for one time interval
     for(int Individual=0; Individual<NoAnimal; Individual++){
         //std::cout <<"Animal:" << Individual+1 <<"/" << NoAnimal << std::endl;
+        //std::cout<< "No. of cameras: " << NoCameraTraps <<std::endl;
         // The call width of each individual does not change throughout the simulation
         // Therefore it doesn't need to be called for each camera
         double callangle = AllAnimals[Individual]->getCallWidth();
@@ -684,7 +677,7 @@ int main(){
                 // Camera 0 is only on at NoRunIn, Camera 1 is only on at NoRunIn+1,....
                 // The one is added on becuase start counting the number of steps at 0
                 TimeStepTrap = NoCT+NoRunIn+1;
-
+                //std::cout <<"CT:" << NoCT+1 <<"/" <<NoCameraTraps << std::endl;
                 if(TempAllLocations[TimeStepTrap].size()>0){
                     //std::cout<<TempAllLocations.size()<<std::endl;
                     //std::cout<<TimeStepTrap<<std::endl;
@@ -710,7 +703,7 @@ int main(){
             }
         // If the detector layout is a grid, then every detector needs to be checked at every time step.
         // This invloves an extra loop.
-        else if(DetectorLayOut == 1){
+        else if( DetectorLayOut == 1){
             //std::cout<<"Inside loop1 "<<Individual<<" "<<NoCT<<" "<< All_CT[NoCT]->getStepOn()<<std::endl;
             // The camera only start after the the "Run in period"
             // Then they are only on at the corresponding the time step

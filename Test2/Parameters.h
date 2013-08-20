@@ -62,7 +62,7 @@ const double DetectorRadius = 11;
 const int Seed =1;
 
 //Animal parameters
-const double AnimalSpeed = 20; // ms^-1
+const double AnimalSpeed = 50; // ms^-1
 const int MovementType = 0;
 const double ProbChangeMoveState = 0;//Probability of switching from coorelated to non-correlated
 
