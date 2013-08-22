@@ -27,7 +27,7 @@ const double LengthMonitoring = 1.5*(60*60); //Length of monitoring in seconds. 
 const double AverageSizeHR = 1; //Average number of animals per roost
 const double SpeedCamera  = 30*0.06 ; // => XX m/s =  XX/ 0.06 KM/h  => XX*0.06 m/s =  XX KM/h
 const int NoRunIn = 0; // Number of steps before cameras are "activated"
-const int NoOfIterations = 500; // No of iterations with the settings
+const int NoOfIterations = 1; // No of iterations with the settings
 
 //HR set up value
 const double HR_AverageRadius = 1000; //meters
@@ -59,7 +59,7 @@ const double CameraWidth = 45*M_PI/180;
 const double DetectorRadius = 11;
 
 //Radom number seed
-const int Seed =1;
+const int Seed =26;
 
 //Animal parameters
 const double AnimalSpeed = 50; // ms^-1

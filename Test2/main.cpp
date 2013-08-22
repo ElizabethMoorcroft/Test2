@@ -187,7 +187,7 @@ int main(){
     "," << "Camera Speed" <<
     "\n";
     
-    /* ------------------------------------------------------------------------------
+    ///* ------------------------------------------------------------------------------
     // Named such the that the each simulation can be correctly identified
     std::ofstream Movement;
     Movement.open(make_filenamesettings(SaveDirectory, ",Movement", ".csv" ).c_str());
@@ -203,7 +203,7 @@ int main(){
     "," << "Re-enterWorld" <<
     "," << "Iternation number" <<
     "\n";
-    ---------------------------------------------------------------------------------*/
+    //---------------------------------------------------------------------------------*/
     
     
 
@@ -601,7 +601,7 @@ int main(){
                 AllAnimals[i] -> UpdateLocation(RandomNumberCurrentAnimal[count]);
             }; //End of j loop for Steps
         
-        /* -------------------------------------------------------
+        ///* -------------------------------------------------------
          ////////////////// SAVES MOVEMENT \\\\\\\\\\\\\\\\\\\\\\\
          //
          // This section saves the movement of the animals to CSV
@@ -630,7 +630,7 @@ int main(){
                     
             }; //END of STEPCOUNTER LOOP
             }; //END OF FOR LOOP
-          ---------------------------------------------------- */
+          //---------------------------------------------------- */
         
         }; //End of i loop for EACH ANIMALS
     
@@ -801,7 +801,7 @@ int main(){
     
     //Closes the files Movement files
     // TO BE UNCOMMENTED WITH MOVEMENT SECTION!!
-    //Movement.close();
+    Movement.close();
         
     }; //end if test
     // Prints to screem to inform finished calculating captures
