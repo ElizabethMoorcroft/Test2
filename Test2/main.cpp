@@ -256,7 +256,7 @@ int main(){
     
     //Test on the camera trap
     ///////////THIS NEEDS UPDATING!!!!
-    int test=0;
+    int test=1;
     if(test==1){
         CameraTrap CT1;
         CT1 = CameraTrap(1,1,0,0 ); // ID, radius,2*Transect only varaibles

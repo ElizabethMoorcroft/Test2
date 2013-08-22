@@ -68,25 +68,25 @@ CameraTrap::CameraTrap(int a//CT_identifier;
     // If the lines of the detcetor were lines of graphs with garident and intercepts, Y=mX+c, then:
     //  - gradient if theta is the ange of the line then, m=1/tan(theta)
     //  - intercpet would be: y-mx=c (where y and x are known)
-    double detector1 = angle-angle_HalfWidth;
-    double detector2 = angle+angle_HalfWidth;
+    g_detector1 = angle-angle_HalfWidth;
+    g_detector2 = angle+angle_HalfWidth;
     //std::cout<<"Camera ID:"<<a<< ", Angle: "<< angle << ", Angle halfwidth"<< angle_HalfWidth << ", detector1: " << detector1<<std::endl;
-    if(detector1<0){detector1 = 2*M_PI + detector1;} else if(detector1>=2*M_PI){detector1 = detector1 - 2*M_PI;};
-    if(detector2<0){detector1 = 2*M_PI + detector2;} else if(detector2>=2*M_PI){detector2 = detector2 - 2*M_PI;};
+    if(g_detector1<0){g_detector1 = 2*M_PI + g_detector1;} else if(g_detector1>=2*M_PI){g_detector1 = g_detector1 - 2*M_PI;};
+    if(g_detector2<0){g_detector2 = 2*M_PI + g_detector2;} else if(g_detector2>=2*M_PI){g_detector2 = g_detector2 - 2*M_PI;};
     
-    m_detector1 = GradientFromAngle(detector1);
-    m_detector2 = GradientFromAngle(detector2);
+    m_detector1 = GradientFromAngle(g_detector1);
+    m_detector2 = GradientFromAngle(g_detector2);
     c_detector1  = location_y - location_x*m_detector1;
     c_detector2  = location_y - location_x*m_detector2;
     
     int vh_det1 =0;
     int vh_det2 =0;
     
-    if(detector1== 0 || detector1== M_PI|| detector1== 2*M_PI){vh_det1 = 1;} //Line is vertical
-    else if(detector1 == M_PI/2 || detector1== 3*M_PI/2){vh_det1 = 2;} //Line is Horizontal
+    if(g_detector1== 0 || g_detector1== M_PI|| g_detector1== 2*M_PI){vh_det1 = 1;} //Line is vertical
+    else if(g_detector1 == M_PI/2 || g_detector1== 3*M_PI/2){vh_det1 = 2;} //Line is Horizontal
     
-    if(detector2== 0 || detector2== M_PI|| detector2== 2*M_PI){vh_det2 = 1;} //Line is vertical
-    else if(detector2 == M_PI/2 || detector2== 3*M_PI/2){vh_det2 = 2;} //Line is Horizontal
+    if(g_detector2== 0 || g_detector2== M_PI|| g_detector2== 2*M_PI){vh_det2 = 1;} //Line is vertical
+    else if(g_detector2 == M_PI/2 || g_detector2== 3*M_PI/2){vh_det2 = 2;} //Line is Horizontal
     
     
     //Assigning varaibles
@@ -291,14 +291,15 @@ std::vector <double> TimeAndAngleCal(double Y, double X, double previous_y_anima
     double distedge = sqrt(pow(diffx,2)+ pow(diffy,2));
     double time = distedge/disttotal;
     double AngleBatCap;
-    /*std::cout<<"previous_y_animal: "<<previous_y_animal <<", previous_x_animal: "<< previous_x_animal<< std::endl;
-    std::cout<<"Y: "<<Y<<", X: "<< X<< std::endl;
-    std::cout<<"diffy: "<<diffy <<", diffx: "<< diffx<< ", distedge: "<< distedge <<std::endl;*/
+    //std::cout<<"previous_y_animal: "<<previous_y_animal <<", previous_x_animal: "<< previous_x_animal<< std::endl;
+    //std::cout<<"Y: "<<Y<<", X: "<< X<< std::endl;
+    //std::cout<<"diffy: "<<diffy <<", diffx: "<< diffx<< ", distedge: "<< distedge <<std::endl;
 
     AngleBatCap = atan((diffx)/(diffy));
     //std::cout<<"AngleBatCap : "<<AngleBatCap << std::endl;
     if(diffy<0){AngleBatCap+=M_PI;}//End if
-    if(AngleBatCap <0){AngleBatCap += 2*M_PI;}
+    //std::cout<<"AngleBatCap : "<<AngleBatCap << std::endl;
+    if(AngleBatCap<0){ AngleBatCap += 2*M_PI;}
     else if(AngleBatCap>2*M_PI){ AngleBatCap -= 2*M_PI;};
     
     if((approximatelyequal(Y,previous_y_animal)==1 && approximatelyequal(X,previous_x_animal)==1)
@@ -371,7 +372,9 @@ int CameraTrap::CapturesIntersection(double location_x_animal,
     // Checks for crossing the boundaries for detector 1
     //std::cout<< "Dect1"<<std::endl;
     //std::cout<< captured<<std::endl;
-    //if(Individual_ID== 19 && CT_StepOn>15 && CT_StepOn<17){std::cout<<"Dect1, "<<"m_animal: "<< m_animal<<", c_animal: "<< c_animal << "; m_detector1"<< m_detector1<< std::endl;};
+    //if(Individual_ID== 19 && CT_StepOn>15 && CT_StepOn<17){
+    //std::cout<<"Dect1, "<<"m_animal: "<< m_animal<<", c_animal: "<< c_animal << "; m_detector1"<< m_detector1<< std::endl;
+    //};
     captured += CameraAndMovement(location_x_animal,
                                   location_y_animal,
                                   previous_x_animal,
@@ -384,13 +387,15 @@ int CameraTrap::CapturesIntersection(double location_x_animal,
                                   c_animal,
                                   m_detector1,
                                   c_detector1,
+                                  g_detector1,
                                   vh_det1,
                                   disttotal);
     //std::cout<< captured<<std::endl;
     
     // Checks for crossing the boundaries for detector 2
     //std::cout<< "Dect2"<<std::endl;
-   //if(Individual_ID== 19 && CT_StepOn>15 && CT_StepOn<17){std::cout<<"Dect2, "<<"m_animal: "<< m_animal<<", c_animal: "<< c_animal<<std::endl;};
+   //if(Individual_ID== 19 && CT_StepOn>15 && CT_StepOn<17){
+    //std::cout<<"Dect2, "<<"m_animal: "<< m_animal<<", c_animal: "<< c_animal<<std::endl;//};
     captured += CameraAndMovement(location_x_animal,
                                   location_y_animal,
                                   previous_x_animal,
@@ -403,6 +408,7 @@ int CameraTrap::CapturesIntersection(double location_x_animal,
                                   c_animal,
                                   m_detector2,
                                   c_detector2,
+                                  g_detector2,
                                   vh_det2,
                                   disttotal);
     
@@ -487,16 +493,18 @@ int CameraTrap::CameraCircAndMovement(double location_x_animal,
     
     /*if(Individual_ID== 19 && CT_StepOn>15 && CT_StepOn<17){
         std::cout<<"XandY[0]: "<<XandY[0]<<", XandY[1]: "<<XandY[1]<<std::endl;
-        std::cout<<"XandY[2]: "<<XandY[2]<<", XandY[3]: "<<XandY[3]<<std::endl;}; */
+        std::cout<<"XandY[2]: "<<XandY[2]<<", XandY[3]: "<<XandY[3]<<std::endl;//}; */
     
     //Looking at both possible solutions for the line and the circle
     //For each sucessful capture adds a 1 to the "captured" value
     for(int v=0; v<2; v++){
         //std::cout<<"V"<< v<<std::endl;
         //time and angle of the interscept
+        //std::cout<<"previous_y_animal: "<<previous_y_animal<<", previous_x_animal: "<<previous_x_animal<<std::endl;
+        //std::cout<<"XandY[v*2+1]: "<<XandY[(v*2)+1]<<", XandY[v*2]: "<<XandY[v*2]<<std::endl;
         TandA = TimeAndAngleCal(XandY[(v*2)+1], XandY[v*2], previous_y_animal, previous_x_animal, disttotal);
         /*if(Individual_ID== 19 && CT_StepOn>15 && CT_StepOn<17){
-            std::cout<<"TandA [0]: "<<TandA[0]<<", TandA[1]: "<<TandA[1]<<std::endl;};*/
+            std::cout<<"TandA [0]: "<<TandA[0]<<", TandA[1]: "<<TandA[1]<< ", move_angle: "<<move_angle<<std::endl;//};*/
          
         // The time has to be less than the total distance away form starting location
         // the angle of movement from the start location to the capture location has to be the same as the movement angle.
@@ -541,10 +549,11 @@ int CameraTrap::CameraAndMovement(double location_x_animal,
                                   double c_animal,
                                   double m_detector,
                                   double c_detector,
+                                  double g_detector,
                                   int det,
                                   double disttotal){
     
-    
+    //std::cout<<"Line, move"<<std::endl;
     int captured =0;
     // TandA is Time and Angle 
     std::vector<double> TandA(2);
@@ -582,9 +591,11 @@ int CameraTrap::CameraAndMovement(double location_x_animal,
     
     //Animal has horizontal movement
     else if(location_y_animal == previous_y_animal){
+        //std::cout<<"Line, Horz move"<<std::endl;
         //Horzontal detector AND y-position as the movement
         //if(Individual_ID== 19 && CT_StepOn>15 && CT_StepOn<17){std::cout<<"Line, Horz move"<<std::endl;}
         if(det==2 && location_y== previous_y_animal){
+            //std::cout<<"Line, Horz move, horz"<<std::endl;
             //XandY[0] = location_x; // THIS IS WRONG
             XandY[1] = previous_y_animal; 
             if(approximatelyequal(move_angle,M_PI/2)){mindect=location_y; maxdect=location_y+radius;}
@@ -595,6 +606,7 @@ int CameraTrap::CameraAndMovement(double location_x_animal,
         } // END OF IF DET ==2
         // Vertical detector 
         else if(det==1){
+            //std::cout<<"Line, Horz move, vert"<<std::endl;
             XandY[0] = location_x;
             XandY[1] = previous_y_animal;
         } // END OF IF DET ==1
@@ -612,23 +624,23 @@ int CameraTrap::CameraAndMovement(double location_x_animal,
     else if(approximatelyequal(m_detector,m_animal)==1 && approximatelyequal(c_detector,c_animal)==1 ){
         //std::cout<<"Line, Same angle"<<std::endl;
         //if(Individual_ID== 19 && CT_StepOn>15 && CT_StepOn<17){std::cout<<"Line, Same angle"<<std::endl;}
-        if(m_detector<M_PI){mindect=location_x; maxdect=location_x+radius*sin(atan(1/m_detector));}
-        else{mindect = location_x-radius*sin(atan(1/m_detector)); maxdect = location_x;};
+        //std::cout<<"m_detector: "<< m_detector<< ", g_detector: "<< g_detector<<std::endl;
+        if(g_detector<M_PI){mindect=location_x; maxdect=location_x+radius*sin(g_detector);}
+        else{mindect = location_x+radius*sin(g_detector); maxdect = location_x;};
         //std::cout<< m_detector<<", "<<sin(atan(1/m_detector))<<std::endl;
         //std::cout<<"mindect "<< mindect <<", maxdect "<< maxdect<<std::endl;
         
-        if(move_angle<M_PI){
-            XandY[0] = std::min(std::max(location_x_animal,previous_x_animal),mindect);
-        }else{XandY[0] = std::max(std::min(location_x_animal,previous_x_animal),maxdect);};
+        if(move_angle<M_PI){XandY[0] = std::min(std::max(location_x_animal,previous_x_animal),mindect);}
+        else{XandY[0] = std::max(std::min(location_x_animal,previous_x_animal),maxdect);};
         
-        if(m_detector<M_PI/2 ||m_detector>3*M_PI/2 ){mindect=location_y; maxdect=location_y+radius*cos(atan(1/m_detector));}
-        else{mindect = location_y-radius*cos(atan(1/m_detector)); maxdect = location_y;};
+        if(g_detector<M_PI/2 ||g_detector>3*M_PI/2 ){mindect=location_y; maxdect=location_y+radius*cos(g_detector);}
+        else{mindect = location_y+radius*cos(g_detector); maxdect = location_y;};
         //std::cout<<"mindect "<< mindect <<", maxdect "<< maxdect<<std::endl;
-        if(move_angle<M_PI){
-            XandY[1] = std::min(std::max(location_y_animal,previous_y_animal),mindect);
-        }else{XandY[1] = std::max(std::min(location_y_animal,previous_y_animal),maxdect);};
+        if(move_angle<M_PI/2 ||move_angle>3*M_PI/2 ){ XandY[1] = std::min(std::max(location_y_animal,previous_y_animal),mindect);}
+        else{XandY[1] = std::max(std::min(location_y_animal,previous_y_animal),maxdect);};
         
-        XandY[1] = location_y_animal;
+        //XandY[1] = location_y_animal;
+        //std::cout<<"XandY[0]: "<< XandY[0]<<", XandY[1]: "<< XandY[1] <<std::endl;
 
         }//--------END OF SAME ANGLE ANIMAL MOVEMENT ---------------//
     
@@ -716,6 +728,7 @@ int CameraTrap::CapturesIndividual(double location_x_animal,
     double diffx = location_x_animal - location_x;
     double diffy = location_y_animal - location_y;
     
+    //std::cout<<"diffx: "<< diffx <<", diffy: "<< diffy <<std::endl;
     if(approximatelyequal(diffx,0)==1 && approximatelyequal(diffy,0)==1){ // If on the exact same spot as the camera assume it will be captured
         UpdateCaptures(Individual_ID,itnumber,location_x_animal,location_y_animal,time);
         captured = 1;
@@ -744,11 +757,11 @@ int CameraTrap::CapturesIndividual(double location_x_animal,
         if(diffy>=0){AngleFromCamera = atan(diffx/diffy);}
         else        {AngleFromCamera = atan(diffx/diffy)+M_PI;};
         
-        double Min_angle = angle-angle_HalfWidth;
-        double Max_angle = angle+angle_HalfWidth;
+        //double Min_angle = angle-angle_HalfWidth;
+        //double Max_angle = angle+angle_HalfWidth;
         
-        if(Max_angle >=2*M_PI){Max_angle = Max_angle -2*M_PI;};
-        if(Min_angle <0){Min_angle = Min_angle +2*M_PI;};
+        if(g_detector2 >=2*M_PI){g_detector2 = g_detector2 -2*M_PI;};
+        if(g_detector1 <0){g_detector1 = g_detector1 +2*M_PI;};
         if(AngleFromCamera >=2*M_PI){AngleFromCamera = AngleFromCamera -2*M_PI;};
         if(AngleFromCamera <0){AngleFromCamera = AngleFromCamera +2*M_PI;};
         
@@ -758,26 +771,26 @@ int CameraTrap::CapturesIndividual(double location_x_animal,
             std::cout<< "location_y_animal: "<<location_y_animal<<std::endl;
             std::cout<< "Angle of camera: "<<angle<<std::endl;
             std::cout<< "Movement angle: "<<move_angle<<std::endl;
-            std::cout<< "Min. camera angle: "<<Min_angle<<std::endl;
-            std::cout<< "Max. camera angle: "<<Max_angle<<std::endl;
+            std::cout<< "Min. camera angle: "<<g_detector1<<std::endl;
+            std::cout<< "Max. camera angle: "<<g_detector2<<std::endl;
             std::cout<<"Angle from camera to bat: "<<AngleFromCamera <<std::endl;
         };*/
-        //std::cout<<AngleFromCamera-Max_angle <<std::endl;
+        //std::cout<<AngleFromCamera-g_detector2<<std::endl;
          
         
         
         // If the angle is between min and max possible angle
-        if((Min_angle>Max_angle && AngleFromCamera <= Max_angle) || //IF the min value is less than zero
-           (Min_angle>Max_angle && AngleFromCamera >= Min_angle) || //IF the max value is greater than 360
-           (approximatelyequal(Min_angle, AngleFromCamera)==1)   ||
-           (approximatelyequal(Max_angle, AngleFromCamera)==1)   ||
-           (AngleFromCamera >= Min_angle && AngleFromCamera <= Max_angle)){
+        if((g_detector1>g_detector2 && AngleFromCamera <= g_detector2) || //IF the min value is less than zero
+           (g_detector1>g_detector2&& AngleFromCamera >= g_detector1) || //IF the max value is greater than 360
+           (approximatelyequal(g_detector1, AngleFromCamera)==1)   ||
+           (approximatelyequal(g_detector2, AngleFromCamera)==1)   ||
+           (AngleFromCamera >= g_detector1 && AngleFromCamera <= g_detector2)){
             //std::cout<< "IN CAM ANGEL"<<std::endl;
             
             //if(Individual_ID== 19 && CT_StepOn>15 && CT_StepOn<17){std::cout<<"In Camera angle"<<std::endl;}
             
             if(call_halfwidth==M_PI){
-                std::cout<< "360 call"<<std::endl;
+                //std::cout<< "360 call"<<std::endl;
                 //std::cout<<diff_animal_camera<<std::endl;
                 //std::cout<<radius<<std::endl;
                 UpdateCaptures(Individual_ID,itnumber,location_x_animal,location_y_animal,time);
@@ -1197,16 +1210,7 @@ void CameraTrap::TestCI(){
 /*-----------Test Movement Capture thing--------------*/
 
 
-//NEEDS completeling
-// Vert movement Vert camera
-// Vert movement Horz camera
-// Vert movement Angle camera
-// Horz movement Vert camera
-// Horz movement Horz camera
-// Horz movement Angle camera
-// Angle movement Vert camera
-// Angle movement Horz camera
-// Angle movement Angle camera
+//NEEDS completing
 // Is the camera lines at a angles and is the movement also at an angle?
 
 void CameraTrap::TestCapturesIntersection(){
@@ -1217,10 +1221,17 @@ void CameraTrap::TestCapturesIntersection(){
     
     //-------------------------------------------------//
     // Vertical movement through the centre of sector
+    // Vert movement Angle camera
     loc1 =0; loc2 =0;
     resetCaptures();
+    /*Angle camera and vertical movement. Should get captured:
+     //  - At detector1 line (X=0,Y=0.5,T=0)
+     //  - At detector2 line  (X=0,Y=0,T=0)
+     //  - At Circle line (X=0 ,Y=1 ,T=1)
+     //  - At end of the step (X=0,Y=1,T=1) */
     angle = 0; angle_HalfWidth = M_PI/4; location_x =0; location_y =0; radius = 1;
-    m_detector1 = -1; m_detector2 = 1; c_detector1 =0;c_detector2 =0;
+    g_detector1 = 7*M_PI/4; g_detector2 =angle + angle_HalfWidth;
+    m_detector1 = -1; m_detector2 = 1; c_detector1 =0;c_detector2 =0; vh_det1 =0; vh_det2 =0;
     //std::cout<<"Test CapInter"<< std::endl;
     CapturesIntersection(0,1,0,0, // Current x/y, previous x,y
                          1, // ID
@@ -1237,8 +1248,9 @@ void CameraTrap::TestCapturesIntersection(){
             if(Captures[i][4] ==0 && Captures[i][5] ==0){loc1 += 1;};
             if(Captures[i][4] ==0 && Captures[i][5] ==1){loc2 += 1;};
             if(Captures[i][6]<0 || Captures[i][6]>1){
-                std::cout<<"Error! Failed camera test - TestCapturesIntersection: "<<"1b" <<std::endl;
-                exit (EXIT_FAILURE);};
+                std::cout<<"Possible Error! Failed camera test - TestCapturesIntersection: "<<"1b" <<std::endl;
+                std::cout<<"Time of capture, less than 0 or greater than 1: "<< Captures[i][6] <<std::endl;
+            };
         };
     };
      //std::cout<<"loc1: "<< loc1<<", loc2: "<< loc1<< std::endl;
@@ -1249,11 +1261,18 @@ void CameraTrap::TestCapturesIntersection(){
     
     //-------------------------------------------------//
     // Horizontal movement through the centre of sector
+    // Horz movement Angle camera
     resetCaptures();
     /// this brings up ever  - because something somewhere needs an approx.equal///
     angle = 0; angle_HalfWidth = M_PI/4; location_x =0; location_y =0; radius = 1;
-    m_detector1 = -1; m_detector2 = 1; c_detector1 =0;c_detector2 =0;
+    g_detector1 = 7*M_PI/4; g_detector2 =angle + angle_HalfWidth;
+    m_detector1 = -1; m_detector2 = 1; c_detector1 =0;c_detector2 =0; vh_det1 =0; vh_det2 =0;
     //std::cout<<"Test CapInter: 2"<< std::endl;
+     /*Angle camera and Horizontal movement. Should get captured:
+     //  - At detector1 line (X=-0.5,Y=0.5,T=0)
+     //  - At detector2 line  (X=0.5,Y=0.5,T=1)
+     //  - Not at Circle line (X=0 ,Y= ,T= )
+     //  - At end of the step (X=0.5,Y=0.5,T=1) */
     CapturesIntersection(0.5,0.5,-0.5,0.5, // Current x/y, previous x,y
                          1, // ID
                          M_PI, //Call width - circular call (to make this easier!)
@@ -1271,8 +1290,9 @@ void CameraTrap::TestCapturesIntersection(){
             if(Captures[i][4] ==0.5 && Captures[i][5] ==0.5){loc1 += 1;};
             if(Captures[i][4] ==-0.5 && Captures[i][5] ==0.5){loc2 += 1;};
             if(Captures[i][6]<0 || Captures[i][6]>1){
-                std::cout<<"Error! Failed camera test - TestCapturesIntersection: "<<"2b" <<std::endl;
-                exit (EXIT_FAILURE);};
+                std::cout<<"Possible Error! Failed camera test - TestCapturesIntersection: "<<"2b" <<std::endl;
+                std::cout<<"Time of capture, less than 0 or greater than 1: "<< Captures[i][6] <<std::endl;
+            };
         };
     };
     //std::cout<<"loc1: "<< loc1<<", loc2: "<< loc2<< std::endl;
@@ -1283,9 +1303,15 @@ void CameraTrap::TestCapturesIntersection(){
     
     //-------------------------------------------------//
     // Angle movement through the centre of sector
+    // Angle movement Angle camera
     resetCaptures();
-    /// this brings up ever  - because something somewhere needs an approx.equal///
+    /*Angle camera and angle movement. Should get captured:
+     //  - At detector1 line (X=-0.5,Y=0.5,T=0)
+     //  - Not at detector2 line  (X= ,Y= ,T= )
+     //  - At Circle line (X=0 ,Y=1 ,T=1) 
+     //  - At end of the step (X=0 ,Y=1 ,T=1) */
     angle = 0; angle_HalfWidth = M_PI/4; location_x =0; location_y =0; radius = 1;
+    g_detector1 = 7*M_PI/4; g_detector2 =angle + angle_HalfWidth;
     m_detector1 = -1; m_detector2 = 1; c_detector1 =0;c_detector2 =0; vh_det1 =0; vh_det2 =0;
     //std::cout<<"Test CapInter: 3"<< std::endl;
     temp= 1/sqrt(2);
@@ -1306,8 +1332,9 @@ void CameraTrap::TestCapturesIntersection(){
             if(Captures[i][4] ==-0.5 && Captures[i][5] ==0.5){loc1 += 1;};
             if(Captures[i][4] ==0 && Captures[i][5] ==1){loc2 += 1;};
             if(Captures[i][6]<0 || Captures[i][6]>1){
-                std::cout<<"Error! Failed camera test - TestCapturesIntersection: "<<"3b" <<std::endl;
-                exit (EXIT_FAILURE);};
+                std::cout<<"Possible Error! Failed camera test - TestCapturesIntersection: "<<"3b" <<std::endl;
+                std::cout<<"Time of capture, less than 0 or greater than 1: "<< Captures[i][6] <<std::endl;
+            };
         };
     };
     //std::cout<<"loc1: "<< loc1<<", loc2: "<< loc2<< std::endl;
@@ -1320,9 +1347,14 @@ void CameraTrap::TestCapturesIntersection(){
     //-------------------------------------------------//
     // Horizontal movement through top of the sector, through both edges and the circle twice
     resetCaptures();
-    /// this brings up ever  - because something somewhere needs an approx.equal///
+    /*Angle camera and horz movement. Should get captured:
+     //  - At detector1 line (X=-1/sqrt(2),Y=1/sqrt(2),T=0)
+     //  - At detector2 line  (X=1/sqrt(2),Y=1/sqrt(2),T=1)
+     //  - At Circle line (X=1/sqrt(2),Y=1/sqrt(2),T=1) && (X=-1/sqrt(2),Y=1/sqrt(2),T=0)
+     //  - At end of the step (X=1/sqrt(2),Y=1/sqrt(2), T=1) */
     angle = 0; angle_HalfWidth = M_PI/4; location_x =0; location_y =0; radius = 1;
-    m_detector1 = -1; m_detector2 = 1; c_detector1 =0;c_detector2 =0;
+    g_detector1 = 7*M_PI/4; g_detector2 =angle + angle_HalfWidth;
+    m_detector1 = -1; m_detector2 = 1; c_detector1 =0;c_detector2 =0; vh_det1 =0; vh_det2 =0;
     //std::cout<<"Test CapInter: 4"<< std::endl;
     temp= 1/sqrt(2);
     CapturesIntersection(temp,temp,-temp,temp, // Current x/y, previous x,y
@@ -1337,13 +1369,15 @@ void CameraTrap::TestCapturesIntersection(){
             if(i>4){std::cout<<"Error! Failed camera test - TestCapturesIntersection: "<<"4a" <<std::endl;exit (EXIT_FAILURE);};
             
             //X,Y,TIME
+            //std::cout<<"Captures " <<std::endl;
             //std::cout<<Captures[i][4]<<", " <<Captures[i][5]<<", "  <<Captures[i][6]<<std::endl;
             
             if(approximatelyequal(Captures[i][4],-temp)==1 && approximatelyequal(Captures[i][5],temp)==1){loc1 += 1;};
             if(approximatelyequal(Captures[i][4],temp)==1 && approximatelyequal(Captures[i][5],temp)==1){loc2 += 1;};
             if(Captures[i][6]<0 || Captures[i][6]>1){
-                std::cout<<"Error! Failed camera test - TestCapturesIntersection: "<<"4b" <<std::endl;
-                exit (EXIT_FAILURE);};
+                std::cout<<"Possible Error! Failed camera test - TestCapturesIntersection: "<<"4b" <<std::endl;
+                std::cout<<"Time of capture, less than 0 or greater than 1: "<< Captures[i][6] <<std::endl;
+            };
         };
     };
     //std::cout<<"loc1: "<< loc1<<", loc2: "<< loc2<< std::endl;
@@ -1356,9 +1390,15 @@ void CameraTrap::TestCapturesIntersection(){
     //-------------------------------------------------//
     // Angle movement through on edge of sector
     resetCaptures();
+    /*Angle camera and same-angle movement. Should get captured:
+     //  - At detector1 line (X=0,Y=0,T=0)
+     //  - At detector2 (same angle) line  (X=0,Y=0,T=0)
+     //  - At Circle line (X=1/sqrt(2),Y=1/sqrt(2), T=1)
+     //  - At end of the step (X=1/sqrt(2),Y=1/sqrt(2), T=1) */
     /// this brings up ever  - because something somewhere needs an approx.equal///
     angle = 0; angle_HalfWidth = M_PI/4; location_x =0; location_y =0; radius = 1;
-    m_detector1 = -1; m_detector2 = 1; c_detector1 =0;c_detector2 =0;
+    g_detector1 = 7*M_PI/4; g_detector2 =angle + angle_HalfWidth;
+    m_detector1 = -1; m_detector2 = 1; c_detector1 =0;c_detector2 =0; vh_det1 =0; vh_det2 =0;
     //std::cout<<"Test CapInter: Number 5"<< std::endl;
     CapturesIntersection(temp,temp,0,0, // Current x/y, previous x,y
                          1, // ID
@@ -1377,8 +1417,8 @@ void CameraTrap::TestCapturesIntersection(){
             if(approximatelyequal(Captures[i][4],0) ==1 && approximatelyequal(Captures[i][5],0) ==1 ){loc1 += 1;};
             if(approximatelyequal(Captures[i][4],temp) ==1 && approximatelyequal(Captures[i][5],temp) ==1 ){loc2 += 1;};
             if(Captures[i][6]<0 || Captures[i][6]>1){
-                std::cout<<"Error! Failed camera test - TestCapturesIntersection: "<<"5b" <<std::endl;
-                //exit (EXIT_FAILURE);
+                std::cout<<"Possible Error! Failed camera test - TestCapturesIntersection: "<<"5b" <<std::endl;
+                std::cout<<"Time of capture, less than 0 or greater than 1: "<< Captures[i][6] <<std::endl;
             };
         };
     };
@@ -1393,14 +1433,19 @@ void CameraTrap::TestCapturesIntersection(){
     //-------------------------------------------------//
     // Angle movement through on edge of sector
     resetCaptures();
-    /// this brings up ever  - because something somewhere needs an approx.equal///
+    /*Angle camera and same-angle movement. Should get captured:
+    //  - At detector1 (same angle) line (X=0,Y=0,T=0)
+    //  - At detector2 line  (X=0,Y=0,T=0)
+    //  - At Circle line (X=-1/sqrt(2),Y=1/sqrt(2), T=1)
+    //  - At end of the step (X=-1/sqrt(2),Y=1/sqrt(2), T=1) */
     angle = 0; angle_HalfWidth = M_PI/4; location_x =0; location_y =0; radius = 1;
-    m_detector1 = -1; m_detector2 = 1; c_detector1 =0;c_detector2 =0;
-    std::cout<<"Test CapInter: Number 6"<< std::endl;
+    g_detector1 = 7*M_PI/4; g_detector2 =angle + angle_HalfWidth;
+    m_detector1 = -1; m_detector2 = 1; c_detector1 =0;c_detector2 =0; vh_det1 =0; vh_det2 =0;
+    //std::cout<<"Test CapInter: Number 6"<< std::endl;
     CapturesIntersection(-temp,temp,0,0, // Current x/y, previous x,y
                          1, // ID
                          M_PI, //Call width - circular call (to make this easier!)
-                         M_PI/4,  // move_angle,
+                         7*M_PI/4,  // move_angle,
                          1); // IT
     loc1 =0; loc2 =0;
     for(int i=0; i<Captures.size(); i++){
@@ -1409,23 +1454,176 @@ void CameraTrap::TestCapturesIntersection(){
             if(i>4){std::cout<<"Error! Failed camera test - TestCapturesIntersection: "<<"6a" <<std::endl;exit (EXIT_FAILURE);};
             
             //X,Y,TIME
-            std::cout<<Captures[i][4]<<", " <<Captures[i][5]<<", "  <<Captures[i][6]<<std::endl;
+            //std::cout<<Captures[i][4]<<", " <<Captures[i][5]<<", "  <<Captures[i][6]<<std::endl;
             
             if(approximatelyequal(Captures[i][4],0) ==1 && approximatelyequal(Captures[i][5],0) ==1 ){loc1 += 1;};
             if(approximatelyequal(Captures[i][4],-temp) ==1 && approximatelyequal(Captures[i][5],temp) ==1 ){loc2 += 1;};
             if(Captures[i][6]<0 || Captures[i][6]>1){
-                std::cout<<"Error! Failed camera test - TestCapturesIntersection: "<<"6b" <<std::endl;
-                //exit (EXIT_FAILURE);
+                std::cout<<"Possible Error! Failed camera test - TestCapturesIntersection: "<<"6b" <<std::endl;
+                std::cout<<"Time of capture, less than 0 or greater than 1: "<< Captures[i][6] <<std::endl;
             };
         };
     };
-    std::cout<<"loc1: "<< loc1<<", loc2: "<< loc2<< std::endl;
-    if(loc1!=1 || loc2!=2){
+    //std::cout<<"loc1: "<< loc1<<", loc2: "<< loc2<< std::endl;
+    if(loc1!=2 || loc2!=2){
         std::cout<<"Error! Failed camera test - TestCapturesIntersection: "<<"6c" <<std::endl;
         exit (EXIT_FAILURE);
     };
     
+    //-------------------------------------------------//
+    // Vert movement Vert camera
+    // Vert movement Horz camera
+    resetCaptures();
+    /// this brings up ever  - because something somewhere needs an approx.equal///
+    angle = M_PI/4; angle_HalfWidth = M_PI/4; location_x =0; location_y =0; radius = 1;
+    g_detector1 = angle - angle_HalfWidth; g_detector2 =angle + angle_HalfWidth;
+    m_detector1 = -1; m_detector2 = 1; c_detector1 =0;c_detector2 =0; vh_det1 =1; vh_det2 =2;
+    //std::cout<<"Test CapInter: Number 7"<< std::endl;
+    /*Vertical/horzontal camera and veritcal movement. Should get captured:
+    //  - AT horzontal detector2 line (X=0,Y=0,T=0)
+    //  - At vertical detcector1 line  (X=0,Y=0,T=0) 
+    //  - At Circle line (X=0,Y=1, T=1)
+    //  - At end of the step (X=0,Y=1, T=1) */
+    CapturesIntersection(0,1,0,0, // Current x/y, previous x,y
+                         1, // ID
+                         M_PI, //Call width - circular call (to make this easier!)
+                         0,  // move_angle,
+                         1); // IT
+    loc1 =0; loc2 =0;
+    for(int i=0; i<Captures.size(); i++){
+        if(Captures[i].size()>0){
+            // The maximum number of captures possible for any 1 movement is 5
+            if(i>4){std::cout<<"Error! Failed camera test - TestCapturesIntersection: "<<"7a" <<std::endl;exit (EXIT_FAILURE);};
+            
+            //X,Y,TIME
+            //std::cout<<Captures[i][4]<<", " <<Captures[i][5]<<", "  <<Captures[i][6]<<std::endl;
+            
+            if(approximatelyequal(Captures[i][4],0) ==1 && approximatelyequal(Captures[i][5],0) ==1 ){loc1 += 1;};
+            if(approximatelyequal(Captures[i][4],0) ==1 && approximatelyequal(Captures[i][5],1) ==1 ){loc2 += 1;};
+            if(Captures[i][6]<0 || Captures[i][6]>1){
+                std::cout<<"Possible Error! Failed camera test - TestCapturesIntersection: "<<"7b" <<std::endl;
+                std::cout<<"Time of capture, less than 0 or greater than 1: "<< Captures[i][6] <<std::endl;
+            };
+        };
+    };
+    //std::cout<<"loc1: "<< loc1<<", loc2: "<< loc2<< std::endl;
+    if(loc1!=2 || loc2!=2){
+        std::cout<<"Error! Failed camera test - TestCapturesIntersection: "<<"7c" <<std::endl;
+        exit (EXIT_FAILURE);
+    };
+
+    //-------------------------------------------------//
+    // Horz movement Vert camera
+    // Horz movement Horz camera
+    resetCaptures();
+    /// this brings up ever  - because something somewhere needs an approx.equal///
+    angle = M_PI/4; angle_HalfWidth = M_PI/4; location_x =0; location_y =0; radius = 1;
+    g_detector1 = angle - angle_HalfWidth; g_detector2 =angle + angle_HalfWidth;
+    m_detector1 = -1; m_detector2 = 1; c_detector1 =0;c_detector2 =0; vh_det1 =1; vh_det2 =2;
+    //std::cout<<"Test CapInter: Number 8"<< std::endl;
+    /*Vertical/horzontal camera and horiz movement. Should get captured:
+     //  - AT horzontal detector2 line (X=0,Y=0,T=0)
+     //  - At vertical detcector1 line  (X=0,Y=0,T=0)
+     //  - At Circle line (X=1,Y=0, T=1)
+     //  - At end of the step (X=1,Y=0, T=1) */
+    CapturesIntersection(1,0,0,0, // Current x/y, previous x,y
+                         1, // ID
+                         M_PI, //Call width - circular call (to make this easier!)
+                         M_PI/2,  // move_angle,
+                         1); // IT
+    loc1 =0; loc2 =0;
+    for(int i=0; i<Captures.size(); i++){
+        if(Captures[i].size()>0){
+            // The maximum number of captures possible for any 1 movement is 5
+            if(i>4){std::cout<<"Error! Failed camera test - TestCapturesIntersection: "<<"8a" <<std::endl;exit (EXIT_FAILURE);};
+            
+            //X,Y,TIME
+            //std::cout<<Captures[i][4]<<", " <<Captures[i][5]<<", "  <<Captures[i][6]<<std::endl;
+            
+            if(approximatelyequal(Captures[i][4],0) ==1 && approximatelyequal(Captures[i][5],0) ==1 ){loc1 += 1;};
+            if(approximatelyequal(Captures[i][4],1) ==1 && approximatelyequal(Captures[i][5],0) ==1 ){loc2 += 1;};
+            if(Captures[i][6]<0 || Captures[i][6]>1){
+                std::cout<<"Possible Error! Failed camera test - TestCapturesIntersection: "<<"8b" <<std::endl;
+                std::cout<<"Time of capture, less than 0 or greater than 1: "<< Captures[i][6] <<std::endl;
+            };
+        };
+    };
+    //std::cout<<"loc1: "<< loc1<<", loc2: "<< loc2<< std::endl;
+    if(loc1!=2 || loc2!=2){
+        std::cout<<"Error! Failed camera test - TestCapturesIntersection: "<<"8c" <<std::endl;
+        exit (EXIT_FAILURE);
+    };
+
     
+
+    //-------------------------------------------------//
+    // Angle movement Vert camera
+    // Angle movement Horz camera
+    resetCaptures();
+    /// this brings up ever  - because something somewhere needs an approx.equal///
+    angle = M_PI/4; angle_HalfWidth = M_PI/4; location_x =0; location_y =0; radius = 1;
+    g_detector1 = angle - angle_HalfWidth; g_detector2 =angle + angle_HalfWidth;
+    m_detector1 = -1; m_detector2 = 1; c_detector1 =0;c_detector2 =0; vh_det1 =1; vh_det2 =2;
+    //std::cout<<"Test CapInter: Number 9"<< std::endl;
+    /*Vertical/horzontal camera and angle movement. Should get captured:
+     //  - AT horzontal detector1 line (X=0,Y=0.5,T=0)
+     //  - At vertical detcector1 line  (X=0.5,Y=0,T=1)
+     //  - NOT at Circle line (X= ,Y=, T=)
+     //  - At end of the step (X=0.5,Y=0, T=1) */
+    CapturesIntersection(0.5,0,0,0.5, // Current x/y, previous x,y
+                         1, // ID
+                         M_PI, //Call width - circular call (to make this easier!)
+                         3*M_PI/4,  // move_angle,
+                         1); // IT
+    loc1 =0; loc2 =0;
+    for(int i=0; i<Captures.size(); i++){
+        if(Captures[i].size()>0){
+            // The maximum number of captures possible for any 1 movement is 5
+            if(i>4){std::cout<<"Error! Failed camera test - TestCapturesIntersection: "<<"9a" <<std::endl;exit (EXIT_FAILURE);};
+            
+            //X,Y,TIME
+            //std::cout<<Captures[i][4]<<", " <<Captures[i][5]<<", "  <<Captures[i][6]<<std::endl;
+            
+            if(approximatelyequal(Captures[i][4],0) ==1 && approximatelyequal(Captures[i][5],0.5) ==1 ){loc1 += 1;};
+            if(approximatelyequal(Captures[i][4],0.5) ==1 && approximatelyequal(Captures[i][5],0) ==1 ){loc2 += 1;};
+            if(Captures[i][6]<0 || Captures[i][6]>1){
+                std::cout<<"Possible Error! Failed camera test - TestCapturesIntersection: "<<"9b" <<std::endl;
+                std::cout<<"Time of capture, less than 0 or greater than 1: "<< Captures[i][6] <<std::endl;
+            };
+        };
+    };
+    //std::cout<<"loc1: "<< loc1<<", loc2: "<< loc2<< std::endl;
+    if(loc1!=1 || loc2!=2){
+        std::cout<<"Error! Failed camera test - TestCapturesIntersection: "<<"9c" <<std::endl;
+        exit (EXIT_FAILURE);
+    };
+
+    
+    //-------------------------------------------------//
+    // Angle movement not near camera
+    loc1 =0; loc2 =0;
+    /*Angle camera and vertical movement. Should get NO captured:
+     //  - At detector1 line (X= ,Y= ,T=)
+     //  - At detector2 line  (X= ,Y= ,T=)
+     //  - At Circle line (X= ,Y= ,T=)
+     //  - At end of the step (X= ,Y= ,T=) */
+    angle = 0; angle_HalfWidth = M_PI/4; location_x =0; location_y =0; radius = 1;
+    g_detector1 = 7*M_PI/4; g_detector2 =angle + angle_HalfWidth;
+    m_detector1 = -1; m_detector2 = 1; c_detector1 =0;c_detector2 =0; vh_det1 =0; vh_det2 =0;
+    resetCaptures();
+    //std::cout<<"Test CapInter"<< std::endl;
+    CapturesIntersection(100,100,99,99, // Current x/y, previous x,y
+                         1, // ID
+                         M_PI, //Call width - circular call (to make this easier!)
+                         M_PI/4,  // move_angle,
+                         1); // IT
+    for(int i=0; i<Captures.size(); i++){
+        if(Captures[i].size()>0){
+            // Should have No Captures
+            std::cout<<"Error! Failed camera test - TestCapturesIntersection: "<<"10a " << Captures.size() <<std::endl;
+            exit (EXIT_FAILURE);
+        };
+    };
     
     std::cout<<"Passed! Camera test - TestCameraAndMovement"<< std::endl;
 };

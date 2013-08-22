@@ -28,6 +28,8 @@ private:
     double angle_HalfWidth; // Half width of the camera 
     int capturecount;
     
+    double g_detector1; // gradient of dectector1
+    double g_detector2; // gradient of dectector1
     double m_detector1;
     double m_detector2;
     double c_detector1;
@@ -104,7 +106,7 @@ public:
                           );
     
     int CameraAndMovement(double, double, double, double,  int,  double,   double,
-                        int, double, double, double, double, int, double);
+                        int, double, double, double, double, double, int, double);
     
     int CameraCircAndMovement(double, //location_x_animal,
                             double, //location_y_animal,
