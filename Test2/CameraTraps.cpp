@@ -95,7 +95,7 @@ CameraTrap::CameraTrap(int a//CT_identifier;
     angle_HalfWidth = CameraWidth;
     Captures.resize(round(DensityAnimals*((Sq_MaxX-Sq_MinX)*(Sq_MaxY-Sq_MinY)))*3);
     capturecount=0;
-    myvector.resize(7);
+    myvector.resize(8);
     //std::cout<<"END create"<< std::endl;
 };
 
@@ -451,7 +451,8 @@ int CameraTrap::CapturesIntersection(double location_x_animal,
                                    call_halfwidth,
                                    move_angle,
                                    itnumber,
-                                   1); // Assumes that it captures right at the end of the movement therefore time=1
+                                   1,
+                                   0); // Assumes that it captures right at the end of the movement therefore time=1
 
     
     // If there are any captures then return 1 else return 0
@@ -531,7 +532,8 @@ int CameraTrap::CameraCircAndMovement(double location_x_animal,
                                        call_halfwidth,
                                        move_angle,
                                        itnumber,
-                                       TandA[0]);
+                                       TandA[0],
+                                       0);
         }; // END OF IF LOOP
     }; // END OF FOR v loop
     //--------- END OF CHECK FOR CAPTURE ---------------//
@@ -675,7 +677,8 @@ int CameraTrap::CameraAndMovement(double location_x_animal,
                                        call_halfwidth,
                                        move_angle,
                                        itnumber,
-                                       TandA[0]);
+                                       TandA[0],
+                                       0);
     }; //--------- END OF CAPTURE CHECK ---------------//
 
     
@@ -687,7 +690,7 @@ int CameraTrap::CameraAndMovement(double location_x_animal,
 //-----------------------------------------------------------
 // UpdateCaptures
 // NEEDS TEST
-void CameraTrap::UpdateCaptures(double Individual_ID,double itnumber,double location_x_animal,double location_y_animal,double time){
+void CameraTrap::UpdateCaptures(double Individual_ID,double itnumber,double location_x_animal,double location_y_animal,double time, int call){
     myvector[0] = Individual_ID;
     myvector[1] = CT_StepOn;
     myvector[2] = CT_identifier;
@@ -695,6 +698,7 @@ void CameraTrap::UpdateCaptures(double Individual_ID,double itnumber,double loca
     myvector[4] = location_x_animal;
     myvector[5] = location_y_animal;
     myvector[6] = time;
+    myvector[7] = call;
     Captures[capturecount]=myvector;
     capturecount+=1;
 };
@@ -710,7 +714,8 @@ int CameraTrap::CapturesIndividual(double location_x_animal,
                                    double call_halfwidth,
                                    double move_angle,
                                    int itnumber,
-                                   double time
+                                   double time,
+                                   int call
                                    ){
     //if(Individual_ID== 19 && CT_StepOn>15 && CT_StepOn<17){std::cout<<"InCap"<<std::endl;};
     clock_t Time1=clock();
@@ -723,7 +728,7 @@ int CameraTrap::CapturesIndividual(double location_x_animal,
     
     // If on the exact same spot as the camera assume it will be captured
     if(approximatelyequal(diffx,0)==1 && approximatelyequal(diffy,0)==1){
-        UpdateCaptures(Individual_ID,itnumber,location_x_animal,location_y_animal,time);
+        UpdateCaptures(Individual_ID,itnumber,location_x_animal,location_y_animal,time,call);
         captured = 1;
     }
     
@@ -798,7 +803,7 @@ int CameraTrap::CapturesIndividual(double location_x_animal,
                      //if(Individual_ID== 19 && CT_StepOn>15 && CT_StepOn<17){std::cout<<"Captured with a 360 call"<<std::endl;};
                      ----------------------------------------------------------------------------------------------------------*/
                     // Call the update captures function and let captured ==1.
-                    UpdateCaptures(Individual_ID,itnumber,location_x_animal,location_y_animal,time);
+                    UpdateCaptures(Individual_ID,itnumber,location_x_animal,location_y_animal,time,call);
                     captured = 1;
                 }
                 
@@ -849,7 +854,7 @@ int CameraTrap::CapturesIndividual(double location_x_animal,
                         ----------------------------------------------------------------------------------------------------------*/
                         
                         // If it's in the possible angle then record in vector
-                        UpdateCaptures(Individual_ID,itnumber,location_x_animal,location_y_animal,time);
+                        UpdateCaptures(Individual_ID,itnumber,location_x_animal,location_y_animal,time,call);
                         captured = 1;           
                     };//End of IF  - "detector in the width of the call"
                 }; // End of ELSE  - "Not a 360 call"
@@ -1200,21 +1205,21 @@ void CameraTrap::TestCI(){
     int Estimate;
     //location_x_animal,location_y_animal,Individual_ID,call_halfwidth,move_angle,itnumber,time.
     angle = 0; angle_HalfWidth = 0;
-    Estimate = CapturesIndividual(location_x,location_y,1,M_PI,0,0,0); // Animal directly above camera
+    Estimate = CapturesIndividual(location_x,location_y,1,M_PI,0,0,0,0); // Animal directly above camera
     if(Estimate!=1){
         std::cout<<"Error! Failed camera test - TestCI: "<<"1" <<std::endl;
         exit (EXIT_FAILURE);
     }
     
     angle = 0; angle_HalfWidth = 0;
-    Estimate = CapturesIndividual(location_x+1,location_y+1,1,M_PI,0,0,0); // Animal is on boundary and facing away
+    Estimate = CapturesIndividual(location_x+1,location_y+1,1,M_PI,0,0,0,0); // Animal is on boundary and facing away
     if(Estimate!=0){
         std::cout<<"Error! Failed camera test - TestCI: "<<"2" <<std::endl;
         exit (EXIT_FAILURE);
     }
     
     angle = 0; angle_HalfWidth = M_PI/4; // Animal is on within boundary and facing towards, camera is facing towards
-    Estimate = CapturesIndividual(location_x+0.5,location_y+0.5,1,M_PI,M_PI+angle_HalfWidth,0,0);
+    Estimate = CapturesIndividual(location_x+0.5,location_y+0.5,1,M_PI,M_PI+angle_HalfWidth,0,0,0);
     if(Estimate!=1){
         std::cout<<"Error! Failed camera test - TestCI: "<<"3" <<std::endl;
         exit (EXIT_FAILURE);
@@ -1222,7 +1227,7 @@ void CameraTrap::TestCI(){
     
     //location_x_animal,location_y_animal,Individual_ID,call_halfwidth,move_angle,itnumber,time.
     angle = 0; angle_HalfWidth = M_PI/4; // Animal is on right edge and facing towards camera
-    Estimate = CapturesIndividual(location_x+sin(angle_HalfWidth),location_y+cos(angle_HalfWidth),1,M_PI/4,M_PI+angle_HalfWidth,0,0);
+    Estimate = CapturesIndividual(location_x+sin(angle_HalfWidth),location_y+cos(angle_HalfWidth),1,M_PI/4,M_PI+angle_HalfWidth,0,0,0);
     if(Estimate!=1){
         std::cout<<"Error! Failed camera test - TestCI: "<<"4" <<std::endl;
         exit (EXIT_FAILURE);
@@ -1230,7 +1235,7 @@ void CameraTrap::TestCI(){
     
     //location_x_animal,location_y_animal,Individual_ID,call_halfwidth,move_angle,itnumber,time.
     angle = 0; angle_HalfWidth = M_PI/4; // Animal is on left edge and facing towards camera
-    Estimate = CapturesIndividual(location_x-sin(angle_HalfWidth),location_y+cos(angle_HalfWidth),1,M_PI/4,M_PI-angle_HalfWidth,0,0);
+    Estimate = CapturesIndividual(location_x-sin(angle_HalfWidth),location_y+cos(angle_HalfWidth),1,M_PI/4,M_PI-angle_HalfWidth,0,0,0);
     if(Estimate!=1){
         std::cout<<"Error! Failed camera test - TestCI: "<<"5" <<std::endl;
         exit (EXIT_FAILURE);
@@ -1238,7 +1243,7 @@ void CameraTrap::TestCI(){
     
     //location_x_animal,location_y_animal,Individual_ID,call_halfwidth,move_angle,itnumber,time.
     angle = 0; angle_HalfWidth = M_PI/4; // Animal in range and facing towards camera, but camera facing away
-    Estimate = CapturesIndividual(location_x,location_y-0.5,1,M_PI/4,angle,0,0);
+    Estimate = CapturesIndividual(location_x,location_y-0.5,1,M_PI/4,angle,0,0,0);
     if(Estimate!=0){
         std::cout<<"Error! Failed camera test - TestCI: "<<"6" <<std::endl;
         exit (EXIT_FAILURE);

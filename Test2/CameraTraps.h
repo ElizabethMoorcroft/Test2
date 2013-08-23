@@ -86,6 +86,7 @@ public:
                         ,double //location_x_animal
                         ,double //location_y_animal
                         ,double //time
+                        ,int call
                         );
     int CapturesIndividual(double  //x location animal
                             ,double //y location animal
@@ -94,6 +95,7 @@ public:
                             , double//Movement angle
                            , int //iternation number
                            ,double //time
+                           ,int // call
                        );
     
     int CapturesIntersection(double  //x location animal
