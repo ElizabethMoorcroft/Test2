@@ -31,7 +31,7 @@ const int NoOfIterations = 1; // No of iterations with the settings
 
 //HR set up value
 const double HR_AverageRadius = 1000; //meters
-const int HR_SolidBoundaries = 0; // Solid boundaries for HR --- 1 =Yes 0 = No
+const int HR_SolidBoundaries = 1; // Solid boundaries for HR --- 1 =Yes 0 = No
 
 //Size of the enviroment
 const double Sq_MinX = 0;
@@ -68,7 +68,7 @@ const int Seed =1;
 
 //Animal parameters
 const double AnimalSpeed = 6.3; // ms^-1
-const int MovementType = 0;
+const int MovementType = 1;
 const double ProbChangeMoveState = 0;//Probability of switching from coorelated to non-correlated
 
 

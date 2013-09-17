@@ -152,6 +152,8 @@ int main(){
     // one home range radius of a camera
     // If the radius of the camera movement is less than the average home range then there is no hole
     // in the middle of the camera circle
+        area = (Sq_MaxX-Sq_MinX)*(Sq_MaxY-Sq_MinY);
+        NoAnimal = floor(DensityAnimals*area);
         /*
         if(HR_AverageRadius>=RadiusCameraCircle){
             area = pow(RadiusCameraCircle+HR_AverageRadius,2)*M_PI;

@@ -72,6 +72,8 @@ public:
     void UpdateLocation (double);
     void LocationVector(double, double,int, int);
     
+    double DistToHRCentre();
+    
     void setHomeX(double a){Home_x = a;};
     void setHomeY(double a){Home_y = a;};
     
