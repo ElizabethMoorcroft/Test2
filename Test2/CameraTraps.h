@@ -78,7 +78,9 @@ public:
     double getHalfAngle(){return angle_HalfWidth;};
     clock_t gettime(){return time1;};
     
-
+    // Range of angle between 0 and 2pi
+    double RangeAngle(double);
+    
     double GradientFromAngle(double);
     
     void UpdateCaptures(double //Individual_ID

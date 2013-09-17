@@ -22,12 +22,12 @@
 //////////////////////////////////////////////////
 
 //Simulation values - #Animals, #Steps, #HR, #CT
-const double DensityAnimals = 2*pow(10,-6); // XX*10^-6 Density/m^2  => XX Density/KM^2
+const double DensityAnimals = 1*pow(10,-6); // XX*10^-6 Density/m^2  => XX Density/KM^2
 const double LengthMonitoring = 1.5*(60*60); //Length of monitoring in seconds. XX*(60*60)secs => XX hrs
 const double AverageSizeHR = 1; //Average number of animals per roost
 const double SpeedCamera  = 30*0.06 ; // => XX m/s =  XX/ 0.06 KM/h  => XX*0.06 m/s =  XX KM/h
 const int NoRunIn = 0; // Number of steps before cameras are "activated"
-const int NoOfIterations = 500; // No of iterations with the settings
+const int NoOfIterations = 1; // No of iterations with the settings
 
 //HR set up value
 const double HR_AverageRadius = 1000; //meters
@@ -39,8 +39,10 @@ const double Sq_MaxX = 7500;
 const double Sq_MinY = 0;
 const double Sq_MaxY = 7500;
 
-// Cal\ rates
-const double CallsPerStep = 6;
+// Call rates
+const int callson = 0;
+const double CallsPerStep = 3.5*60;
+const double IntervalBetweenCalls = 1/CallsPerStep;
 
 // Centre of the camera circle is in the centre of the environment
 const double DetectorLayOut = 0; // 0 is a single stationary; 1 is a grid; 2 is a transect
@@ -58,8 +60,8 @@ const double Xspace = (Sq_MaxX - Sq_MinX - 2*HR_AverageRadius)/(MaxNoX+1);
 const double Yspace = (Sq_MaxY - Sq_MinY - 2*HR_AverageRadius)/(MaxNoY+1);
 
 // Camera width/Radius
-const double CameraWidth = 45*M_PI/180;
-const double DetectorRadius = 11;
+const double CameraWidth = 90*M_PI/180; // In Radians. X°= X*pi/180rads
+const double DetectorRadius = 11; // meters
 
 //Radom number seed
 const int Seed =1;
@@ -77,7 +79,7 @@ const double CorrWalkMaxAngleChange = M_PI/36;
 
 
 //Call parameters
-const double Call_halfwidth = 180*M_PI/180;   //Call_halfwidth
+const double Call_halfwidth = 180*M_PI/180;   //Call_halfwidth. In Radians. X°= X*pi/180rads 
 
 /*
 //For the attenuation of sound
@@ -86,7 +88,7 @@ const double Hum = 30;
 const double Freq = 45.11*pow(10,3);
 const double Amp = 126; //Amplitude
 const double It = 0;
-*/
+// */
 
 // TOtal number of steps calculated from values above
 const int NoSteps = round(LengthMonitoring/StepLength)+ NoRunIn;

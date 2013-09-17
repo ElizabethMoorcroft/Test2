@@ -47,7 +47,7 @@ CameraTrap::CameraTrap(int a//CT_identifier;
         // because of the anti-clockwise motion
         // After passes zero - then
         angle = M_PI/2 - a*AngleBetweenCameras;
-        if(angle<0){angle = 2*M_PI + angle;} else if(angle>=2*M_PI){angle = angle - 2*M_PI;};
+        angle = RangeAngle(angle);
         CT_StepOn = a + NoRunIn;
     }// End OF Camera transect
     //  Cameras in a Grid formation
@@ -57,7 +57,7 @@ CameraTrap::CameraTrap(int a//CT_identifier;
         location_y = temp*Yspace + Ygridmin;
         //std::cout<<temp<<std::endl;
         angle = 0;
-        if(angle<0){angle = 2*M_PI + angle;} else if(angle>=2*M_PI){angle = angle - 2*M_PI;};
+        //angle = RangeAngle(angle); // For use  when angle changes
         CT_StepOn = 0 + NoRunIn; // The cameras are on at all steps!!
     };
     
@@ -70,9 +70,10 @@ CameraTrap::CameraTrap(int a//CT_identifier;
     //  - intercpet would be: y-mx=c (where y and x are known)
     g_detector1 = angle-angle_HalfWidth;
     g_detector2 = angle+angle_HalfWidth;
-    //std::cout<<"Camera ID:"<<a<< ", Angle: "<< angle << ", Angle halfwidth"<< angle_HalfWidth << ", detector1: " << detector1<<std::endl;
-    if(g_detector1<0){g_detector1 = 2*M_PI + g_detector1;} else if(g_detector1>=2*M_PI){g_detector1 = g_detector1 - 2*M_PI;};
-    if(g_detector2<0){g_detector2 = 2*M_PI + g_detector2;} else if(g_detector2>=2*M_PI){g_detector2 = g_detector2 - 2*M_PI;};
+    //std::cout<<"Camera ID:"<<a<<", Angle: "<< angle<<", Angle halfwidth"<<angle_HalfWidth<<std::endl;
+    
+    g_detector1= RangeAngle(g_detector1);
+    g_detector2= RangeAngle(g_detector2);
     
     m_detector1 = GradientFromAngle(g_detector1);
     m_detector2 = GradientFromAngle(g_detector2);
@@ -105,7 +106,6 @@ CameraTrap::CameraTrap(int a//CT_identifier;
 
 
 
-
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -126,9 +126,17 @@ void CameraTrap::resetCaptures(){
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+// Needs test
+double CameraTrap::RangeAngle(double angle){
+    if(angle<0){angle += 2*M_PI;} else if(angle>=2*M_PI){angle -= 2*M_PI;};
+    return angle;
+};
+
+
 /*--------------------------------------------------------------------------------------------------------
-                                        Temporary function things
- 
+//
+//                                        Temporary function things
+//
 --------------------------------------------------------------------------------------------------------*/
 
 
@@ -136,16 +144,16 @@ void CameraTrap::resetCaptures(){
  // Some times they values are are the same to 4/5dp
  // But the code doesn't recognise thus
  // This function produces a 1 if the difference is 
- // less than 0.000001 and 0 otherwise.
+ // less than 0.00001 and 0 otherwise.
  // Therefore if two values are approximately equal 
  // then the 1 otherwise 0.
 ----------------------------------------------*/
 
-int approximatelyequal(double a, double b){
-    int r;
-    if(sqrt(pow(a-b,2))<(1*pow(10,-5))){r=1;}else{r=0;}
-    return (r);
-}
+bool approximatelyequal(double a, double b){
+    long double value = sqrt(pow(a-b,2));
+    long double epsilon = (1*pow(10,-4));
+    return (value<epsilon);
+};
 
 ///////////////////////
 ///////////////////////
@@ -180,29 +188,29 @@ double HorzAndAngleInteraction(double Horz, double m_Angle, double c_Angle){
     return(XCoordinate);
 };
 
-std::vector <double> AngleAndAngleInteraction(double m1_Angle, double c1_Angle, double m2_Angle, double c2_Angle){
+std::vector <long double> AngleAndAngleInteraction(double m1_Angle, double c1_Angle, double m2_Angle, double c2_Angle){
     // y=mx+c =>
     // m1*x +c1 = m2*x+c
     // (m1-m2)x = (c2-c1)
     // x = (c2-c1)/(m1-m2)
-    std::vector <double> Coord(2);
-    double Coordinate1 = (c2_Angle - c1_Angle)/(m1_Angle-m2_Angle);
-    double Coordinate2 = m1_Angle*Coordinate1 +c1_Angle;
+    std::vector <long double> Coord(2);
+    long double Coordinate1 = (c2_Angle - c1_Angle)/(m1_Angle-m2_Angle);
+    long double Coordinate2 = m1_Angle*Coordinate1 +c1_Angle;
     Coord[0] = Coordinate1;
     Coord[1] = Coordinate2;
     return(Coord);
 };
 
 
-std::vector <double> HorzAndCircInteraction(double Horz, double y_centre, double x_centre, double radius){
+std::vector <long double> HorzAndCircInteraction(double Horz, double y_centre, double x_centre, double radius){
     // (y-a)^2+ (x-b)^2 = r^2
     // =>
     //  (x-b)^2 = r^2 - (y-a)^2
     // =>
     // x = (+/-)sqrt (r^2 - (y-a)^2) +b
-    std::vector <double> Coord(4);
-    double Coordinate1 = sqrt(pow(radius,2) - pow((Horz - y_centre),2))+ x_centre;
-    double Coordinate2 =  - sqrt(pow(radius,2) - pow((Horz - y_centre),2))+ x_centre;
+    std::vector <long double> Coord(4);
+    long double Coordinate1 = sqrt(pow(radius,2) - pow((Horz - y_centre),2))+ x_centre;
+    long double Coordinate2 =  - sqrt(pow(radius,2) - pow((Horz - y_centre),2))+ x_centre;
     Coord[0] = Coordinate1;
     Coord[1] = Horz;
     Coord[2] = Coordinate2;
@@ -210,15 +218,15 @@ std::vector <double> HorzAndCircInteraction(double Horz, double y_centre, double
     return(Coord);
 };
 
-std::vector <double> VertAndCircInteraction(double Vert, double y_centre, double x_centre, double radius){
+std::vector <long double> VertAndCircInteraction(double Vert, double y_centre, double x_centre, double radius){
     // (y-a)^2+ (x-b)^2 = r^2
     // =>
     //  (y-a)^2 = r^2 - (x-b)^2
     // =>
     // y = (+/-)sqrt (r^2 - (x-b)^2) +a
-    std::vector <double> Coord(4);
-    double Coordinate1 = sqrt(pow(radius,2) - pow((Vert - x_centre),2))+ y_centre;
-    double Coordinate2 = -sqrt(pow(radius,2) - pow((Vert - x_centre),2))+ y_centre;
+    std::vector <long double> Coord(4);
+    long double Coordinate1 = sqrt(pow(radius,2) - pow((Vert - x_centre),2))+ y_centre;
+    long double Coordinate2 = -sqrt(pow(radius,2) - pow((Vert - x_centre),2))+ y_centre;
     Coord[0] = Vert;
     Coord[1] = Coordinate1;
     Coord[2] = Vert;
@@ -226,10 +234,9 @@ std::vector <double> VertAndCircInteraction(double Vert, double y_centre, double
     return(Coord);
 };
 
-std::vector <double> AngleAndCircInteraction(double m_Angle, double c_Angle, double location_y, double location_x, double radius){
+std::vector <long double> AngleAndCircInteraction(double m_Angle, double c_Angle, double location_y, double location_x, double radius){
     
-    std::vector <double> Coord(4);
-
+    std::vector <long double> Coord(4);
     //If the line of the animal movement cross the circle part of the camera circle
     // Using the equation of a circle:
     // (Y-a)^2 +(X-b)^2 = r^2
@@ -243,10 +250,10 @@ std::vector <double> AngleAndCircInteraction(double m_Angle, double c_Angle, dou
     // FIrst term: (Grad.of.animal^2+1)
     // Second term:  -2* (Grad.of.animal*(intercept.of.animal - y.location.of.camera)+ x.location.of.camera)
     // Third term: x.location.of.camera^2 + (intercept.of.animal - y.location.of.camera)^2 +radius^2
-    double circ_term1 = pow(m_Angle,2)+1;
-    double temp_A =  location_y - c_Angle;
-    double circ_term2 = -(m_Angle*temp_A +location_x)*2;
-    double circ_term3 = pow(temp_A,2)+pow(location_x,2) - pow(radius,2);
+    long double circ_term1 = pow(m_Angle,2)+1;
+    long double temp_A =  location_y - c_Angle;
+    long double circ_term2 = -(m_Angle*temp_A +location_x)*2;
+    long double circ_term3 = pow(temp_A,2)+pow(location_x,2) - pow(radius,2);
 
     // The Quadractic formula can be used to solve: (m^2+1)X^2 - 2(Am+b)X +(b^2 +A^2 - r^2) = 0
     // for X and hence for the coordinate of the intercept between circle and line
@@ -255,25 +262,25 @@ std::vector <double> AngleAndCircInteraction(double m_Angle, double c_Angle, dou
     // if the term  (b^2-4ac) is less than zero then there is no iterception between line and circle
     // and there are no solutions
     // can skip the next parts
-    double temp = pow(circ_term2,2)-(4*circ_term1*circ_term3);
+    long double temp = pow(circ_term2,2)-(4*circ_term1*circ_term3);
     /*---------------------------------------------------------------------------------------------------------
-     // Check for specific case of interest
-     if(Individual_ID== 19 && CT_StepOn>15 && CT_StepOn<17){
+     // Check for specific case of interest !!!I DO NOT WORK!!!
+    // if(Individual_ID== 131 && CT_StepOn>1122 && CT_StepOn<1125){
         std::cout<< "circ_term1: "<< circ_term1<<std::endl;
         std::cout<< "circ_term2: "<< circ_term2<<std::endl;
         std::cout<< "circ_term3: "<< circ_term3<<std::endl;
         std::cout<< "InSqRt: "<< temp<<std::endl;
-     };
-     ----------------------------------------------------------------------------------------------------------*/
+  //   };
+    // ----------------------------------------------------------------------------------------------------------*/
     
-    if(temp>0 || approximatelyequal(temp,0)==1){
-        if(approximatelyequal(temp,0)==1){temp=0;} // This needs to be included for tangents
+    if(temp>0 || approximatelyequal(temp,0)){
+        if(approximatelyequal(temp,0)){temp=0;} // This needs to be included for tangents
         
-        double circ_solsqrt = sqrt(temp);
-        double circ_xsol1 = (-circ_term2 - circ_solsqrt)/(2*circ_term1);
-        double circ_xsol2 = (-circ_term2 + circ_solsqrt)/(2*circ_term1);
-        double circ_ysol1 = m_Angle*circ_xsol1 + c_Angle;
-        double circ_ysol2 = m_Angle*circ_xsol2 + c_Angle;
+        long double circ_solsqrt = sqrt(temp);
+        long double circ_xsol1 = (-circ_term2 - circ_solsqrt)/(2*circ_term1);
+        long double circ_xsol2 = (-circ_term2 + circ_solsqrt)/(2*circ_term1);
+        long double circ_ysol1 = m_Angle*circ_xsol1 + c_Angle;
+        long double circ_ysol2 = m_Angle*circ_xsol2 + c_Angle;
     // Vector to return
     Coord[0] = circ_xsol1;
     Coord[1] = circ_ysol1;
@@ -308,9 +315,9 @@ std::vector <double> TimeAndAngleCal(double Y, double X, double previous_y_anima
      };
      ----------------------------------------------------------------------------------------------------------*/
     
-    if((approximatelyequal(Y,previous_y_animal)==1 && approximatelyequal(X,previous_x_animal)==1)
-       ||approximatelyequal(AngleBatCap,2*M_PI)==1){AngleBatCap=0;};
-    if(approximatelyequal(time,0)==1){time=0;};
+    if((approximatelyequal(Y,previous_y_animal) && approximatelyequal(X,previous_x_animal))
+       ||approximatelyequal(AngleBatCap,2*M_PI)){AngleBatCap=0;};
+    if(approximatelyequal(time,0)){time=0;};
     
     returnvalues[0] = time;
     returnvalues[1] = AngleBatCap;
@@ -332,17 +339,32 @@ double CameraTrap::GradientFromAngle(double angle){
 
 /*--------------------------------------------------------------------------------------------------------
                                             Capturing of the animal
+
+// Case of interest
+// In the code below there are print statements for "cases of interest", if an individual should be returning 
+// a capture at a specific location but is not then by uncommenting these then values will be printed to the 
+// screen. The problem can be easily indentified from these.
  
-// INPUTS INTO... *CapturesIntersection*
-//     - Calculates the total distance moved
-//     - Calculates the gradient of the movement
-//     - Calculates the gradient of the detector
-//     - Enters gradient of movement and detctor edge into * CameraAndMovement * 
-//       to calulate intercepts location
+// FROM *main* INPUTS INTO ARE ENTERED INTO: *CapturesIntersection*
+//     1 - Calculates the total distance moved
+//     2 - Calculates the gradient/ intercept of the movement
+//     3 - Enters gradient of movement and detector edge into * CameraAndMovement *
+//       to calulate intercepts location on detectcor EDGE 1 (the edge on the left)
 //          => which are entered into * CapturesIndividual * to calulate if in camera detection zone
-//     - Enters end location into * CapturesIndividual * to calulate if in camera detection zone
+//     4 - Does step 3, to edge 2 (the right edge of the detector)
+//     5 - Enters gradient of movement and equation of the curve into * CameraCircAndMovement *
+//       to calculate intercepts location of the movement and the circular edge of detctor range
+//          => which are entered into * CapturesIndividual * to calulate if in camera detection zone
+//     6 - Enters end location into * CapturesIndividual * to calulate if in camera detection zone
 //
-//
+//  INPUT FROM *CapturesIntersection* go into *CameraCircAndMovement*
+//     1 - Initates variables
+//     2 - Finds correct type of animal movement (vertical, horizontal, angle), and calcualtes the intercept
+//     3 - Calculates the time this occurs and the angle which the animal has to move to achieve this intercept
+//     4 - If within the step then the intercept value is put into *CapturesIndividual* to check whether it is
+//         a capture and, if appropriate, save the value.
+// 
+ 
 // => Captures individual
 //         * Are the possible locations of with the camera radius?
 //         * Are the possible locations within the width of the camera?
@@ -352,20 +374,24 @@ double CameraTrap::GradientFromAngle(double angle){
 
 ///////////////////////
 ///////////////////////
-int CameraTrap::CapturesIntersection(double location_x_animal,
-                                     double location_y_animal,
-                                     double previous_x_animal,
-                                     double previous_y_animal,
-                                     int Individual_ID,
-                                     double call_halfwidth,
-                                     double move_angle,
-                                     int itnumber){
+int CameraTrap::CapturesIntersection(double location_x_animal, double location_y_animal, // Current location
+                                     double previous_x_animal, double previous_y_animal, // Previous location
+                                     int Individual_ID,                                  // Animal ID
+                                     double call_halfwidth, double move_angle,           // Call direction & width
+                                     int itnumber){                                      // Iteration number
     int captured = 0;
     
-    // finds the total distance travelled between it's new location and it's old location
-    double disttotal = sqrt(pow(previous_x_animal-location_x_animal,2)+
-                            pow(previous_y_animal-location_y_animal,2));
+
+    /*---------------------------------------------------------------------------------------------------------
+    // Check for specific case of interest
+    if(Individual_ID== 131 && CT_StepOn>1122 && CT_StepOn<1125){
+        std::cout<<"Start, "<<"location animal: "<<location_x_animal<<", " <<location_y_animal // Current location
+                    <<"Past location animal: "<<previous_x_animal<<", "<< previous_y_animal<< std::endl;
+    };
+    //----------------------------------------------------------------------------------------------------------*/
     
+    // finds the total distance travelled between it's new location and it's old location
+    double disttotal = sqrt(pow(previous_x_animal-location_x_animal,2) + pow(previous_y_animal-location_y_animal,2));
     
     //If the animal movement was a line on a graph with a gradient and a intercept, Y=mX+c, then:
     //  - gadient would be, m=(change x/change y)
@@ -375,115 +401,95 @@ int CameraTrap::CapturesIntersection(double location_x_animal,
     
     /*---------------------------------------------------------------------------------------------------------
      // Check for specific case of interest
-     if(Individual_ID== 19 && CT_StepOn>15 && CT_StepOn<17){
-        std::cout<<"Dect1, "<<"m_animal: "<< m_animal<<", c_animal: "<< c_animal << "; m_detector1"<< m_detector1<< std::endl;
+    if(Individual_ID== 131 && CT_StepOn>1122 && CT_StepOn<1125){
+    std::cout<<"Dect1, "<<"m_animal: "<< m_animal<<", c_animal: "<< c_animal << "; m_detector1"<< m_detector1<< std::endl;
      };
-     ----------------------------------------------------------------------------------------------------------*/
+     //----------------------------------------------------------------------------------------------------------*/
     // Checks for crossing the boundaries for detector 1
-    captured += CameraAndMovement(location_x_animal,
-                                  location_y_animal,
-                                  previous_x_animal,
-                                  previous_y_animal,
+    captured += CameraAndMovement(location_x_animal, location_y_animal,
+                                  previous_x_animal,previous_y_animal,
                                   Individual_ID,
-                                  call_halfwidth,
-                                  move_angle,
+                                  call_halfwidth, move_angle,
                                   itnumber,
-                                  m_animal,
-                                  c_animal,
-                                  m_detector1,
-                                  c_detector1,
-                                  g_detector1,
-                                  vh_det1,
+                                  m_animal,c_animal,
+                                  m_detector1, c_detector1, g_detector1, vh_det1,
                                   disttotal);
     
     /*---------------------------------------------------------------------------------------------------------
      // Check for specific case of interest
-     if(Individual_ID== 19 && CT_StepOn>15 && CT_StepOn<17){
+     if(Individual_ID== 131 && CT_StepOn>1122 && CT_StepOn<1125){
      std::cout<<"Dect2, "<<"m_animal: "<< m_animal<<", c_animal: "<< c_animal << "; m_detector2"<< m_detector2<< std::endl;
-     };
-     ----------------------------------------------------------------------------------------------------------*/
+    };
+    // ----------------------------------------------------------------------------------------------------------*/
     // Checks for crossing the boundaries for detector 2
-    captured += CameraAndMovement(location_x_animal,
-                                  location_y_animal,
-                                  previous_x_animal,
-                                  previous_y_animal,
+    captured += CameraAndMovement(location_x_animal,location_y_animal,
+                                  previous_x_animal,previous_y_animal,
                                   Individual_ID,
-                                  call_halfwidth,
-                                  move_angle,
+                                  call_halfwidth, move_angle,
                                   itnumber,
-                                  m_animal,
-                                  c_animal,
-                                  m_detector2,
-                                  c_detector2,
-                                  g_detector2,
-                                  vh_det2,
+                                  m_animal,c_animal,
+                                  m_detector2, c_detector2,g_detector2,vh_det2,
                                   disttotal);
     
     /*---------------------------------------------------------------------------------------------------------
      // Check for specific case of interest
-     if(Individual_ID== 19 && CT_StepOn>15 && CT_StepOn<17){
-     std::cout<<"Circ"<< std::endl;
-     };
-     ----------------------------------------------------------------------------------------------------------*/
+     if(Individual_ID== 131 && CT_StepOn>1122 && CT_StepOn<1125){std::cout<<"Circ"<< std::endl;};
+     //----------------------------------------------------------------------------------------------------------*/
     // Checks for crossing the boundaries for circular edge of detector
-    captured += CameraCircAndMovement(location_x_animal,
-                                      location_y_animal,
-                                      previous_x_animal,
-                                      previous_y_animal,
+    captured += CameraCircAndMovement(location_x_animal, location_y_animal,
+                                      previous_x_animal, previous_y_animal,
                                       Individual_ID,
-                                      call_halfwidth,
-                                      move_angle,
+                                      call_halfwidth, move_angle,
                                       itnumber,
-                                      m_animal,
-                                      c_animal,
+                                      m_animal, c_animal,
                                       disttotal);
     
-    /*---------------------------------------------------------------------------------------------------------
+   /*---------------------------------------------------------------------------------------------------------
      // Check for specific case of interest
-     if(Individual_ID== 19 && CT_StepOn>15 && CT_StepOn<17){
-     std::cout<<"End"<< std::endl;
-     };
-     ----------------------------------------------------------------------------------------------------------*/
+     if(Individual_ID== 131 && CT_StepOn>1122 && CT_StepOn<1125){std::cout<<"End"<< std::endl;};
+     //----------------------------------------------------------------------------------------------------------*/
     // Checks for at the end of the step if in/out of detection area
-    captured += CapturesIndividual(location_x_animal,
-                                   location_y_animal,
+    captured += CapturesIndividual(location_x_animal,location_y_animal,
                                    Individual_ID,
-                                   call_halfwidth,
-                                   move_angle,
+                                   call_halfwidth, move_angle,
                                    itnumber,
-                                   1,
-                                   0); // Assumes that it captures right at the end of the movement therefore time=1
+                                   1, // Assumes that it captures right at the end of the movement therefore time=1
+                                   0);// This is not a call, so call=0.
 
     
     // If there are any captures then return 1 else return 0
     if(captured>=1){return(1);} else {return(0);};
 };
 ////////////////////
-////////////////////
 
+/*---------------------------------------------------------------------------------------------------------
+                                            CameraCircAndMovement
+ 
+ // Does the animal move cross the circular edge of the detector region?
+ // If so, is this within the current step?
+ // If so, is it within the range of the detector?
+ 
+ //     1 - Initates variables
+ //     2 - Finds correct type of animal movement (vertical, horizontal, angle), and calcualtes the intercept
+ //     3 - Calculates the time this occurs and the angle which the animal has to move to achieve this intercept
+ //     4 - If within the step then the intercept value is put into *CapturesIndividual* to check whether it is 
+ //         a capture and, if appropriate, save the value.
+ ----------------------------------------------------------------------------------------------------------*/
 
-// Is the camera lines at a angles and is the movement also at an angle?
-// If so then this should
-// NEEDS TEST
-int CameraTrap::CameraCircAndMovement(double location_x_animal,
-                                  double location_y_animal,
-                                  double previous_x_animal,
-                                  double previous_y_animal,
-                                  int Individual_ID,
-                                  double call_halfwidth,
-                                  double move_angle,
-                                  int itnumber,
-                                  double m_animal,
-                                  double c_animal,
-                                  double disttotal){
+int CameraTrap::CameraCircAndMovement(double location_x_animal, double location_y_animal,   // Current location
+                                  double previous_x_animal, double previous_y_animal,       // Previous location
+                                  int Individual_ID,                                        // Animal ID
+                                  double call_halfwidth, double move_angle,                 // Direction and angle of call
+                                  int itnumber,                                             // Iteration number
+                                  double m_animal, double c_animal,                         // Gradient/intercept of animal
+                                  double disttotal){                                        // Total distance moved
     
-    // Initial a variable for the total number of times the animal is captured on the circle part of the detector
-    int captured =0;
-    
-    // TandA is Time and Angle
+    // Initial a variable for the total number of times the animal is captured on the circle part of the detector    
+    // TandA is for the Time and Angle of the intercept value
     // XandY are the 2 solutions to where the line passes through the circle: (x1,y1,x2,y2)
+    int captured =0;
     std::vector<double> TandA(2);
-    std::vector<double> XandY(4); 
+    std::vector<long double> XandY(4); 
     
     //Animal has vertical movement
     if(location_x_animal == previous_x_animal){ //std::cout<<"Circ, Vert move"<<std::endl;
@@ -500,13 +506,13 @@ int CameraTrap::CameraCircAndMovement(double location_x_animal,
         XandY = AngleAndCircInteraction(m_animal, c_animal, location_y, location_x, radius);
     }//END OF ANGLE ANIMAL MOVEMENT
     
-    /*---------------------------------------------------------------------------------------------------------
+   /*---------------------------------------------------------------------------------------------------------
      // Check for specific case of interest
-     if(Individual_ID== 19 && CT_StepOn>15 && CT_StepOn<17){
+     if(Individual_ID== 131 && CT_StepOn>1122 && CT_StepOn<1125){
         std::cout<<"XandY[0]: "<<XandY[0]<<", XandY[1]: "<<XandY[1]<<std::endl;
         std::cout<<"XandY[2]: "<<XandY[2]<<", XandY[3]: "<<XandY[3]<<std::endl;
      };
-     ----------------------------------------------------------------------------------------------------------*/    
+     //----------------------------------------------------------------------------------------------------------*/
     
     //--------- CHECK IN "CapturesIndividual" FOR CAPTURE ---------------//
     //Looking at both possible solutions for the line and the circle
@@ -516,23 +522,21 @@ int CameraTrap::CameraCircAndMovement(double location_x_animal,
         TandA = TimeAndAngleCal(XandY[(v*2)+1], XandY[v*2], previous_y_animal, previous_x_animal, disttotal);
         /*---------------------------------------------------------------------------------------------------------
          // Check for specific case of interest
-         if(Individual_ID== 19 && CT_StepOn>15 && CT_StepOn<17){
+         if(Individual_ID== 131 && CT_StepOn>1122 && CT_StepOn<1125){
             std::cout<<"TandA[0]: "<<TandA[0]<<", TandA[1]: "<<TandA[1]<< ", move_angle: "<<move_angle<<std::endl;
          };
-         ----------------------------------------------------------------------------------------------------------*/
+         //----------------------------------------------------------------------------------------------------------*/
          
         // The time has to be less than the total distance away form starting location
         // the angle of movement from the start location to the capture location has to be the same as the movement angle.
         // It the start location is captured then the time and angle are both zero
-        if(((TandA[0]<=1 || approximatelyequal(TandA[0],1)==1) && approximatelyequal(TandA[1],move_angle)==1)
-            ||(TandA[0]==0 && TandA[1]==0)){
-            captured += CapturesIndividual(XandY[v*2],
-                                       XandY[(v*2)+1],
+        if(((TandA[0]<=1 || approximatelyequal(TandA[0],1)) && approximatelyequal(TandA[1],move_angle))
+           ||(TandA[0]==0 && TandA[1]==0)){
+            captured += CapturesIndividual(XandY[v*2], XandY[(v*2)+1],
                                        Individual_ID,
-                                       call_halfwidth,
-                                       move_angle,
+                                       call_halfwidth, move_angle,
                                        itnumber,
-                                       TandA[0],
+                                       TandA[0], 
                                        0);
         }; // END OF IF LOOP
     }; // END OF FOR v loop
@@ -541,38 +545,39 @@ int CameraTrap::CameraCircAndMovement(double location_x_animal,
     // Return the total number of captures
     return(captured);
 };
-
-
-
-
 ////////////////////
-////////////////////
-//-----------------------------------------------------------
-// CameraAndMovement
-// Is the camera lines at a angles and is the movement also at an angle?
-int CameraTrap::CameraAndMovement(double location_x_animal,
-                                  double location_y_animal,
-                                  double previous_x_animal,
-                                  double previous_y_animal,
+
+
+
+/*---------------------------------------------------------------------------------------------------------
+                                                    CameraAndMovement
+ 
+// Does the animal move cross the circular edge of the detector region?
+// If so, is this within the current step?
+// If so, is it within the range of the detector?
+
+//     1 - Initates variables
+//     2 - Finds correct type of animal movement (vertical, horizontal, angle), finds the correct type of
+//         detector line (vertical, horozontal, angle)and calcualtes the intercept
+//     3 - Calculates the time this occurs and the angle which the animal has to move to achieve this intercept
+//     4 - If within the step then the intercept value is put into *CapturesIndividual* to check whether it is
+//         a capture and, if appropriate, save the value.
+ ----------------------------------------------------------------------------------------------------------*/
+int CameraTrap::CameraAndMovement(double location_x_animal, double location_y_animal,
+                                  double previous_x_animal, double previous_y_animal,
                                   int Individual_ID,
-                                  double call_halfwidth,
-                                  double move_angle,
+                                  double call_halfwidth, double move_angle,
                                   int itnumber,
-                                  double m_animal,
-                                  double c_animal,
-                                  double m_detector,
-                                  double c_detector,
-                                  double g_detector,
-                                  int det,
+                                  double m_animal,double c_animal,
+                                  double m_detector, double c_detector,double g_detector, int det,
                                   double disttotal){
     
     // Initates a count for the number of captures
-    int captured =0;
-    
-    // TandA is Time and Angle 
-    std::vector<double> TandA(2);
+    // TandA is Time and Angle
     // XandY is an initialised vector for the possible coordinates of capture
-    std::vector<double> XandY(2);
+    int captured =0;
+    std::vector<double> TandA(2);
+    std::vector<long double> XandY(2);
     // Assuming that there is one possible interaction for 2 lines
     // If the lines are exactly on top of each other then the "capture" occurs
     // at the earliest opportunity, for this we need to initialise values for
@@ -581,78 +586,83 @@ int CameraTrap::CameraAndMovement(double location_x_animal,
     double maxdect;
     
     //Animal has vertical movement
-    if(location_x_animal == previous_x_animal){ //std::cout<<"Line, Vert move"<<std::endl;
-        //Horzontal detector - then the solution is simple
+    if(location_x_animal == previous_x_animal){ 
+        //Horzontal detector - then the solution is simply the y coord from horzontal line and the x coord from the vertical line
         if(det==2){ XandY[0] = previous_x_animal; XandY[1] = location_y; } // END IF DET==2
-        
-        // Vertical detector it HAS TO have the same x-position as the movement
-        // Then the x location is simple
-        // the y location is soonest location that the two lines overlap. 
+        // Vertical detector it HAS to have the same x-position as the movement
+        // Then the x location is simply the value from both vertical lines
+        // The y location is earliest location that the two lines overlap.
         else if(det==1 && location_x==previous_x_animal){
             XandY[0] = previous_x_animal;
             // If the detector is facing up then the min-value = camera_loc and the max-value = camera_loc+radius
             // otherwise the the min-value = camera_loc-radius and the max-value = camera_loc 
-            if(approximatelyequal(m_detector,M_PI)){mindect = location_x-radius; maxdect = location_x;}
+            if(approximatelyequal(g_detector,M_PI)){mindect = location_x-radius; maxdect = location_x;}
             else{mindect=location_x; maxdect=location_x+radius;};
-            // If the detector is facing up then I want the minumum value which both detcetor and movement has:
-            // There for I want the min. value of the movement and the min. value of detector
-            // which ever of these is the biggest value where the capture should be taken
-            // Vice versa is true if the detector is facing down. 
-            if(approximatelyequal(move_angle,M_PI)){XandY[1] = std::min(std::max(location_y_animal,previous_y_animal),maxdect);}
-            else{XandY[1] = std::max(std::min(location_y_animal,previous_y_animal),mindect);};
+            // If the animal is moving up then I want the minumum value which both detector and movement has:
+            // There for I want the max. value of the min. movement and min. detector
+            // If the animal is moving down then I want the maxumum value which both detector and movement has:
+            // There for I want the min. value of the max. movement and min. detector
+            // => Animal moving down
+            if(approximatelyequal(move_angle,M_PI)){XandY[1] = std::min(previous_y_animal,maxdect);}
+            // => Animal moving up
+            else{XandY[1] = std::max(previous_y_animal,mindect);};
         } // END IF DET==1
-        
         // Detector at angle
-        // The solution can be simply calculated
+        // The solution is the vertical line, and the y-coord can be calulated using *VertAndAngleInteraction*
         else{XandY[0] = location_x_animal; XandY[1] = VertAndAngleInteraction(location_x_animal, m_detector, c_detector);};// END ELSE
     }//--------END OF VERTICAL ANIMAL MOVEMENT ---------------//
     
     //Animal has horizontal movement
-    else if(location_y_animal == previous_y_animal){ //std::cout<<"Line, Horz move"<<std::endl;
-        //Horzontal detector AND y-position as the movement
-        if(det==2 && location_y== previous_y_animal){//std::cout<<"Line, Horz move, horz"<<std::endl;
-            XandY[1] = previous_y_animal; 
-            if(approximatelyequal(move_angle,M_PI/2)){mindect=location_y; maxdect=location_y+radius;}
+    else if(location_y_animal == previous_y_animal){
+        //Horzontal detector
+        // Therefore they must both share the same y-coord
+        if(det==2 && location_y== previous_y_animal){
+            // The y-coord is simly the value of the y-coord of the animal movement
+            XandY[1] = previous_y_animal;
+            // I need to idenfy the max. and min. x-value of the detector 
+            if(approximatelyequal(g_detector,M_PI/2)){mindect=location_y; maxdect=location_y+radius;}
             else{mindect = location_y-radius; maxdect = location_y;};
-            if(approximatelyequal(move_angle,0)||approximatelyequal(move_angle,2*M_PI)){
-                XandY[0] = std::min(std::max(location_x_animal,previous_x_animal),maxdect);
-            }else{XandY[0] = std::max(std::min(location_x_animal,previous_x_animal),mindect);};
+            // if the movement is to the left then I want the max. of the min. animal location and the min. detector location
+            // if the movement is the right then I need the min. of the max. animal location and the max. detector location
+            if(approximatelyequal(move_angle,M_PI/2)){XandY[0] = std::max(previous_x_animal,mindect);}
+            else{XandY[0] = std::min(previous_x_animal,maxdect);};
         } // END OF IF DET ==2
-        
-        // Vertical detector 
+        // Vertical detector
+        // The x-coord of the intercept is the x-coord of the detector, the y-coord of the movement
         else if(det==1){XandY[0] = location_x; XandY[1] = previous_y_animal;} // END OF IF DET ==1
-        
         // Detector at angle
+        // The y-coord of the movement, and the x-coord is calculated by HorzAndAngleInteraction
         else {XandY[0] = HorzAndAngleInteraction(location_y_animal, m_detector, c_detector); XandY[1] = location_y_animal;};// END ELSE
     }//--------END OF HORZONTAL ANIMAL MOVEMENT ---------------//
     
     
     // If the angle of the movement and the detector is the same, then they have to have the same intercept
-    else if(approximatelyequal(m_detector,m_animal)==1 && approximatelyequal(c_detector,c_animal)==1 ){
-        //std::cout<<"Line, Same angle"<<std::endl;
-        
+    else if(approximatelyequal(m_detector,m_animal) && approximatelyequal(c_detector,c_animal)){        
         // Calculation of x location
+        // The min./max. value of the detector is calculated
         if(g_detector<M_PI){mindect=location_x; maxdect=location_x+radius*sin(g_detector);}
         else{mindect = location_x+radius*sin(g_detector); maxdect = location_x;};
-        if(move_angle<M_PI){XandY[0] = std::min(std::max(location_x_animal,previous_x_animal),mindect);}
-        else{XandY[0] = std::max(std::min(location_x_animal,previous_x_animal),maxdect);};
+        // if the movement is to the left then I want the max. of the min. animal location and the min. detector location
+        // if the movement is the right then I need the min. of the max. animal location and the max. detector location
+        if(move_angle<M_PI){XandY[0] = std::max(previous_x_animal,mindect);}
+        else{XandY[0] = std::min(previous_x_animal,maxdect);};
         
         // Calculation of y location
+        // The min./max. value of the detector is calculated
         if(g_detector<M_PI/2 ||g_detector>3*M_PI/2 ){mindect=location_y; maxdect=location_y+radius*cos(g_detector);}
         else{mindect = location_y+radius*cos(g_detector); maxdect = location_y;};
-        //std::cout<<"mindect "<< mindect <<", maxdect "<< maxdect<<std::endl;
-        if(move_angle<M_PI/2 ||move_angle>3*M_PI/2 ){ XandY[1] = std::min(std::max(location_y_animal,previous_y_animal),mindect);}
-        else{XandY[1] = std::max(std::min(location_y_animal,previous_y_animal),maxdect);};
+        // if the movement is up then I want the max. of the min. animal location and the min. detector location
+        // if the movement is down then I need the min. of the max. animal location and the max. detector location
+        if(move_angle<M_PI/2 ||move_angle>3*M_PI/2 ){ XandY[1] = std::max(previous_y_animal,mindect);}
+        else{XandY[1] = std::min(previous_y_animal,maxdect);};
     }//--------END OF SAME ANGLE ANIMAL MOVEMENT ---------------//
     
     
-    else if(m_detector != m_animal){ //std::cout<<"Line, Diff angle"<<std::endl;
+    else if(m_detector != m_animal){
         //Horzontal detector
         if(det==2){ XandY[0] = HorzAndAngleInteraction(location_y, m_animal, c_animal); XandY[1] = location_y;} //END OF IF DET==2
-        
         // Vertical detector
         else if(det==1){XandY[0] = location_x; XandY[1] = VertAndAngleInteraction(location_x, m_animal, c_animal);} //END OF IF DET==1
-        
         // Angle detctor
         else{XandY =AngleAndAngleInteraction(m_detector, c_detector, m_animal, c_animal);};
         
@@ -667,15 +677,22 @@ int CameraTrap::CameraAndMovement(double location_x_animal,
     // Inputting into the capture inidvidual function
     //Calucaltes time and angle of the interscept
     TandA = TimeAndAngleCal(XandY[1], XandY[0], previous_y_animal, previous_x_animal, disttotal);
-
+    
+    
+     /*---------------------------------------------------------------------------------------------------------
+    // Check for specific case of interest
+    if(Individual_ID== 131 && CT_StepOn>1122 && CT_StepOn<1125){
+        std::cout<<"XandY[0]: "<<XandY[0] <<", XandY[1]: "<<XandY[1] <<std::endl;
+        std::cout<<"TandA[0]: "<<TandA[0] <<", TandA[1]: "<<TandA[1] <<std::endl;
+    };
+    // ----------------------------------------------------------------------------------------------------------*/
+    
     // The time has to be less than the total distance away form starting location
     // the angle of movement from the start location to the capture location has to be the same as the movement angle.
-    if((TandA[0]<=1 && approximatelyequal(TandA[1],move_angle)==1)||(TandA[0]==0 && TandA[1]==0)){
-        captured += CapturesIndividual(XandY[0],
-                                       XandY[1],
+    if((TandA[0]<=1 && approximatelyequal(TandA[1],move_angle))||(TandA[0]==0 && TandA[1]==0)){
+        captured += CapturesIndividual(XandY[0],  XandY[1],
                                        Individual_ID,
-                                       call_halfwidth,
-                                       move_angle,
+                                       call_halfwidth, move_angle,
                                        itnumber,
                                        TandA[0],
                                        0);
@@ -691,6 +708,15 @@ int CameraTrap::CameraAndMovement(double location_x_animal,
 // UpdateCaptures
 // NEEDS TEST
 void CameraTrap::UpdateCaptures(double Individual_ID,double itnumber,double location_x_animal,double location_y_animal,double time, int call){
+    
+    /*---------------------------------------------------------------------------------------------------------
+     // Check for specific case of interest
+     if(Individual_ID== 131 && CT_StepOn>1122 && CT_StepOn<1125){
+     std::cout<<"Caught!"<< std::endl;
+     
+     };
+     //----------------------------------------------------------------------------------------------------------*/
+    
     myvector[0] = Individual_ID;
     myvector[1] = CT_StepOn;
     myvector[2] = CT_identifier;
@@ -708,6 +734,7 @@ void CameraTrap::UpdateCaptures(double Individual_ID,double itnumber,double loca
 // Are the possible locations of with the camera radius?
 // Are the possible locations within the width of the camera?
 // Is the camera within the width of the bat call?
+//-----------------------------------------------------------
 int CameraTrap::CapturesIndividual(double location_x_animal,
                                    double location_y_animal,
                                    int Individual_ID,
@@ -717,7 +744,7 @@ int CameraTrap::CapturesIndividual(double location_x_animal,
                                    double time,
                                    int call
                                    ){
-    //if(Individual_ID== 19 && CT_StepOn>15 && CT_StepOn<17){std::cout<<"InCap"<<std::endl;};
+    //if(Individual_ID== 131 && CT_StepOn>1122 && CT_StepOn<1125){std::cout<<"InCap"<<std::endl;};
     clock_t Time1=clock();
     int captured=0;    
     double AngleFromCamera = 0;
@@ -727,7 +754,7 @@ int CameraTrap::CapturesIndividual(double location_x_animal,
     double diffy = location_y_animal - location_y;
     
     // If on the exact same spot as the camera assume it will be captured
-    if(approximatelyequal(diffx,0)==1 && approximatelyequal(diffy,0)==1){
+    if(approximatelyequal(diffx,0) && approximatelyequal(diffy,0)){
         UpdateCaptures(Individual_ID,itnumber,location_x_animal,location_y_animal,time,call);
         captured = 1;
     }
@@ -740,18 +767,18 @@ int CameraTrap::CapturesIndividual(double location_x_animal,
         
         /*---------------------------------------------------------------------------------------------------------
          // Check for specific case of interest
-         if(Individual_ID== 19 && CT_StepOn>15 && CT_StepOn<17){
+       if(Individual_ID== 131 && CT_StepOn>1122 && CT_StepOn<1125){
             std::cout<<"Distance between animal & camera: "<<diff_animal_camera <<", Radius: "<<radius <<std::endl;
          };
-         ----------------------------------------------------------------------------------------------------------*/
+        // ----------------------------------------------------------------------------------------------------------*/
         
         // If the animal is less than a radius distance away from the detector then it is enters the if statement
-        if(approximatelyequal(diff_animal_camera,radius)==1|| diff_animal_camera<=radius){
+        if(approximatelyequal(diff_animal_camera,radius)|| diff_animal_camera<=radius){
             
         /*---------------------------------------------------------------------------------------------------------
          // Check for specific case of interest
-         //if(Individual_ID== 19 && CT_StepOn>15 && CT_StepOn<17){std::cout<< "RADIUS"<<std::endl;}
-         ----------------------------------------------------------------------------------------------------------*/
+         if(Individual_ID== 131 && CT_StepOn>1122 && CT_StepOn<1125){std::cout<< "RADIUS"<<std::endl;}
+      //   ----------------------------------------------------------------------------------------------------------*/
                
             // If in range, is it in the angle?
             // (atan calculates radians)
@@ -759,20 +786,22 @@ int CameraTrap::CapturesIndividual(double location_x_animal,
             // atan will only give values between -90 and +90
             if(diffy>=0){AngleFromCamera = atan(diffx/diffy);} else{AngleFromCamera = atan(diffx/diffy)+M_PI;};
             // Check that the value for AngleFromCamera is between 0 and 2*PI
-            if(AngleFromCamera <0){AngleFromCamera +=2*M_PI;} else if(AngleFromCamera >=2*M_PI){AngleFromCamera -=2*M_PI;};
-        
+            AngleFromCamera= RangeAngle(AngleFromCamera);
+            
             /*---------------------------------------------------------------------------------------------------------
              // Check for specific case of interest
-             if(Individual_ID== 19 && CT_StepOn>15 && CT_StepOn<17){
+           if(Individual_ID== 131 && CT_StepOn>1122 && CT_StepOn<1125){
                 std::cout<< "location_x_animal: "<<location_x_animal<<std::endl;
                 std::cout<< "location_y_animal: "<<location_y_animal<<std::endl;
+                std::cout<< "Camera location_x: "<<location_x<<std::endl;
+                std::cout<< "Camera location_y: "<<location_y<<std::endl;
                 std::cout<< "Angle of camera: "<<angle<<std::endl;
                 std::cout<< "Movement angle: "<<move_angle<<std::endl;
                 std::cout<< "Min. camera angle: "<<g_detector1<<std::endl;
                 std::cout<< "Max. camera angle: "<<g_detector2<<std::endl;
                 std::cout<<"Angle from camera to bat: "<<AngleFromCamera <<std::endl;
              };
-            ----------------------------------------------------------------------------------------------------------*/         
+            //----------------------------------------------------------------------------------------------------------*/
         
         
             // If the angle is between min and max possible angle
@@ -786,22 +815,22 @@ int CameraTrap::CapturesIndividual(double location_x_animal,
             //  - "AngleFromCamera" could be between the angle of dect1 and the angle of dect2
             if((g_detector1>g_detector2 && AngleFromCamera <= g_detector2) ||
                (g_detector1>g_detector2 && AngleFromCamera >= g_detector1) ||
-               (approximatelyequal(g_detector1, AngleFromCamera)==1)   ||
-               (approximatelyequal(g_detector2, AngleFromCamera)==1)   ||
+               approximatelyequal(g_detector1, AngleFromCamera)  ||
+               approximatelyequal(g_detector2, AngleFromCamera)   ||
                (AngleFromCamera >= g_detector1 && AngleFromCamera <= g_detector2)){
                 
                 /*---------------------------------------------------------------------------------------------------------
                  // Check for specific case of interest
-                 //if(Individual_ID== 19 && CT_StepOn>15 && CT_StepOn<17){std::cout<<"In Camera angle"<<std::endl;}
-                ----------------------------------------------------------------------------------------------------------*/
+                 if(Individual_ID== 131 && CT_StepOn>1122 && CT_StepOn<1125){std::cout<<"In Camera angle"<<std::endl;}
+                //----------------------------------------------------------------------------------------------------------*/
                 
                 // If the animal is identifiable regardless of its direction (we say if has a 360 call)
                 // in this case we can say it's captures as it is in the camera range
                 if(call_halfwidth==M_PI){
                     /*---------------------------------------------------------------------------------------------------------
                      // Check for specific case of interest
-                     //if(Individual_ID== 19 && CT_StepOn>15 && CT_StepOn<17){std::cout<<"Captured with a 360 call"<<std::endl;};
-                     ----------------------------------------------------------------------------------------------------------*/
+                    if(Individual_ID== 131 && CT_StepOn>1122 && CT_StepOn<1125){std::cout<<"Captured with a 360 call"<<std::endl;};
+                     //----------------------------------------------------------------------------------------------------------*/
                     // Call the update captures function and let captured ==1.
                     UpdateCaptures(Individual_ID,itnumber,location_x_animal,location_y_animal,time,call);
                     captured = 1;
@@ -814,24 +843,23 @@ int CameraTrap::CapturesIndividual(double location_x_animal,
                     // Trig. shows that this is angle from "a to b" =  180 + "b to a"
                     double AngleFromBat = AngleFromCamera+M_PI;
                     // If greater than 2pi then correct (should not be less than zero!)
-                    if(AngleFromBat >=2*M_PI){AngleFromBat -= 2*M_PI;};
+                    AngleFromBat = RangeAngle(AngleFromBat);
                     
                     // initates values for min and max call angles
                     double Min_batangle = move_angle-call_halfwidth;
                     double Max_batangle = move_angle+call_halfwidth;
                     
                     // Corrects to be between 0 and 2pi
-                    if(Max_batangle >=2*M_PI){Max_batangle -= 2*M_PI;};
-                    if(Min_batangle <0){Min_batangle += 2*M_PI;};
+                    Min_batangle = RangeAngle(Min_batangle);
                     
                     /*---------------------------------------------------------------------------------------------------------
                      // Check for specific case of interest
-                     //if(Individual_ID== 19 && CT_StepOn>15 && CT_StepOn<17){
+                     if(Individual_ID== 131 && CT_StepOn>1122 && CT_StepOn<1125){
                             std::cout<< "Min batangle"<<Min_batangle<<std::endl;
                             std::cout<< "Max batangle"<<Max_batangle<<std::endl;
                             std::cout<<"AngleFromBat"<<AngleFromBat <<std::endl;
                      };
-                     ----------------------------------------------------------------------------------------------------------*/
+                    // ----------------------------------------------------------------------------------------------------------*/
             
                     // If the angle is between min and max possible angle
                     // But becuase things have been corrected lines for <0 & >2pi then it can be more complicated
@@ -844,14 +872,14 @@ int CameraTrap::CapturesIndividual(double location_x_animal,
                     //  - "AngleFromBat" could be between the min and max call angle
                     if((Min_batangle>Max_batangle && AngleFromBat <= Max_batangle) || 
                        (Min_batangle>Max_batangle && AngleFromBat >= Min_batangle) ||
-                       (approximatelyequal(Min_batangle, AngleFromBat)==1)   ||
-                       (approximatelyequal(Max_batangle, AngleFromBat)==1)   ||
+                       approximatelyequal(Min_batangle, AngleFromBat) ||
+                       approximatelyequal(Max_batangle, AngleFromBat) ||
                        (AngleFromBat >= Min_batangle && AngleFromBat <= Max_batangle)){
                         
                         /*---------------------------------------------------------------------------------------------------------
                          // Check for specific case of interest
-                         //if(Individual_ID== 19 && CT_StepOn>15 && CT_StepOn<17){std::cout<< "IN BAT ANGEL"<<std::endl;};
-                        ----------------------------------------------------------------------------------------------------------*/
+                         if(Individual_ID== 131 && CT_StepOn>1122 && CT_StepOn<1125){std::cout<< "IN BAT ANGEL"<<std::endl;};
+                        //----------------------------------------------------------------------------------------------------------*/
                         
                         // If it's in the possible angle then record in vector
                         UpdateCaptures(Individual_ID,itnumber,location_x_animal,location_y_animal,time,call);
@@ -948,7 +976,7 @@ void CameraTrap::TestHorzAndAngleInteraction(){
 //      - TestHorzAndAngleInteraction
 void CameraTrap::TestAngleAndAngleInteraction(){
     // Initate vector for results of the AngleAndAngleInteraction
-    std::vector <double> Estimate(2);
+    std::vector <long double> Estimate(2);
     // Line 1: G1 = 1, I1 = 0 ; Line2: G2 = -1, I2 = 0;
     // The intercept should be at (X= 0, Y=0)
     Estimate = AngleAndAngleInteraction(1, 0, -1, 0);
@@ -978,7 +1006,7 @@ void CameraTrap::TestAngleAndAngleInteraction(){
 //      - TestHorzAndCircInteraction
 void CameraTrap::TestHorzAndCircInteraction(){
     // Initate vector for results of the HorzAndCircInteraction
-    std::vector <double> Estimate(4);
+    std::vector <long double> Estimate(4);
     // Horz: Y = 1; Circle: Xcentre = 0, Ycentre = 0, Radius = 1;
     // should be tangent to the top of the circle
     // The intercept should be at (X=0, Y=1) and (X=0, Y=1) 
@@ -1021,7 +1049,7 @@ void CameraTrap::TestHorzAndCircInteraction(){
 //      - TestVertAndCircInteraction
 void CameraTrap::TestVertAndCircInteraction(){
     // Initate vector for results of the VertAndCircInteraction
-    std::vector <double> Estimate(2);
+    std::vector <long double> Estimate(2);
     
     Estimate = VertAndCircInteraction(1, 0, 0, 1);
     if(Estimate[0]!=0 && Estimate[1]!=0){
@@ -1045,17 +1073,17 @@ void CameraTrap::TestVertAndCircInteraction(){
 
 
 void CameraTrap::TestAngleAndCircInteraction(){
-    std::vector <double> Estimate(4);
+    std::vector <long double> Estimate(4);
     
     Estimate = AngleAndCircInteraction(1,0, 0, 0, 1);
     double temp = cos(M_PI/4);
-    if(((approximatelyequal(Estimate[0],-temp)==1 && (approximatelyequal(Estimate[2],-temp)==1))
+    if(((approximatelyequal(Estimate[0],-temp) && (approximatelyequal(Estimate[2],-temp)))
             &&
-         (approximatelyequal(Estimate[2],temp)==1 && (approximatelyequal(Estimate[3],temp)==1)))
+         (approximatelyequal(Estimate[2],temp) && (approximatelyequal(Estimate[3],temp))))
         &&
-       ((approximatelyequal(Estimate[0],temp)==1 && (approximatelyequal(Estimate[2],temp)==1))
+       ((approximatelyequal(Estimate[0],temp) && (approximatelyequal(Estimate[2],temp)))
         &&
-        (approximatelyequal(Estimate[2],-temp)==1 && (approximatelyequal(Estimate[3],-temp)==1)))){
+        (approximatelyequal(Estimate[2],-temp) && (approximatelyequal(Estimate[3],-temp))))){
         std::cout<< temp<<std::endl;
         std::cout<< Estimate[0]<<std::endl;
         std::cout<<"Error! Failed camera test - TestAngleAndCircInteraction: "<<"1" <<std::endl;
@@ -1063,26 +1091,27 @@ void CameraTrap::TestAngleAndCircInteraction(){
     }
     
     Estimate = AngleAndCircInteraction(-1,0 , 0, 0, 1);
-    if(((approximatelyequal(Estimate[0],-temp)==1 && (approximatelyequal(Estimate[2],temp)==1))
+    if(((approximatelyequal(Estimate[0],-temp) && (approximatelyequal(Estimate[2],temp)))
         &&
-        (approximatelyequal(Estimate[2],temp)==1 && (approximatelyequal(Estimate[3],-temp)==1)))
+        (approximatelyequal(Estimate[2],temp) && (approximatelyequal(Estimate[3],-temp))))
        &&
-       ((approximatelyequal(Estimate[0],temp)==1 && (approximatelyequal(Estimate[2],-temp)==1))
+       ((approximatelyequal(Estimate[0],temp) && (approximatelyequal(Estimate[2],-temp)))
         &&
-        (approximatelyequal(Estimate[2],-temp)==1 && (approximatelyequal(Estimate[3],temp)==1)))){
+        (approximatelyequal(Estimate[2],-temp) && (approximatelyequal(Estimate[3],temp))))){
         std::cout<<"Error! Failed camera test - TestAngleAndCircInteraction: "<<"2" <<std::endl;
         exit (EXIT_FAILURE);
     }
     
     Estimate = AngleAndCircInteraction(1, sqrt(2), 0, 0, 1);
     temp = 1/sqrt(2);
-    if(((approximatelyequal(Estimate[0],-temp)==1 && (approximatelyequal(Estimate[2],temp)==1))
+    if(((approximatelyequal(Estimate[0],-temp) && (approximatelyequal(Estimate[2],temp)))
         &&
-        (approximatelyequal(Estimate[2],temp)==1 && (approximatelyequal(Estimate[3],-temp)==1)))
+        (approximatelyequal(Estimate[2],temp) && (approximatelyequal(Estimate[3],-temp))))
        &&
-       ((approximatelyequal(Estimate[0],temp)==1 && (approximatelyequal(Estimate[2],-temp)==1))
+       ((approximatelyequal(Estimate[0],temp) && (approximatelyequal(Estimate[2],-temp)))
         &&
-        (approximatelyequal(Estimate[2],-temp)==1 && (approximatelyequal(Estimate[3],temp)==1)))){
+        (approximatelyequal(Estimate[2],-temp) && (approximatelyequal(Estimate[3],temp))))
+       ){
         std::cout<< Estimate[0] <<" " << (1/sqrt(2))<<std::endl;
         std::cout<< Estimate[0] <<" " << Estimate[1] <<" "<< Estimate[2] <<" " << Estimate[3] <<" "<<std::endl;
         std::cout<<"Error! Failed camera test - TestAngleAndCircInteraction: "<<"3" <<std::endl;

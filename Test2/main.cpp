@@ -69,6 +69,7 @@ std::string make_directory( const std::string& directory){
             << ",Speed="        << AnimalSpeed
             << ",Iterations="   << Seed << "-" << maxseed
             << ",StepLength="   << StepLength
+            << ",DetectorRadius=" << DetectorRadius
             << ",CallHalfwidth=" << Call_halfwidth
             << ",CameraHalfwidth=" << CameraWidth
            // << ",Freq="         << Freq
@@ -187,10 +188,10 @@ int main(){
     "," << "Camera Speed" <<
     "\n";
     
-    ///* ------------------------------------------------------------------------------
+    /* ------------------------------------------------------------------------------
     // Named such the that the each simulation can be correctly identified
-    std::ofstream Movement;
-    Movement.open(make_filenamesettings(SaveDirectory, ",Movement", ".csv" ).c_str());
+    //std::ofstream Movement;
+    //Movement.open(make_filenamesettings(SaveDirectory, ",Movement", ".csv" ).c_str());
     //Creates a header for the file
     //This is not necessary but helps
     Movement << "AnimalNumber" <<
@@ -406,12 +407,9 @@ int main(){
     
     //List of random number
     srand(iterationnumber);
-    std::vector<double> RandomNumberStream;
-    RandomNumberStream.resize(100);
-    for(int i=0; i<100; i++){
-        RandomNumberStream[i] = double (rand());
-    };
-    
+    std::vector<double> RandomNumberStream(100);
+    for(int i=0; i<100; i++){RandomNumberStream[i] = double (rand());};
+        //std::cout<<"Seeded random numbers"<<std::endl;
     
     
     ///////////////////////////////////////////////////////////////////////////////////////////
@@ -445,14 +443,14 @@ int main(){
     //Uses RandomNumberStream as a seed for the stream
     //Creates 1 Random number for the seed each HR
     srand(RandomNumberStream[1]);
-    std::vector<double> RandomNumberStreamHR;
-    RandomNumberStreamHR.resize(NoHR);
-    for(int i=0; i<NoHR; i++){
-        RandomNumberStreamHR[i] = double (rand());
-    };
+    std::vector<double> RandomNumberStreamHR(NoHR);
+    for(int i=0; i<NoHR; i++){ RandomNumberStreamHR[i] = double (rand()); };
     
+    //std::cout<<"HR RandNum seeded"<<std::endl;
+        
     // For when the max number of satrt location is 1
     std::vector<int> HomeRangeIDused(NoHR);
+    for(int i=0; i<NoHR; i++){HomeRangeIDused[i]= NoHR+100;};
         
     //Enters data for NoHR home ranges
     for(int i=0; i<NoHR; i++){
@@ -461,18 +459,19 @@ int main(){
                               , RadiusCameraCircle
                               );
     
-    /*
-    HomeRangefile << AllHR[i]->getHomeID() << //1st column
-        "," << AllHR[i]->getHomeX() << //...
-        "," << AllHR[i]->getHomeY()  << //...
-        "\n";
-    */
-    };
+        /*
+        HomeRangefile << AllHR[i]->getHomeID() << //1st column
+            "," << AllHR[i]->getHomeX() << //...
+            "," << AllHR[i]->getHomeY()  << //...
+            "\n";
+         */
+    }; // END OF FOR LOOP
     
     /*
     // Closes the HomeRange CSV file
     HomeRangefile.close();
      */
+    //std::cout<<"HR complete"<<std::endl;
     
     ////////////////////////////////////////////////////////////////////////////////////////////
     ///                                     ANIMALS                                         ////
@@ -497,27 +496,18 @@ int main(){
     //Creates 1 Random number for the seed each Animal for the following
     //Random number stream for choosing HR
     srand(RandomNumberStream[2]);
-    std::vector<double> RandomNumberStreamAnimal1;
-    RandomNumberStreamAnimal1.resize(NoAnimal);
-    for(int i=0; i<NoAnimal; i++){
-        RandomNumberStreamAnimal1[i]=double(rand());
-    };
+    std::vector<double> RandomNumberStreamAnimal1(NoAnimal);
+    for(int i=0; i<NoAnimal; i++){ RandomNumberStreamAnimal1[i]=double(rand()); };
     
     // Random number stream seed for start angle
     srand(RandomNumberStream[3]);
-    std::vector<double> RandomNumberStreamAnimal2;
-    RandomNumberStreamAnimal2.resize(NoAnimal);
-    for(int i=0; i<NoAnimal; i++){
-        RandomNumberStreamAnimal2[i]=double(rand());
-    };
+    std::vector<double> RandomNumberStreamAnimal2(NoAnimal);
+    for(int i=0; i<NoAnimal; i++){RandomNumberStreamAnimal2[i]=double(rand());};
     
     // Random number stream seed for the seed for the movement
     srand(RandomNumberStream[4]);
-    std::vector<double> RandomNumberStreamAnimal3;
-    RandomNumberStreamAnimal3.resize(NoAnimal);
-    for(int i=0; i<NoAnimal; i++){
-        RandomNumberStreamAnimal3[i]=double(rand());
-    };
+    std::vector<double> RandomNumberStreamAnimal3(NoAnimal);
+    for(int i=0; i<NoAnimal; i++){RandomNumberStreamAnimal3[i]=double(rand());};
         
     //std::cout<<"Random numbers"<<std::endl;
     
@@ -540,20 +530,18 @@ int main(){
     ////////////////////////////////////////////
     for(int i=0; i<NoAnimal; i++){
         //Print out animal number to screen
+        
         //std::cout <<"Animal:" << i+1 <<"/" << NoAnimal << std::endl;
         
         // Sets seed for a random number
         // So that can choose a home range centre at random
         srand(RandomNumberStreamAnimal1[i]);
         int HrId = rand() % NoHR;
-        HomeRangeIDused[i]= HrId;
         
         // If Home ranges have only 1 animal (or animals to be randomly distributed)
         // Then we need to make sure that each animal is allocated a different home range/start location
-        // If HrId already in the vector "HomeRangeIDused" then it needs to be recalulated
-        // A new stream of random number is created (which is one longer each time the loop is performed)
-        // and the last value is taken from the stream - if this has already been allocated then
-        // the recaluclation is performed again. 
+        // If HrId already in the vector "HomeRangeIDused" then it needs to be recalulated by,
+        // finding the next free HR is allocated instead.
         int count_while=1;
         int HRID_Temp;
         int HomeRangeIDused_Temp = 0;
@@ -565,17 +553,17 @@ int main(){
                 for(int HRcheck=0; HRcheck<NoHR; HRcheck++){if(HomeRangeIDused[HRcheck]== HrId){HRID_Temp +=1;};}
                 // If it has been allocated then recal
                 if(HRID_Temp !=0){
-                    srand(RandomNumberStreamAnimal1[i]);
-                    std::vector<double> RandomNumberStreamHRrecal(count_while);
-                    for(int i=0; i<count_while; i++){RandomNumberStreamHRrecal[i]=double(rand());};
-                    srand(RandomNumberStreamHRrecal[count_while]);
-                    HrId = rand() % NoHR;
+                    HrId +=1;
+                    if(HrId>=NoHR){HrId = 0;};
                // If it has NOT been allocated then exists the while loop and saves into the vector of allocated HR locations
                }
                 else{HomeRangeIDused_Temp =1;HomeRangeIDused[i]= HrId;};
             }; // END OF WHILE LOOP
         }; //
-                    
+        
+        
+        //if(i+1==NoHR){std::cout<<"hello"<<std::endl;}
+            
         // the x/y location of the HR
         // All animals start at the centre of there HR
         double xlocation = AllHR[HrId]->getHomeX();
@@ -620,11 +608,8 @@ int main(){
         //Sets seed for a random number
         srand(RandomNumberStreamAnimal3[i]);
         //Random number stream for the movemnet of the animal
-        std::vector<double> RandomNumberCurrentAnimal;
-        RandomNumberCurrentAnimal.resize(NoSteps*100);
-        for(int i=0; i<NoSteps*(100); i++){
-            RandomNumberCurrentAnimal[i]=  double(rand());
-        };
+        std::vector<double> RandomNumberCurrentAnimal(NoSteps*100);
+        for(int i=0; i<NoSteps*(100); i++){ RandomNumberCurrentAnimal[i]=  double(rand());};
             // For each step
             for(int j=0; j<NoSteps; j++){
                 //std::cout <<"Update step"<< std::endl;
@@ -633,7 +618,7 @@ int main(){
                 AllAnimals[i] -> UpdateLocation(RandomNumberCurrentAnimal[count]);
             }; //End of j loop for Steps
         
-        ///* -------------------------------------------------------
+        /* -------------------------------------------------------
          ////////////////// SAVES MOVEMENT \\\\\\\\\\\\\\\\\\\\\\\
          //
          // This section saves the movement of the animals to CSV
@@ -696,17 +681,21 @@ int main(){
         // Therefore it doesn't need to be called for each camera
         double callangle = AllAnimals[Individual]->getCallWidth();
         std::vector<std::vector<double>> TempAllLocations = AllAnimals[Individual]->getEndStepLocations();
-
+        
+        int TimeStepTrap =0;
+        double previousx;
+        double previousy;
+        double currentx;
+        double currenty;
+        double currentangle;
+        int capturecount;
+        double dist;
+        double callx;
+        double cally;
+        
         for(int NoCT=0; NoCT<NoCameraTraps; NoCT++){ //Checks all CT for presence of animal
-            
             //std::cout <<"CT:" << NoCT+1 <<"/" <<NoCameraTraps << std::endl;
-            
-            int TimeStepTrap =0;
-            double previousx;
-            double previousy;
-            double currentx;
-            double currenty;
-            double currentangle;
+
             if(DetectorLayOut == 0 | DetectorLayOut ==2){
                 // The camera only start after the the "Run in period"
                 // Then they are only on at the corresponding the time step
@@ -715,36 +704,14 @@ int main(){
                 TimeStepTrap = NoCT+NoRunIn+1;
                 //std::cout <<"CT:" << NoCT+1 <<"/" <<NoCameraTraps << std::endl;
                 if(TempAllLocations[TimeStepTrap].size()>0){
-                    //std::cout<<TempAllLocations.size()<<std::endl;
-                    //std::cout<<TimeStepTrap<<std::endl;
-                    //int currentid = TempAllLocations[TimeStepTrap][0];
                     previousx = TempAllLocations[TimeStepTrap-1][2];
                     previousy = TempAllLocations[TimeStepTrap-1][3];
                     currentx = TempAllLocations[TimeStepTrap][2];
                     currenty = TempAllLocations[TimeStepTrap][3];
                     currentangle = TempAllLocations[TimeStepTrap][4];
                     
-                    // The bats are not constantly calling and therefore 
-                    double IntervalBetweenCalls = 1/CallsPerStep;
-                    for(int i=0; i<CallsPerStep; i++){
-                        double dist = sqrt(pow(previousx-currentx,2)+pow(previousy-currenty,2));
-                        double callx = previousx + dist*IntervalBetweenCalls*(i+1)*sin(currentangle);
-                        double cally = previousy + dist*IntervalBetweenCalls*(i+1)*cos(currentangle);
-                        //std::cout<<"dist: "<<dist <<", IntervalBetweenCalls*(i+1): "<< IntervalBetweenCalls*(i+1)<<std::endl;
-                        //std::cout<<"previousx: "<<previousx <<", currentx: "<< currentx<<", callx: "<< callx<<std::endl;
-                        //std::cout<<"previousy: "<<previousy <<", currenty: "<< currenty<<", cally: "<< cally<<std::endl;
-                         All_CT[NoCT]->CapturesIndividual(callx,
-                                                        cally,
-                                                          Individual,
-                                                          callangle,
-                                                          currentangle,
-                                                          iterationnumber,
-                                                          IntervalBetweenCalls*(i+1),
-                                                          1);
-                    }
-                    
                     // Calcualtes whether the animal is captured
-                    All_CT[NoCT]->CapturesIntersection(currentx
+                    capturecount = All_CT[NoCT]->CapturesIntersection(currentx
                                                        ,currenty
                                                        ,previousx
                                                        ,previousy
@@ -753,6 +720,24 @@ int main(){
                                                        ,currentangle
                                                        ,iterationnumber
                                                        );
+                    
+                    
+                    if(capturecount>0 && callson==1){
+                        // The bats are not constantly calling and therefore need to assume that calls have with a given 
+                        for(int i=0; i<CallsPerStep; i++){
+                            dist = sqrt(pow(previousx-currentx,2)+pow(previousy-currenty,2));
+                            callx = previousx + dist*IntervalBetweenCalls*(i+1)*sin(currentangle);
+                            cally = previousy + dist*IntervalBetweenCalls*(i+1)*cos(currentangle);
+                            All_CT[NoCT]->CapturesIndividual(callx,
+                                                             cally,
+                                                             Individual,
+                                                             callangle,
+                                                             currentangle,
+                                                             iterationnumber,
+                                                             IntervalBetweenCalls*(i+1),
+                                                             1);
+                        };
+                    }; // END OF if
                 
                 } //END OF IF TempAllLocations
             }
@@ -766,9 +751,6 @@ int main(){
             // The one is added on becuase start counting the number of steps at 0
             for(int time =0; time<NoSteps; time++ ){
                 TimeStepTrap= time+1;
-                //std::cout<<"Time: "<<NoSteps<<std::endl;
-                //std::cout<<"Time: "<<time<<std::endl;
-                //std::cout<<Individual<<" "<<NoCT<<" "<< All_CT[NoCT]->getStepOn()<<std::endl;
                 if(TempAllLocations[TimeStepTrap].size()>0){
                     previousx = TempAllLocations[TimeStepTrap-1][2];
                     previousy = TempAllLocations[TimeStepTrap-1][3];
@@ -779,7 +761,7 @@ int main(){
                     
                     
                     // Calcualtes whether the animal is captured
-                    All_CT[NoCT]->CapturesIntersection(currentx
+                    capturecount = All_CT[NoCT]->CapturesIntersection(currentx
                                                        ,currenty
                                                        ,previousx
                                                        ,previousy
@@ -789,7 +771,24 @@ int main(){
                                                        ,iterationnumber
                                                        );
                     
-                
+                    if(capturecount>0 && callson==1){ // if there have been any captures then the
+                        // The bats are not constantly calling and therefore
+                        for(int i=0; i<CallsPerStep; i++){
+                            std::cout<<"HELLO"<<std::endl;
+                            dist = sqrt(pow(previousx-currentx,2)+pow(previousy-currenty,2));
+                            callx = previousx + dist*IntervalBetweenCalls*(i+1)*sin(currentangle);
+                            cally = previousy + dist*IntervalBetweenCalls*(i+1)*cos(currentangle);
+                            All_CT[NoCT]->CapturesIndividual(callx,
+                                                             cally,
+                                                             Individual,
+                                                             callangle,
+                                                             currentangle,
+                                                             iterationnumber,
+                                                             IntervalBetweenCalls*(i+1),
+                                                             1);
+                        };// end of for
+                    }; // END OF if
+                                
                 } //END OF IF TempAllLocations
                 All_CT[NoCT]->Add1StepOn();
             }// END OF FOR time LOOP
@@ -837,14 +836,10 @@ int main(){
     ///////////////////////////////////////////////////////////////////////////////////////
     
     // Destructors For Animals
-    for(int i=0; i<NoAnimal; i++){
-        delete AllAnimals[i];
-    }
+    for(int i=0; i<NoAnimal; i++){delete AllAnimals[i];}
     
     // Destructors For HomeRange
-    for(int i=0; i<NoHR; i++){
-        delete AllHR[i];
-    }
+    for(int i=0; i<NoHR; i++){ delete AllHR[i];}
     
         ///////////////////////////////////////////////////////////////////////////////////////
         ///                         !!!   END OF ITERATION   !!!!                           ///
@@ -857,7 +852,7 @@ int main(){
     
     //Closes the files Movement files
     // TO BE UNCOMMENTED WITH MOVEMENT SECTION!!
-    Movement.close();
+    //Movement.close();
         
     }; //end if test
     // Prints to screem to inform finished calculating captures
@@ -865,9 +860,7 @@ int main(){
 
     
     // Destructors For Camera Traps
-    for(int i=0; i<NoCameraTraps; i++){
-        delete All_CT[i];
-    }
+    for(int i=0; i<NoCameraTraps; i++){ delete All_CT[i];}
     
     
     t=clock()-tstart;

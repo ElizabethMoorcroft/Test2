@@ -32,7 +32,7 @@ Animal::Animal( int a, int b,
     Current_x = i;
     Current_y = j;
     Current_angle = k;
-    if(Current_angle>2*M_PI){Current_angle=Current_angle-2*M_PI;};
+    if(Current_angle>=2*M_PI){Current_angle=Current_angle-2*M_PI;};
     
      
     
@@ -67,20 +67,9 @@ Animal::Animal( int a, int b,
     All_locations.resize(2*NoSteps+5);
     mylocationvector.resize(8);
     
-    //Records the starting locations
-    mylocationvector[0] = identifier;
-    mylocationvector[1] = step_number;
-    mylocationvector[2] = Current_x;
-    mylocationvector[3] = Current_y;
-    mylocationvector[4] = Current_angle;
-    mylocationvector[5] = Current_distance;
-    mylocationvector[6] = Move_speed;
-    mylocationvector[7] = 0;
-    All_locations[0]=mylocationvector;
-    EndStep_locations[0]=mylocationvector;
-    //locationvectorcount is the parameter which allows the code to know which location to say the
-    // current location in
-    locationvectorcount =1;
+    // Updates the location vector
+    locationvectorcount =0;
+    LocationVector(Current_x,Current_y,0,1);
     
     //temp
     timeLE1=0;
@@ -97,7 +86,6 @@ Animal::Animal( int a, int b,
 void Animal::Set_MoveValue (double a, double b) {
     Move_speed = a;
     Move_maxangle = b;
-    
 }
 
 void Animal::Set_HRValues (int a, int b, double c, double d, double e) {
@@ -107,28 +95,51 @@ void Animal::Set_HRValues (int a, int b, double c, double d, double e) {
     Home_r = e;
 }
 
+void Animal::LocationVector(double locationx, double locationy, int LeaveEntreCode, int End){
+    //Records exit of the world
+    mylocationvector[0] = identifier;
+    mylocationvector[1] = step_number;
+    mylocationvector[2] = locationx;
+    mylocationvector[3] = locationy;
+    mylocationvector[4] = Current_angle;
+    mylocationvector[5] = Current_distance;
+    mylocationvector[6] = Move_speed;
+    mylocationvector[7] = LeaveEntreCode;
+    All_locations[locationvectorcount]= mylocationvector;
+    if(End==1){EndStep_locations[step_number] = mylocationvector;} // Only happens at the end of the step
+    locationvectorcount+=1;
+}
 
 /////////////////////
 /// NEW LOCATION  ///
 /////////////////////
 
+// Calculations for new x&y locations
+// this uses simple trig and is NOT dependent on the direction of travel
+double Animal::CalNext_X(double distance){ double newx = Current_x + distance*sin(NextAngle); return newx;};
+double Animal::CalNext_Y(double distance){ double newy = Current_y + distance*cos(NextAngle); return newy;};
+
+
+// If the animal is moving in  a straight line
+//      => Movement Type = 0
 void Animal::NewLocationMT0 (double seed){
     
     //set up a random number
     RandNum Number1;
 
     // Calculate a distance value
-    NextDist = Number1.PositiveNormal (seed,StepLengthDist,StepLengthDist/10);
+    NextDist = Number1.PositiveNormal(seed,StepLengthDist,StepLengthDist/10);
     //std::cout <<TempDist<<std::endl;
-
+    NextAngle = Current_angle;
+    
     //Based on polar coordinates updates the temp x/y location
-    NextX = Current_x + NextDist*sin(Current_angle);
-    NextY = Current_y + NextDist*cos(Current_angle);
-}
+    NextX = CalNext_X(NextDist);
+    NextY = CalNext_Y(NextDist);
+};
+
 
 void Animal::NewLocationCorr (double seed, double seed2){
     
-
     //set up a random number
     RandNum Number1;
     //Correlated random walk
@@ -139,11 +150,11 @@ void Animal::NewLocationCorr (double seed, double seed2){
     NextAngle = Number1.AtoRangeBUnif(seed2,Current_angle,Move_maxangle);
     //Sometimes the angle becomes greater than 360 or less than 0
     //Recalculates so that the angle between 0 and 360
-    if(NextAngle<0){NextAngle=NextAngle+2*M_PI;}else if(NextAngle>2*M_PI){NextAngle=NextAngle-2*M_PI;};
+    if(NextAngle<0){NextAngle+=2*M_PI;}else if(NextAngle>=2*M_PI){NextAngle-=2*M_PI;};
 
     //Based on polar coordinates updates the temp x/y location
-    NextX = Current_x + NextDist*sin(NextAngle);
-    NextY = Current_y + NextDist*cos(NextAngle);
+    NextX = CalNext_X(NextDist);
+    NextY = CalNext_Y(NextDist);
     //Current_angle = NextAngle;
 }
 
@@ -157,52 +168,45 @@ void Animal::NewLocationUnCorr (double seed, double seed2){
     NextDist = Number1.PositiveNormal (seed,StepLengthDist,StepLengthDist/10);
         
     //calculates a new random angle of movement
-    //NextAngle = Number1.AtoBUnif(seed2,0,2*M_PI);
-    srand(seed2);
-    NextAngle = (double (rand())/RAND_MAX)*2*M_PI;
-    //std::cout<<NextAngle<<std::endl;
-    //Based on polar coordinates updates the temp x/y location
-    NextX = Current_x + NextDist*sin(NextAngle);
-    NextY = Current_y + NextDist*cos(NextAngle);
-}
+    NextAngle = Number1.AtoBUnif(seed2,0,2*M_PI);
 
+    //Updates the x and y coordinates
+    NextX = CalNext_X(NextDist);
+    NextY = CalNext_Y(NextDist);
+};
+
+// Movement for when there is a two stage correlated walk
+//      => Mocement Type = 2
 void Animal::NewLocationMT2 (double seed, double seed2){
     
-    
-    if(Move_NonCorr==1){
-        //ENTRE CODE IF THE MOVEMENT IS NOT_CORRELATED
-        NewLocationUnCorr(seed,seed2);
-        
-        }
-    else if(Move_NonCorr==0){
-        //If MOVEMENT IS CORRELATED THEN CALUCLATE THE MOVEMENT FROM THE MOVETYPE1 CORR-RANDOM WALK
+    if(Move_NonCorr==1){//ENTRE CODE IF THE MOVEMENT IS NOT_CORRELATED
+        NewLocationUnCorr(seed,seed2);// END IF
+    } // end of if
+    else if(Move_NonCorr==0){ //If MOVEMENT IS CORRELATED THEN CALUCLATE THE MOVEMENT FROM THE MOVETYPE1 CORR-RANDOM WALK
         NewLocationCorr(seed,seed2);
-    }
-    
- 
-}
+    } // END ELSE IF
+};
 
 
 void Animal::NewLocation (double seed, double seed2){
     
-    //std::cout<< seed <<std::endl;
 
     clock_t LE3 =clock();
-    //calculates a new random step distance
     
+    //calculates a new random step distance
     if(Movement_type==0){
         NewLocationMT0(seed);
-        
-    } else if (Movement_type==1){
-        NewLocationCorr(seed,seed2);
-        
-    } else if (Movement_type==2){
-        NewLocationMT2(seed,seed2);
-        
     }
+    else if (Movement_type==1){
+        NewLocationCorr(seed,seed2);
+    }
+    else if (Movement_type==2){
+        NewLocationMT2(seed,seed2);
+    };
+    
     LE3 =clock()-LE3;
     timeLE3 +=LE3;
-}
+};
 
 
 //////////////////////////
@@ -230,7 +234,9 @@ void Animal::LeaveEnterWorld(double YBoundExit, double XBoundExit, double YBound
         //std::cout <<"Top"<<std::endl;
         //This means that it exits the world at maximum value of y and at the corresponding x value
         tempExitsY = YBoundExit;
-        tempExitsX = Current_x+tempDistToTopBoundary*sin(NextAngle);
+        tempExitsX = CalNext_X(tempDistToTopBoundary);
+        Current_angle = NextAngle;
+     
         
         //New starting position
         Current_y = YBoundEnter;
@@ -245,7 +251,7 @@ void Animal::LeaveEnterWorld(double YBoundExit, double XBoundExit, double YBound
         //std::cout <<"Side"<<std::endl;
         //This means that it exits the world at maximum value of y and at the corresponding x value
         tempExitsX = XBoundExit;
-        tempExitsY = Current_y+tempDistToSideBoundary*cos(NextAngle);
+        tempExitsY = CalNext_Y(tempDistToSideBoundary);
         
         //New starting position
         Current_y = tempExitsY;
@@ -258,42 +264,21 @@ void Animal::LeaveEnterWorld(double YBoundExit, double XBoundExit, double YBound
         Current_distance += tempDistToSideBoundary;
         //std::cout <<"leaves Side"<<std::endl;
     }
-    
-    
-        //Records exit of the world
-        mylocationvector[0] = identifier;
-        mylocationvector[1] = step_number;
-        mylocationvector[2] = tempExitsX;
-        mylocationvector[3] = tempExitsY;
-        mylocationvector[4] = NextAngle;
-        mylocationvector[5] = Current_distance;
-        mylocationvector[6] = Move_speed;
-        mylocationvector[7] = 0;
-        All_locations[locationvectorcount]= mylocationvector;
-        locationvectorcount+=1;
+        //Updates the location vector
+        LocationVector(tempExitsX,tempExitsY,0,0);
     
         //std::cout <<"vect1 done"<<std::endl;
         //New end locations
         //Based on polar coordinates updates the temp x/y location
-        NextX = Current_x + NextDist*sin(NextAngle);
-        NextY = Current_y + NextDist*cos(NextAngle);
+        NextX = CalNext_X(NextDist);
+        NextY = CalNext_Y(NextDist);
         //std::cout<<All_locations.size()<<std::endl;
         //std::cout<<locationvectorcount<<std::endl;
         //std::cout <<"vect1 done1"<<std::endl;
     
-        //Records the etring of the world
-        mylocationvector[0] = identifier;
-        mylocationvector[1] = step_number;
-        mylocationvector[2] = Current_x;
-        mylocationvector[3] = Current_y;
-        mylocationvector[4] = NextAngle;
-        mylocationvector[5] = Current_distance;
-        mylocationvector[6] = Move_speed;
-        mylocationvector[7] = 1;
-        //std::cout <<"vect2 temp"<<std::endl;
-        All_locations[locationvectorcount] = mylocationvector;
-        locationvectorcount+=1;
-        //std::cout <<"vect2 done"<<std::endl;
+        // Updates the location vector
+        LocationVector(Current_x,Current_y,1,0);
+
     
 }
 
@@ -365,17 +350,9 @@ void Animal::UpdateLocation (double seed){ // a is the number of seconds per ste
         //std::cout<<Current_angle <<std::endl;
         
         //Add to the all locations
-        mylocationvector[0] =identifier;
-        mylocationvector[1] =step_number;
-        mylocationvector[2] =Current_x;
-        mylocationvector[3] =Current_y;
-        mylocationvector[4] =NextAngle;
-        mylocationvector[5] =Current_distance;
-        mylocationvector[6] = Move_speed;
-        mylocationvector[7] = 0;
-        All_locations[locationvectorcount] = mylocationvector;
-        EndStep_locations[step_number] = mylocationvector;
-        locationvectorcount+=1;
+          LocationVector(Current_x,Current_y,0,1);
+
+         
     } //END OF SOLID BOUNDARIES
     
     
@@ -407,18 +384,7 @@ void Animal::UpdateLocation (double seed){ // a is the number of seconds per ste
                 Current_distance += NextDist;
                 
                 //Add to the all locations
-                mylocationvector[0] = identifier;
-                mylocationvector[1] = step_number;
-                mylocationvector[2] = NextX;
-                mylocationvector[3] = NextY;
-                mylocationvector[4] = Current_angle;
-                mylocationvector[5] = Current_distance;
-                mylocationvector[6] = Move_speed;
-                mylocationvector[7] = 0;
-                //std::cout<< "Vector done" << std::endl;
-                All_locations[locationvectorcount] = mylocationvector;
-                EndStep_locations[step_number] = mylocationvector;;
-                locationvectorcount+=1;
+                LocationVector(Current_x,Current_y,0,1);
                 //std::cout<< "Vectors done" << std::endl;
                 
                 //Ends the while loop by achieving the condition

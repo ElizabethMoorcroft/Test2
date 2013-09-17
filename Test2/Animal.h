@@ -65,11 +65,12 @@ public:
     void NewLocationCorr(double, double);
     void NewLocationMT2(double, double);
     void NewLocationUnCorr(double, double);
-
+    
     
     void NewLocation(double,double);
     void LeaveEnterWorld(double , double ,double , double );
     void UpdateLocation (double);
+    void LocationVector(double, double,int, int);
     
     void setHomeX(double a){Home_x = a;};
     void setHomeY(double a){Home_y = a;};
@@ -79,6 +80,9 @@ public:
     double getID(){return identifier;};
     double getHRID(){return HomeRange_id;};
     double getSpeed(){return Move_speed;};
+    
+    double CalNext_X(double);
+    double CalNext_Y(double);
     
     double getCallWidth(){return Call_width;};
     double gettime1(){return timeLE1;};
