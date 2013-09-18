@@ -83,6 +83,17 @@ public:
     double DistTwoPoints(double, double, double, double);
     double AngleTwoPoints(double, double, double, double);
     
+    bool approximatelyequal(double, double);
+    
+    std::vector <long double> AngleAndCircInteraction(double, double, double, double, double);
+    std::vector <long double> VertAndCircInteraction(double, double, double, double);
+    std::vector <long double> HorzAndCircInteraction(double, double, double, double);
+    std::vector <long double> AngleAndAngleInteraction(double, double, double, double);
+    double HorzAndAngleInteraction(double, double, double);
+    double VertAndAngleInteraction(double, double, double);
+
+    
+    
     std::vector <double> TimeAndAngleCal(double, double, double, double, double);
     
     double GradientFromAngle(double);

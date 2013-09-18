@@ -21,13 +21,16 @@
 /// Constant parameters used in the simulation ///
 //////////////////////////////////////////////////
 
+// Saving settings
+const int SaveMovement =0; // 1-saves; 0-doesn't save
+
 //Simulation values - #Animals, #Steps, #HR, #CT
 const double DensityAnimals = 2*pow(10,-6); // XX*10^-6 Density/m^2  => XX Density/KM^2
 const double LengthMonitoring = 1.5*(60*60); //Length of monitoring in seconds. XX*(60*60)secs => XX hrs
 const double AverageSizeHR = 1; //Average number of animals per roost
 const double SpeedCamera  = 30*0.06 ; // => XX m/s =  XX/ 0.06 KM/h  => XX*0.06 m/s =  XX KM/h
 const int NoRunIn = 0; // Number of steps before cameras are "activated"
-const int NoOfIterations = 200; // No of iterations with the settings
+const int NoOfIterations = 1; // No of iterations with the settings
 
 //HR set up value
 const double HR_AverageRadius = 1000; //meters
@@ -68,7 +71,6 @@ const int Seed =1;
 
 //Animal parameters
 const double AnimalSpeed = 6.3; // ms^-1
-const int MovementType = 1; // Straightline movement = 0 , Correlated walk = 1; 2 state correlated walk 2,
 const double ProbChangeMoveState = 0;//Probability of switching from coorelated to non-correlated
 
 
@@ -79,18 +81,9 @@ const double CorrWalkMaxAngleChange = 10*M_PI/180; // In Radians. Half width. X�
 
 
 //Call parameters
-const double Call_halfwidth = 180*M_PI/180;   //Call_halfwidth. In Radians. X°= X*pi/180rads 
+const double Call_halfwidth = 180*M_PI/180;   //Call_halfwidth. In Radians. X°= X*pi/180rads
 
-/*
-//For the attenuation of sound
-const double Temp = 25;
-const double Hum = 30;
-const double Freq = 45.11*pow(10,3);
-const double Amp = 126; //Amplitude
-const double It = 0;
-// */
-
-// TOtal number of steps calculated from values above
+// Total number of steps calculated from values above
 const int NoSteps = round(LengthMonitoring/StepLength)+ NoRunIn;
 
 

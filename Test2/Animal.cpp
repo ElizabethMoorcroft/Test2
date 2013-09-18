@@ -32,20 +32,14 @@ Animal::Animal( int a, int b,
     Current_x = i;
     Current_y = j;
     Current_angle = k;
-    if(Current_angle>=2*M_PI){Current_angle=Current_angle-2*M_PI;};
-    
-    
+    Current_angle= RangeAngle(Current_angle);
     
     //When initialising the step number and the current distance travelled
     // will always be set to zero
     step_number = 0;
     Current_distance = 0;
     
-    
     // Variables to do with calls
-    //Set up like this so in the future can be initalized as RV??
-    //Call_amp = Amp;
-    //Call_freq = Freq;
     Call_width = Call_halfwidth;
     
     // Variables to do with HR
@@ -55,20 +49,18 @@ Animal::Animal( int a, int b,
     Home_r = HR_AverageRadius ;
     
     //Movement variables
-    Movement_type = MovementType;
     Move_NonCorr = 0  ;// Always starts in a correlated walk (only really of consequence for Movement type 2)
+    
     //Set up like this so in the future can be initalized as RV??
     Move_speed =AnimalSpeed        ; // Move_speed = f;
     Move_maxangle=CorrWalkMaxAngleChange;//Move_maxangle = g;
     
-    //std::cout <<"B4 vectors"<< std::endl;
-
+    // Updates the location vector
     EndStep_locations.resize(NoSteps+5);
     All_locations.resize(2*NoSteps+5);
     mylocationvector.resize(8);
-    
-    // Updates the location vector
     locationvectorcount =0;
+    //Entres the start location into the matrix
     LocationVector(Current_x,Current_y,0,1);
     
     //temp
@@ -112,99 +104,49 @@ void Animal::LocationVector(double locationx, double locationy, int LeaveEntreCo
 
 // Calculations for new x&y locations
 // this uses simple trig and is NOT dependent on the direction of travel
-double Animal::CalNext_X(double distance){ double newx = Current_x + distance*sin(NextAngle); return newx;};
-double Animal::CalNext_Y(double distance){ double newy = Current_y + distance*cos(NextAngle); return newy;};
+double Animal::CalNext_X(double distance){ double newx = Current_x + distance*sin(NextAngle); return newx; };
+double Animal::CalNext_Y(double distance){ double newy = Current_y + distance*cos(NextAngle); return newy; };
 double Animal::DistToHRCentre(){double TempDistToHR =sqrt(pow(NextX-Home_x,2)+pow(NextY-Home_y,2));return TempDistToHR;};
+
+// Needs test
+/*----------------------------------------------
+ // RangeAngle corrects the angle so that the
+ // angle is between 0 and 2pi
+ ----------------------------------------------*/
+double Animal::RangeAngle(double angle){
+    if(angle<0){angle += 2*M_PI;} else if(angle>=2*M_PI){angle -= 2*M_PI;};
+    return angle;
+};
 
 /////////////////////
 /// NEW LOCATION  ///
 /////////////////////
 
 
-
-
-// If the animal is moving in  a straight line
-//      => Movement Type = 0
-void Animal::NewLocationMT0 (double seed){
-    
-    //set up a random number
-    RandNum Number1;
-
-    // Calculate a distance value
-    NextDist = Number1.PositiveNormal(seed,StepLengthDist,StepLengthDist/10);
-    //std::cout <<TempDist<<std::endl;
-    NextAngle = Current_angle;
-    
-    //Based on polar coordinates updates the temp x/y location
-    NextX = CalNext_X(NextDist);
-    NextY = CalNext_Y(NextDist);
-};
-
-
-void Animal::NewLocationCorr (double seed, double seed2){
-    
-    //set up a random number
-    RandNum Number1;
-    //Correlated random walk
-    // Calculate a distance value
-    NextDist = Number1.PositiveNormal (seed,StepLengthDist,StepLengthDist/10);
-
-    //calculates a new random angle of movement
-    NextAngle = Number1.AtoRangeBUnif(seed2,Current_angle,Move_maxangle);
-    //Sometimes the angle becomes greater than 360 or less than 0
-    //Recalculates so that the angle between 0 and 360
-    if(NextAngle<0){NextAngle+=2*M_PI;}else if(NextAngle>=2*M_PI){NextAngle-=2*M_PI;};
-
-    //Based on polar coordinates updates the temp x/y location
-    NextX = CalNext_X(NextDist);
-    NextY = CalNext_Y(NextDist);
-    //Current_angle = NextAngle;
-};
-
-// Uncorrelated movement - Used in type 2 movement (a mixture of correlated and uncorrelated movement).
-void Animal::NewLocationUnCorr (double seed, double seed2){
-            
-    //set up a random number
-    RandNum Number1;
-    //Correlated random walk
-    // Calculate a distance value
-    NextDist = Number1.PositiveNormal (seed,StepLengthDist,StepLengthDist/10);
-        
-    //calculates a new random angle of movement
-    NextAngle = Number1.AtoBUnif(seed2,0,2*M_PI);
-
-    //Updates the x and y coordinates
-    NextX = CalNext_X(NextDist);
-    NextY = CalNext_Y(NextDist);
-};
-
-// Movement for when there is a two stage correlated walk
-//      => Movement Type = 2
-void Animal::NewLocationMT2 (double seed, double seed2){
-    
-    if(Move_NonCorr==1){//ENTRE CODE IF THE MOVEMENT IS NOT_CORRELATED
-        NewLocationUnCorr(seed,seed2);// END IF
-    } // end of if
-    else if(Move_NonCorr==0){ //If MOVEMENT IS CORRELATED THEN CALUCLATE THE MOVEMENT FROM THE MOVETYPE1 CORR-RANDOM WALK
-        NewLocationCorr(seed,seed2);
-    } // END ELSE IF
-};
-
-
 // New location works out which movement type is needed
 // initiating the correct function
 void Animal::NewLocation (double seed, double seed2){
+
+    //set up a random number
+    RandNum Number1;
+    //Correlated random walk
+    // Calculate a distance value
+    NextDist = Number1.PositiveNormal (seed,StepLengthDist,StepLengthDist/10);
     
-    //calculates a new random step distance
-    if(Movement_type==0){
-        NewLocationMT0(seed);
-    }
-    else if (Movement_type==1){
-        NewLocationCorr(seed,seed2);
-    }
-    else if (Movement_type==2){
-        NewLocationMT2(seed,seed2);
-    };
+    // If the movemnt is not non-correlated (it is correlated)
+    if(Move_NonCorr==0){ 
+        //calculates a new random angle of movement
+        NextAngle = Number1.AtoRangeBUnif(seed2,Current_angle,Move_maxangle);
+        //Sometimes the angle becomes greater than 360 or less than 0
+        //Recalculates so that the angle between 0 and 360
+        NextAngle = RangeAngle(NextAngle);
+    } else if(Move_NonCorr==1){ // in is uncorrelated 
+        NextAngle = Number1.AtoBUnif(seed2,0,2*M_PI);
+    } else{std::cout<< "ERROR - Move_NonCorr: "<< Move_NonCorr <<std::endl;}
+    //Based on polar coordinates updates the temp x/y location
+    NextX = CalNext_X(NextDist);
+    NextY = CalNext_Y(NextDist);
+    
 };
 
 
@@ -325,12 +267,14 @@ void Animal::UpdateLocation (double seed){ // a is the number of seconds per ste
                 DistToHR = DistToHRCentre();
                 count +=1;
             } else { // if 200 iterations have happened then switch to uncorrelated movement so will move away from boundary
-                NewLocationUnCorr(RandomNumberUpdateMovement[count], RandomNumberUpdateMovement[count+100]);
+                Move_NonCorr=1;
+                NewLocation(RandomNumberUpdateMovement[count], RandomNumberUpdateMovement[count+100]);
+                Move_NonCorr=0;
                 // Distance from centre of hr to animal
                 DistToHR = DistToHRCentre();
                 count +=1;
-            } //END OF ELSE
-        }; //End of While loop (i loop)
+            }; //END OF ELSE
+        }; //End of While loop 
         
         // rewrite current location
         Current_x = NextX;
@@ -365,12 +309,12 @@ void Animal::UpdateLocation (double seed){ // a is the number of seconds per ste
                 
                 //std::cout<< "If entered" << std::endl;
                 
-                clock_t LE2 =clock();
                 //Can save the temp location as the current location
                 // rewrite current locaion
                 Current_x = NextX;
                 Current_y = NextY;
                 Current_distance += NextDist;
+                Current_angle = NextAngle;
                 
                 //Add to the all locations
                 LocationVector(Current_x,Current_y,0,1);
@@ -379,16 +323,12 @@ void Animal::UpdateLocation (double seed){ // a is the number of seconds per ste
                 //Ends the while loop by achieving the condition
                 tempcounter = 1;
                 
-                LE2 =clock()-LE2;
-                timeLE2 +=LE2;
-                 //std::cout<<"ENDNoSolid"<<std::endl;
             } //End of the IF loop
             
             // If the movement goes outside of the environment
             // Need to work out which pair of possible boundary it leaves first
             // Each pair of boundaries needs to have different inputs for "LeaveEnterWorld" 
             else {
-                clock_t LE1 =clock();
                 //std::cout<< "Leaves environment"<<std::endl;
                 // If angle between 0 and 90 degrees
                 // Then will exit either at top or right boundary
@@ -424,32 +364,26 @@ void Animal::UpdateLocation (double seed){ // a is the number of seconds per ste
                     tempcounter=1;
                  };
                 
-                LE1 =clock()-LE1;
-                timeLE1 +=LE1;
-                
             }; // End of Else loop;
            
         }; //End of While loop
     
-
-        
-    
     }; // End of SolidHomeRangeBoundary=0
    
-    
     //Increases step number by one once the animal finishes moving in the environment
     step_number =step_number+1;
-    // IF the movement is a two state movement model then 
-    if(Movement_type==2){
+    
+    // If there is two state movement => ProbChangeMoveState>0
+    // Then need to see if there a change in state
+    if(ProbChangeMoveState>0){
         //Movement type 2 switches between correlated and uncorrelated movement
         srand(RandomNumberMovement[100]);
         double ChangeMoveState = double(rand())/double(RAND_MAX);
         if(ChangeMoveState < ProbChangeMoveState){
             if(Move_NonCorr==1){Move_NonCorr=0;} else{Move_NonCorr=1;}
-            //Changes the movement from non-correlated to correlated for the next step
+            // Changes the movement from non-correlated to correlated for the next step
             // OR Changes the movement from correlated to non-correlated for the next step
         }
-    }
-//tupdate= clock() - tupdate;
-  //  std::cout<< float(tupdate)/CLOCKS_PER_SEC<<std::endl;
+    };
+    
 }//End of update

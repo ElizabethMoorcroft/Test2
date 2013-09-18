@@ -19,7 +19,7 @@ class Animal {
     int identifier;
     int HomeRange_id;
     int step_number;
-    int Movement_type;
+    //int Movement_type;
     
     int Move_NonCorr;
     double Move_speed;
@@ -61,11 +61,12 @@ public:
              double, double);
     void Set_MoveValue (double,double);
     void Set_HRValues (int, int, double, double, double );
-    void NewLocationMT0(double);
-    void NewLocationCorr(double, double);
-    void NewLocationMT2(double, double);
-    void NewLocationUnCorr(double, double);
+    //void NewLocationMT0(double);
+    //void NewLocationCorr(double, double);
+    //void NewLocationMT2(double, double);
+    //void NewLocationUnCorr(double, double);
     
+    double RangeAngle(double);
     
     void NewLocation(double,double);
     void LeaveEnterWorld(double , double ,double , double );

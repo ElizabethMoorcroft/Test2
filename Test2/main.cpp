@@ -54,17 +54,17 @@ std::string make_directory( const std::string& directory){
     std::string boundary;
     if(HR_SolidBoundaries==0){boundary=",NoBoundaries";} else{boundary=",Boundaries";}
     // Updates so that the type of boundary and
-    std::string Move;
-    if(MovementType==0){Move=",StraightMove";} else
-        if(MovementType==1){Move=",CorrelatedMove";}
-        else{Move=",2StateMove";}
+    //std::string Move;
+    //if(MovementType==0){Move=",StraightMove";} else
+    //    if(MovementType==1){Move=",CorrelatedMove";}
+    //    else{Move=",2StateMove";}
     //density is recorded
     double denistyCal = DensityAnimals*pow(10,6);
     
     int maxseed = NoOfIterations+Seed;
     std::ostringstream result;
     result  << directory
-            << boundary         << Move
+      //      << boundary         << Move
             << ",Density="      << denistyCal
             << ",Speed="        << AnimalSpeed
             << ",Iterations="   << Seed << "-" << maxseed
@@ -72,8 +72,9 @@ std::string make_directory( const std::string& directory){
             << ",DetectorRadius=" << DetectorRadius
             << ",CallHalfwidth=" << Call_halfwidth
             << ",CameraHalfwidth=" << CameraWidth
-           // << ",Freq="         << Freq
-    ;
+            << ",CorrWalkMaxAngleChange=" <<CorrWalkMaxAngleChange
+            << ",ProbChangeMoveState=" << ProbChangeMoveState
+        ;
     return result.str();
 };
 
@@ -179,23 +180,26 @@ int main(){
     "," << "Camera Speed" <<
     "\n";
     
-    /* ------------------------------------------------------------------------------
-    // Named such the that the each simulation can be correctly identified
-    std::ofstream Movement;
-    Movement.open(make_filenamesettings(SaveDirectory, ",Movement", ".csv" ).c_str());
-    //Creates a header for the file
-    //This is not necessary but helps
-    Movement << "AnimalNumber" <<
-    "," << "StepNumber" <<
-    "," << "Xlocation" <<
-    "," << "Ylocation" <<
-    "," << "Angle" <<
-    "," << "TotalDistance" <<
-    "," << "Speed" <<
-    "," << "Re-enterWorld" <<
-    "," << "Iternation number" <<
-    "\n";
-    //---------------------------------------------------------------------------------*/
+    /* ----------------------------------------------------------------------------*/
+    
+        // Named such the that the each simulation can be correctly identified
+        std::ofstream Movement;
+        Movement.open(make_filenamesettings(SaveDirectory, ",Movement", ".csv" ).c_str());
+    if(SaveMovement==1){
+        //Creates a header for the file
+        //This is not necessary but helps
+        Movement << "AnimalNumber" <<
+            "," << "StepNumber" <<
+            "," << "Xlocation" <<
+            "," << "Ylocation" <<
+            "," << "Angle" <<
+            "," << "TotalDistance" <<
+            "," << "Speed" <<
+            "," << "Re-enterWorld" <<
+            "," << "Iternation number" <<
+            "\n";
+    } else {Movement << "Not saved";}
+    /*---------------------------------------------------------------------------------*/
     
     
 
@@ -342,7 +346,7 @@ int main(){
         << "CorrWalkMaxAngleChange" << ","<<   CorrWalkMaxAngleChange<< "\n"
     //Animal parameters
         << "AnimalSpeed" << ","<< AnimalSpeed<< "\n"
-        << "MovementType" << ","<< MovementType<< "\n"
+      //  << "MovementType" << ","<< MovementType<< "\n"
         << "ProbChangeMoveState" << ","<< ProbChangeMoveState<< "\n"
     //Call parameters
         << "Call_halfwidth" << ","<< Call_halfwidth << "\n"
@@ -605,14 +609,8 @@ int main(){
                 AllAnimals[i] -> UpdateLocation(RandomNumberCurrentAnimal[count]);
             }; //End of j loop for Steps
         
-        /* -------------------------------------------------------
-         ////////////////// SAVES MOVEMENT \\\\\\\\\\\\\\\\\\\\\\\
-         //
-         // This section saves the movement of the animals to CSV
-         // This can be VERY space consuming so it has been commented
-         // out.
-         // REMEMBER TO UNCOMMENT OPEN MOVEMENT AND CLOSE MOVEMENT
-        
+        /* ------------------------------------------------------------------*/
+        if(SaveMovement==1){
         //std::cout <<"Update all locations"<< std::endl;
         // Creates a temp matrix for "all locations"
         std::vector<std::vector<double>> TempAllLocations = AllAnimals[i]->getAllLocations();
@@ -634,7 +632,8 @@ int main(){
                     
             }; //END of STEPCOUNTER LOOP
             }; //END OF FOR LOOP
-          //---------------------------------------------------- */
+        };
+        /*-------------------------------------------------------------- */
         
         }; //End of i loop for EACH ANIMALS
     
@@ -761,7 +760,6 @@ int main(){
                     if(capturecount>0 && callson==1){ // if there have been any captures then the
                         // The bats are not constantly calling and therefore
                         for(int i=0; i<CallsPerStep; i++){
-                            std::cout<<"HELLO"<<std::endl;
                             dist = sqrt(pow(previousx-currentx,2)+pow(previousy-currenty,2));
                             callx = previousx + dist*IntervalBetweenCalls*(i+1)*sin(currentangle);
                             cally = previousy + dist*IntervalBetweenCalls*(i+1)*cos(currentangle);
@@ -775,11 +773,11 @@ int main(){
                                                              1);
                         };// end of for
                     }; // END OF if
-                                
+                
                 } //END OF IF TempAllLocations
                 All_CT[NoCT]->Add1StepOn();
             }// END OF FOR time LOOP
-            } // END ELSE IF Detctlayout ==1
+            }// END ELSE IF Detctlayout ==1
             
             
             /////////////SAVING THE CAPTURES///////////////////
@@ -838,8 +836,8 @@ int main(){
     Captures.close();
     
     //Closes the files Movement files
-    // TO BE UNCOMMENTED WITH MOVEMENT SECTION!!
-    //Movement.close();
+    //TO BE UNCOMMENTED WITH MOVEMENT SECTION!!
+    Movement.close();
         
     }; //end if test
     // Prints to screem to inform finished calculating captures
