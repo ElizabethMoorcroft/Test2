@@ -22,16 +22,16 @@
 //////////////////////////////////////////////////
 
 //Simulation values - #Animals, #Steps, #HR, #CT
-const double DensityAnimals = 1*pow(10,-6); // XX*10^-6 Density/m^2  => XX Density/KM^2
+const double DensityAnimals = 2*pow(10,-6); // XX*10^-6 Density/m^2  => XX Density/KM^2
 const double LengthMonitoring = 1.5*(60*60); //Length of monitoring in seconds. XX*(60*60)secs => XX hrs
 const double AverageSizeHR = 1; //Average number of animals per roost
 const double SpeedCamera  = 30*0.06 ; // => XX m/s =  XX/ 0.06 KM/h  => XX*0.06 m/s =  XX KM/h
 const int NoRunIn = 0; // Number of steps before cameras are "activated"
-const int NoOfIterations = 1; // No of iterations with the settings
+const int NoOfIterations = 200; // No of iterations with the settings
 
 //HR set up value
 const double HR_AverageRadius = 1000; //meters
-const int HR_SolidBoundaries = 1; // Solid boundaries for HR --- 1 =Yes 0 = No
+const int HR_SolidBoundaries = 0; // Solid boundaries for HR --- 1 =Yes 0 = No
 
 //Size of the enviroment
 const double Sq_MinX = 0;
@@ -60,7 +60,7 @@ const double Xspace = (Sq_MaxX - Sq_MinX - 2*HR_AverageRadius)/(MaxNoX+1);
 const double Yspace = (Sq_MaxY - Sq_MinY - 2*HR_AverageRadius)/(MaxNoY+1);
 
 // Camera width/Radius
-const double CameraWidth = 90*M_PI/180; // In Radians. X°= X*pi/180rads
+const double CameraWidth = 45*M_PI/180; // In Radians. Half width. X°= X*pi/180rads
 const double DetectorRadius = 11; // meters
 
 //Radom number seed
@@ -68,14 +68,14 @@ const int Seed =1;
 
 //Animal parameters
 const double AnimalSpeed = 6.3; // ms^-1
-const int MovementType = 1;
+const int MovementType = 1; // Straightline movement = 0 , Correlated walk = 1; 2 state correlated walk 2,
 const double ProbChangeMoveState = 0;//Probability of switching from coorelated to non-correlated
 
 
 //Movement parameters
 const double StepLength = 3.5; //Length of each step in seconds
 const double StepLengthDist = StepLength*AnimalSpeed;
-const double CorrWalkMaxAngleChange = M_PI/36;
+const double CorrWalkMaxAngleChange = 10*M_PI/180; // In Radians. Half width. X°= X*pi/180rads
 
 
 //Call parameters

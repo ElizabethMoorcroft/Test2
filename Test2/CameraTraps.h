@@ -80,6 +80,10 @@ public:
     
     // Range of angle between 0 and 2pi
     double RangeAngle(double);
+    double DistTwoPoints(double, double, double, double);
+    double AngleTwoPoints(double, double, double, double);
+    
+    std::vector <double> TimeAndAngleCal(double, double, double, double, double);
     
     double GradientFromAngle(double);
     

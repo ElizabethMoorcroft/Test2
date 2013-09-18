@@ -70,8 +70,6 @@ CameraTrap::CameraTrap(int a//CT_identifier;
     //  - intercpet would be: y-mx=c (where y and x are known)
     g_detector1 = angle-angle_HalfWidth;
     g_detector2 = angle+angle_HalfWidth;
-    //std::cout<<"Camera ID:"<<a<<", Angle: "<< angle<<", Angle halfwidth"<<angle_HalfWidth<<std::endl;
-    
     g_detector1= RangeAngle(g_detector1);
     g_detector2= RangeAngle(g_detector2);
     
@@ -126,11 +124,6 @@ void CameraTrap::resetCaptures(){
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// Needs test
-double CameraTrap::RangeAngle(double angle){
-    if(angle<0){angle += 2*M_PI;} else if(angle>=2*M_PI){angle -= 2*M_PI;};
-    return angle;
-};
 
 
 /*--------------------------------------------------------------------------------------------------------
@@ -139,7 +132,7 @@ double CameraTrap::RangeAngle(double angle){
 //
 --------------------------------------------------------------------------------------------------------*/
 
-
+// Needs test
 /*----------------------------------------------
  // Some times they values are are the same to 4/5dp
  // But the code doesn't recognise thus
@@ -154,6 +147,73 @@ bool approximatelyequal(double a, double b){
     long double epsilon = (1*pow(10,-4));
     return (value<epsilon);
 };
+
+// Needs test
+/*----------------------------------------------
+ // RangeAngle corrects the angle so that the
+ // angle is between 0 and 2pi
+ ----------------------------------------------*/
+double CameraTrap::RangeAngle(double angle){
+    if(angle<0){angle += 2*M_PI;} else if(angle>=2*M_PI){angle -= 2*M_PI;};
+    return angle;
+};
+
+// Needs test
+/*----------------------------------------------
+ // Calculates the distance between two points
+ //
+ ----------------------------------------------*/
+double CameraTrap::DistTwoPoints(double X1, double X2, double Y1, double Y2){
+    double distance = sqrt(pow(X1-X2,2) + pow(Y1-Y2,2));
+    return distance;
+};
+
+// Needs test
+/*----------------------------------------------
+ // Calculates the angle between two points
+ // FROM X1 to X2
+ ----------------------------------------------*/
+double CameraTrap::AngleTwoPoints(double X1, double X2, double Y1, double Y2){
+    //    (X2,Y2)                                          d(x)
+    //     |\                                           _________(X2,Y2)
+    //     | \                                          |       /
+    // d(y)|  \           tan(Theta) = Opp/Adj          |      /
+    //     |   \          Theta = tan^-1(Opp/Adj)       |     /
+    //     |    \                                   d(y)|    /
+    //     |     \                                      |   /
+    //     |      \                                     |  /
+    //     |  theta\                            theta-->|-/
+    //     |_______(\                                   |/ 
+    //       d(x)  (X1,Y1)                              (X1,Y1)
+    // The angle from X1,Y1 to X2,Y2 is atan(d(y)/d(x))
+    // Don't want always want theta, I want the baring from north
+    double diffx = (X1-X2);
+    double diffy = (Y1-Y2);
+    double theta = atan(diffx/diffy);
+    // Need to correct for the segment
+    // if d(y) and d(x) are -ve then +ve numbers between 0-90˚
+    // if d(y) is -ve and d(x) are +ve then -ve numbers between 0-90˚
+    // --> + 180˚
+    // if d(y)>0 and d(x)<0 then get a -ve number between 0-90˚
+    // --> + 360˚
+    if(diffy<0){theta += M_PI;};
+    theta = RangeAngle(theta);
+    return theta;
+};
+
+// Needs test
+/*----------------------------------------------
+ // Calculates the gradient of line
+ // using the baring from north
+ ----------------------------------------------*/
+double CameraTrap::GradientFromAngle(double angle){
+    // The Gradient is calculated as = delta(y)/delta(x)
+    //  tan(angle) = Opposite/Adjacent = delta (x)/delta(y)
+    // therefore gradient = 1/tan(angle)
+    double Gradient = 1/tan(angle);
+    return(Gradient);
+};
+
 
 ///////////////////////
 ///////////////////////
@@ -295,16 +355,15 @@ std::vector <long double> AngleAndCircInteraction(double m_Angle, double c_Angle
 // Therefore if this value is less than 1, then it's couple be within the movement step
 // The angle of the movement has to be calulated as well,
 // to make sure that the movement is in the right direction (forward instead of backwards)
-std::vector <double> TimeAndAngleCal(double Y, double X, double previous_y_animal, double previous_x_animal, double disttotal){
+std::vector <double> CameraTrap::TimeAndAngleCal(double Y, double X, double previous_y_animal, double previous_x_animal, double disttotal){
     
     std::vector <double> returnvalues(4);
-    double diffy =(Y-previous_y_animal);
-    double diffx =(X-previous_x_animal);
-    double distedge = sqrt(pow(diffx,2)+ pow(diffy,2));
+
+    double distedge = DistTwoPoints(X,previous_x_animal,Y,previous_y_animal);
     double time = distedge/disttotal;
-    double AngleBatCap = atan((diffx)/(diffy));
-    if(diffy<0){AngleBatCap+=M_PI;}//End if
-    if(AngleBatCap<0){ AngleBatCap += 2*M_PI;}else if(AngleBatCap>2*M_PI){ AngleBatCap -= 2*M_PI;};
+    //Find the angle 
+    double AngleBatCap = AngleTwoPoints(X,previous_x_animal,Y,previous_y_animal);
+    
     /*---------------------------------------------------------------------------------------------------------
      // Check for specific case of interest
      if(Individual_ID== 19 && CT_StepOn>15 && CT_StepOn<17){
@@ -313,7 +372,7 @@ std::vector <double> TimeAndAngleCal(double Y, double X, double previous_y_anima
         std::cout<<"diffy: "<<diffy <<", diffx: "<< diffx<< ", distedge: "<< distedge <<std::endl;
         std::cout<< "AngleBatCap: " <<AngleBatCap<<std::endl;
      };
-     ----------------------------------------------------------------------------------------------------------*/
+    // ----------------------------------------------------------------------------------------------------------*/
     
     if((approximatelyequal(Y,previous_y_animal) && approximatelyequal(X,previous_x_animal))
        ||approximatelyequal(AngleBatCap,2*M_PI)){AngleBatCap=0;};
@@ -325,13 +384,6 @@ std::vector <double> TimeAndAngleCal(double Y, double X, double previous_y_anima
 };
 
 
-double CameraTrap::GradientFromAngle(double angle){
-    // The Gradient is calculated as = delta(y)/delta(x) 
-    //  tan(angle) = Opposite/Adjacent = delta (x)/delta(y)
-    // therefore gradient = 1/tan(angle)
-    double Gradient = 1/tan(angle);
-    return(Gradient);
-};
 
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -391,7 +443,7 @@ int CameraTrap::CapturesIntersection(double location_x_animal, double location_y
     //----------------------------------------------------------------------------------------------------------*/
     
     // finds the total distance travelled between it's new location and it's old location
-    double disttotal = sqrt(pow(previous_x_animal-location_x_animal,2) + pow(previous_y_animal-location_y_animal,2));
+    double disttotal = DistTwoPoints(previous_x_animal,location_x_animal,previous_y_animal,location_y_animal);
     
     //If the animal movement was a line on a graph with a gradient and a intercept, Y=mX+c, then:
     //  - gadient would be, m=(change x/change y)
@@ -749,12 +801,8 @@ int CameraTrap::CapturesIndividual(double location_x_animal,
     int captured=0;    
     double AngleFromCamera = 0;
     
-    //distance to the camera
-    double diffx = location_x_animal - location_x;
-    double diffy = location_y_animal - location_y;
-    
     // If on the exact same spot as the camera assume it will be captured
-    if(approximatelyequal(diffx,0) && approximatelyequal(diffy,0)){
+    if(approximatelyequal(location_x_animal,location_x) && approximatelyequal(location_y_animal,location_y)){
         UpdateCaptures(Individual_ID,itnumber,location_x_animal,location_y_animal,time,call);
         captured = 1;
     }
@@ -763,7 +811,7 @@ int CameraTrap::CapturesIndividual(double location_x_animal,
     // If not at the exact same location then check whether it is
     else{
         // Calculates the distance between the camera and the animal
-        double diff_animal_camera = sqrt(pow(diffx, 2) + pow(diffy, 2));
+        double diff_animal_camera = DistTwoPoints(location_x_animal,location_x, location_y_animal, location_y);
         
         /*---------------------------------------------------------------------------------------------------------
          // Check for specific case of interest
@@ -778,15 +826,12 @@ int CameraTrap::CapturesIndividual(double location_x_animal,
         /*---------------------------------------------------------------------------------------------------------
          // Check for specific case of interest
          if(Individual_ID== 131 && CT_StepOn>1122 && CT_StepOn<1125){std::cout<< "RADIUS"<<std::endl;}
-      //   ----------------------------------------------------------------------------------------------------------*/
+        //----------------------------------------------------------------------------------------------------------*/
                
             // If in range, is it in the angle?
-            // (atan calculates radians)
-            // If the location is "south" of the camera then add pi becuase
-            // atan will only give values between -90 and +90
-            if(diffy>=0){AngleFromCamera = atan(diffx/diffy);} else{AngleFromCamera = atan(diffx/diffy)+M_PI;};
-            // Check that the value for AngleFromCamera is between 0 and 2*PI
-            AngleFromCamera= RangeAngle(AngleFromCamera);
+            // Can use the AngleTwoPoints to calculates the angle 
+            // FROM camera TO the animal
+            AngleFromCamera = AngleTwoPoints(location_x, location_x_animal, location_y, location_y_animal);
             
             /*---------------------------------------------------------------------------------------------------------
              // Check for specific case of interest

@@ -119,28 +119,51 @@ HomeRange::HomeRange(int a//identifier; //The HR id number
             RandomNumberStreamHRlocationT1[i] = double(rand());
         };
         
-    
-        //Calculates a random distance from the centre of the trapping circle
-        //Calculates a random angle
-        //This means that the can simply calculate 2 uniform values rather than recalucalte outside limits
-        double MinRadius =0;
-        if(RadiusCameraCircle-HR_AverageRadius>0){MinRadius=RadiusCameraCircle-HR_AverageRadius;};
+        double temp_r;
+        double temp_theta;
         
-        double temp_r = Number1.AtoBUnif(RandomNumberStreamHRlocationT1[0], MinRadius, RadiusCameraCircle+HR_AverageRadius);
-        double temp_theta = Number1.AtoBUnif(RandomNumberStreamHRlocationT1[5], 0, 2*M_PI);
+        if(DetectorLayOut==2){
+            //Calculates a random distance from the centre of the trapping circle
+            //Calculates a random angle
+            //This means that the can simply calculate 2 uniform values rather than recalucalte outside limits
+            double MinRadius =0;
+            if(RadiusCameraCircle-HR_AverageRadius>0){MinRadius=RadiusCameraCircle-HR_AverageRadius;};
         
-        //Tempory x and y locations
-        //Using the r*sin(theta) and r*cos(theta) method gives x and y centred around (0,0)
-        temp_x = temp_r*sin(temp_theta);
-        temp_y = temp_r*cos(temp_theta);
+            temp_r = Number1.AtoBUnif(RandomNumberStreamHRlocationT1[0], MinRadius, RadiusCameraCircle+HR_AverageRadius);
+            temp_theta = Number1.AtoBUnif(RandomNumberStreamHRlocationT1[5], 0, 2*M_PI);
         
-        //Relocates so that centre is now Cir_CntX & Cir_CntY
-        temp_x = Cir_CntX +temp_x;
-        temp_y = Cir_CntY +temp_y;
+            //Tempory x and y locations
+            //Using the r*sin(theta) and r*cos(theta) method gives x and y centred around (0,0)
+            temp_x = temp_r*sin(temp_theta);
+            temp_y = temp_r*cos(temp_theta);
         
-        // Calucalte a radom radius size for the HR
-        temp_size = Number1.PositiveNormal(RandomNumberStreamHRlocationT1[10],HR_AverageRadius,HR_AverageRadius/10);
+            //Relocates so that centre is now Cir_CntX & Cir_CntY
+            temp_x = Cir_CntX +temp_x;
+            temp_y = Cir_CntY +temp_y;
         
+            // Calucalte a radom radius size for the HR
+            temp_size = HR_AverageRadius;
+        }
+        else if(DetectorLayOut==0){
+            temp_r = Number1.AtoBUnif(RandomNumberStreamHRlocationT1[0], 0, HR_AverageRadius + DetectorRadius);
+            temp_theta = Number1.AtoBUnif(RandomNumberStreamHRlocationT1[5], 0, 2*M_PI);
+            //Tempory x and y locations
+            //Using the r*sin(theta) and r*cos(theta) method gives x and y centred around (0,0)
+            temp_x = (Sq_MaxX/2) + temp_r*sin(temp_theta);
+            temp_y = (Sq_MaxY/2) + temp_r*cos(temp_theta);
+            temp_size = HR_AverageRadius;
+        }
+        else if(DetectorLayOut==1){
+            // THIS NEEDS TO BE CHANGED
+            temp_r = Number1.AtoBUnif(RandomNumberStreamHRlocationT1[0], 0, HR_AverageRadius + DetectorRadius);
+            temp_theta = Number1.AtoBUnif(RandomNumberStreamHRlocationT1[5], 0, 2*M_PI);
+            //Tempory x and y locations
+            //Using the r*sin(theta) and r*cos(theta) method gives x and y centred around (0,0)
+            temp_x = (Sq_MaxX/2) + temp_r*sin(temp_theta);
+            temp_y = (Sq_MaxY/2) + temp_r*cos(temp_theta);
+            temp_size = HR_AverageRadius;
+            
+        };
     } //END IF HR_SolidBoundaries==1
     
     

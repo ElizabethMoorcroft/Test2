@@ -179,7 +179,7 @@ void Animal::NewLocationUnCorr (double seed, double seed2){
 };
 
 // Movement for when there is a two stage correlated walk
-//      => Mocement Type = 2
+//      => Movement Type = 2
 void Animal::NewLocationMT2 (double seed, double seed2){
     
     if(Move_NonCorr==1){//ENTRE CODE IF THE MOVEMENT IS NOT_CORRELATED
@@ -191,9 +191,9 @@ void Animal::NewLocationMT2 (double seed, double seed2){
 };
 
 
+// New location works out which movement type is needed
+// initiating the correct function
 void Animal::NewLocation (double seed, double seed2){
-    
-    clock_t LE3 =clock();
     
     //calculates a new random step distance
     if(Movement_type==0){
@@ -205,9 +205,6 @@ void Animal::NewLocation (double seed, double seed2){
     else if (Movement_type==2){
         NewLocationMT2(seed,seed2);
     };
-    
-    LE3 =clock()-LE3;
-    timeLE3 +=LE3;
 };
 
 
@@ -301,8 +298,8 @@ void Animal::UpdateLocation (double seed){ // a is the number of seconds per ste
         RandomNumberMovement[i] = double(rand());
     };
     
-    //List of random numbers used to update the location of the animal
-    // ->
+    // List of random numbers used to update the location of the animal
+    //  ->
     srand(RandomNumberMovement[0]);
     std::vector<double> RandomNumberUpdateMovement(1000);
     for(int i=0; i<1000; i++){ //Do I need to increase the max value??
@@ -319,32 +316,28 @@ void Animal::UpdateLocation (double seed){ // a is the number of seconds per ste
         NewLocation(RandomNumberUpdateMovement[0], RandomNumberUpdateMovement[500]);
         double DistToHR = DistToHRCentre();
         int count=1;
-        std::cout<<"DistToHR: "<< DistToHR<<std::endl;
+        //std::cout<<"DistToHR: "<< DistToHR<<std::endl;
         while(DistToHR > Home_r){
-            std::cout<<"Entre while"<<std::endl;
+            //std::cout<<"Entre while"<<std::endl;
             if(count<200){
                 NewLocation(RandomNumberUpdateMovement[count], RandomNumberUpdateMovement[count+100]);
                 // Distance from centre of hr to animal
                 DistToHR = DistToHRCentre();
                 count +=1;
-            }
-            else {
+            } else { // if 200 iterations have happened then switch to uncorrelated movement so will move away from boundary
                 NewLocationUnCorr(RandomNumberUpdateMovement[count], RandomNumberUpdateMovement[count+100]);
                 // Distance from centre of hr to animal
                 DistToHR = DistToHRCentre();
                 count +=1;
-                
             } //END OF ELSE
-        } //End of While loop (i loop)
+        }; //End of While loop (i loop)
         
         // rewrite current location
         Current_x = NextX;
         Current_y = NextY;
         Current_angle = NextAngle;
-        Current_distance = Current_distance + NextDist;
-        
-        //std::cout<<Current_angle <<std::endl;
-        
+        Current_distance += NextDist;
+                
         //Add to the all locations
         LocationVector(Current_x,Current_y,0,1);
 
@@ -391,67 +384,45 @@ void Animal::UpdateLocation (double seed){ // a is the number of seconds per ste
                  //std::cout<<"ENDNoSolid"<<std::endl;
             } //End of the IF loop
             
-        // If the movement goes outside of the environment
+            // If the movement goes outside of the environment
+            // Need to work out which pair of possible boundary it leaves first
+            // Each pair of boundaries needs to have different inputs for "LeaveEnterWorld" 
             else {
                 clock_t LE1 =clock();
                 //std::cout<< "Leaves environment"<<std::endl;
-            //Have to work out which boundary it leaves first
-                
-                ///////////////////////////////////////
-                // If angle between 0 and 90 degrees //
-                ///////////////////////////////////////
-                //If angle between 0 and 90 degrees then will exit either at top or right boundary
+                // If angle between 0 and 90 degrees
+                // Then will exit either at top or right boundary
                 if(NextAngle>=0 && NextAngle<M_PI/2){
                     //std::cout <<"0-90"<<std::endl;
                     LeaveEnterWorld(Sq_MaxY, Sq_MaxX ,Sq_MinY, Sq_MinX);
-                } //END OF 0 to 90 degrees IF STATEMENT
-                
-                
-                /////////////////////////////////////////
-                // If angle between 90 and 180 degrees //
-                /////////////////////////////////////////
-                //then will exit either at Bottom or right boundary
-
+                }
+                // If angle between 90 and 180 degrees
+                // Then will exit either at Bottom or right boundary
                 else if(NextAngle>=M_PI/2 && NextAngle<M_PI){
                     //std::cout <<"90-180"<<std::endl;
                     LeaveEnterWorld(Sq_MinY, Sq_MaxX ,Sq_MaxY, Sq_MinX);
-                    
-                }//END OF 90 to 180 degrees IF STATEMENT
-
-                /////////////////////////////////////////
-                // If angle between 180 and 270 degrees //
-                /////////////////////////////////////////
+                }
+                // If angle between 180 and 270 degrees
                 //then will exit either at Bottom or right boundary
-                
                 else if(NextAngle>=M_PI && NextAngle<1.5*M_PI){
                     //std::cout <<"180-270"<<std::endl;
                     LeaveEnterWorld(Sq_MinY, Sq_MinX ,Sq_MaxY, Sq_MaxX);
-                    
-                }//END OF 180 to 270 degrees IF STATEMENT
-                
-                /////////////////////////////////////////
-                // If angle between 270 and 360 degrees //
-                /////////////////////////////////////////
+                }
+                // If angle between 270 and 360 degrees
                 //then will exit either at Bottom or right boundary
-                
                 else if(NextAngle>=1.5*M_PI && NextAngle<2*M_PI){
                     //std::cout <<"270-360"<<std::endl;
                     LeaveEnterWorld(Sq_MaxY, Sq_MinX ,Sq_MinY, Sq_MaxX);
-                
-                }//END OF 270 to 360 degrees IF STATEMENT
-                
-                
-                //////////////////////////
-                // Two possible errors  //
-                //////////////////////////
+                }
                 // Produces error is the ANGLE is not between 0 and 360
                 else {std::cout << "ERROR - Movement angle: "<<NextAngle <<std::endl;};
                 
                 // Produces error if the Next distance is less than zero
                 // But exits loop and continues with the rest of the code
-                 if(NextDist<0) {
+                if(NextDist<0){
                     std::cout<< "ERROR - Next dist: " << NextDist<<std::endl;
-                    tempcounter=1;};
+                    tempcounter=1;
+                 };
                 
                 LE1 =clock()-LE1;
                 timeLE1 +=LE1;

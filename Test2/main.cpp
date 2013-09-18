@@ -112,32 +112,11 @@ int main(){
     else{std::cout<<"Error! DetectorLayOut has not been specified."<< std::endl;
         exit (EXIT_FAILURE);}
     
-    //Tim's code for calucalting the attentuation of sound in order to calucalte the
-    // maximum distance, here refered to as Radius, that the detector can detect a bat call
-    //
-    // !! This can be done outside of this code. !!
-    //
-    /*
-    double T = 273.15+Temp ; //Convert celsius to kelvin
-    double T01 = 273.16;
-    double T0 = 293.15;
-    double psat_ps0 = pow(10,-6.8346*pow(T01/T,1.261)+4.6151); // saturation pressure ratio from ISO
-    double h = Hum*psat_ps0/1;
-    double taur = T/T0;
-    double fr0 = (24+40400*h*(0.02+h)/(0.391+h));
-    double frN = pow(taur,-1/2)*(9+280*h*exp(-4.17*(pow(taur,-1/3)-1)));
-    double b1 = 0.1068*exp(-3352/T)/(frN+pow(Freq,2)/frN);
-    double b2 = 0.01275*exp(-2239.1/T)/(fr0+pow(Freq,2)/fr0);
-    double alpha = 8.686*pow(Freq,2)*pow(taur,0.5)*(1.84*pow(10,-11)/1+pow(taur,-3)*(b1+b2));
-    double Attenuation = alpha + 6; // # spherical spreading.
-    double CallRadius=10;
-    for(int i=0;  i<6; i++){ // Newton-raphson
-        CallRadius = CallRadius - (Amp-It-Attenuation*CallRadius-20*log10(10*CallRadius))/(-Attenuation-20/(log(10)*CallRadius));
-    }
-    */
-    std::cout<<DetectorRadius<<std::endl;
-    //
-    // End of Tim's code
+    // The radius of the camera circle - to calucalte the locations of the cameras
+    // The circumferance of the circle is: total distnace = total time * camera speed
+    // The radius is: (circumference/pi)/2 = (circumference/(pi*2))
+    // => radius = (total time * camera speed/(pi*2))
+    double RadiusCameraCircle = (LengthMonitoring*SpeedCamera)/(2*M_PI);
     
     //Calculates the number of animals given the area and the density
     int NoAnimal;
@@ -148,20 +127,30 @@ int main(){
          area = (Sq_MaxX-Sq_MinX)*(Sq_MaxY-Sq_MinY);
          NoAnimal = floor(DensityAnimals*area);
     }else if(HR_SolidBoundaries==1){
-    // If there is solid HR boundaries then can only detect the animals within
-    // one home range radius of a camera
-    // If the radius of the camera movement is less than the average home range then there is no hole
-    // in the middle of the camera circle
-        area = (Sq_MaxX-Sq_MinX)*(Sq_MaxY-Sq_MinY);
-        NoAnimal = floor(DensityAnimals*area);
-        /*
-        if(HR_AverageRadius>=RadiusCameraCircle){
-            area = pow(RadiusCameraCircle+HR_AverageRadius,2)*M_PI;
-            NoAnimal = floor(DensityAnimals*area);}
-        else{
-            area = pow(RadiusCameraCircle+HR_AverageRadius,2)*M_PI - pow(RadiusCameraCircle-HR_AverageRadius,2)*M_PI;
-            NoAnimal = floor(DensityAnimals*area);}
-         */
+        if(DetectorLayOut==2){
+            // If there is solid HR boundaries then can only detect the animals within
+            // one home range radius of a camera
+            // If the radius of the camera movement is less than the average home range then there is no hole
+            // in the middle of the camera circle
+            if(HR_AverageRadius>=RadiusCameraCircle){
+                area = pow(RadiusCameraCircle+HR_AverageRadius,2)*M_PI;
+                NoAnimal = floor(DensityAnimals*area);}
+            else{
+                area = pow(RadiusCameraCircle+HR_AverageRadius,2)*M_PI - pow(RadiusCameraCircle-HR_AverageRadius,2)*M_PI;
+                NoAnimal = floor(DensityAnimals*area);
+            } // End of Else
+        } // End of transect
+        else if (DetectorLayOut==1){// Grid of detectors
+            // This puts them in a square, should be more of a blob shape
+            area = ((Sq_MaxX-Sq_MinX)-HR_AverageRadius) *((Sq_MaxY-Sq_MinY)- HR_AverageRadius);
+            NoAnimal = floor(DensityAnimals*area);
+        } //end of grid of detectors
+        else if(DetectorLayOut==0){
+            area = pow(HR_AverageRadius,2)*M_PI;
+            NoAnimal = floor(DensityAnimals*area);
+        };
+        
+         
     }// END OF IF HRBOUNDARIES
     
 
@@ -192,8 +181,8 @@ int main(){
     
     /* ------------------------------------------------------------------------------
     // Named such the that the each simulation can be correctly identified
-    //std::ofstream Movement;
-    //Movement.open(make_filenamesettings(SaveDirectory, ",Movement", ".csv" ).c_str());
+    std::ofstream Movement;
+    Movement.open(make_filenamesettings(SaveDirectory, ",Movement", ".csv" ).c_str());
     //Creates a header for the file
     //This is not necessary but helps
     Movement << "AnimalNumber" <<
@@ -276,11 +265,7 @@ int main(){
         CT1.TestCapturesIntersection();
     };
     
-    // The radius of the camera circle - to calucalte the locations of the cameras
-    // The circumferance of the circle is: total distnace = total time * camera speed
-    // The radius is: (circumference/pi)/2 = (circumference/(pi*2))
-    // => radius = (total time * camera speed/(pi*2))
-    double RadiusCameraCircle = (LengthMonitoring*SpeedCamera)/(2*M_PI);
+
     
     // The angle between camera as seen from the centre of the circle
     // Assuming equal distance between the cameras
