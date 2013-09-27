@@ -39,9 +39,9 @@ std::string make_filename( const std::string& directoryBasename,const std::strin
 }
 
 // Function for creating a dynamic file names for settings
-std::string make_filenamesettings( const std::string& directory ,const std::string& basename, const std::string& ext ){
+std::string make_filenamesettings( const std::string& directory ,const std::string& basename){
     std::ostringstream result;
-    result << directory <<basename << ext;
+    result << directory <<basename;
     return result.str();
 };
 
@@ -117,7 +117,6 @@ int main(){
     // The circumferance of the circle is: total distnace = total time * camera speed
     // The radius is: (circumference/pi)/2 = (circumference/(pi*2))
     // => radius = (total time * camera speed/(pi*2))
-    double RadiusCameraCircle = (LengthMonitoring*SpeedCamera)/(2*M_PI);
     
     //Calculates the number of animals given the area and the density
     int NoAnimal;
@@ -158,7 +157,7 @@ int main(){
 
     //Creates a CSV file and writes in the header
     std::ofstream Cameras;
-    Cameras.open(make_filenamesettings(SaveDirectory, ",Cameras", ".csv" ).c_str());
+    Cameras.open(make_filenamesettings(SaveDirectory, ",Cameras.csv" ).c_str());
     Cameras << "ID" <<
     "," << "X location" <<
     "," << "Y location" <<
@@ -171,7 +170,7 @@ int main(){
     
         // Named such the that the each simulation can be correctly identified
         std::ofstream Movement;
-        Movement.open(make_filenamesettings(SaveDirectory, ",Movement", ".csv" ).c_str());
+        Movement.open(make_filenamesettings(SaveDirectory, ",Movement.csv" ).c_str());
     if(SaveMovement==1){
         //Creates a header for the file
         //This is not necessary but helps
@@ -188,8 +187,21 @@ int main(){
     } else {Movement << "Not saved";}
     /*---------------------------------------------------------------------------------*/
     
+    //Creates files
+    // Saves it with a name which is a composite of Save Directory (craeted above), "HomeRange",
+    //      the iteration number which is actually the starting seed.
+    // Gives the file a header
     
-
+    std::ofstream HomeRangefile;
+    HomeRangefile.open(make_filenamesettings(SaveDirectory, ",HomeRange.csv").c_str());
+    if(SaveHR==1){
+        HomeRangefile   <<"Iternation number" <<
+                    "," <<"HomeRangeID" <<
+                    "," << "XLocation" <<
+                    "," << "YLocation" <<
+                    "," << "Size" <<
+                    "\n";
+    } else {HomeRangefile << "Not saved";}
     
     ///////////////////////////////////////////////////////////////////////////////////////
     ///                                 !!! WARNINGS!!!                                 ///
@@ -242,7 +254,7 @@ int main(){
     int test=0;
     if(test==1){
         CameraTrap CT1;
-        CT1 = CameraTrap(1,1,0,0 ); // ID, radius,2*Transect only varaibles
+        CT1 = CameraTrap(1,1); // ID, radius
         
         CT1.TestCI();
         CT1.TestVertAndAngleInteraction();
@@ -256,13 +268,6 @@ int main(){
         CT1.TestCapturesIntersection();
     };
     
-
-    
-    // The angle between camera as seen from the centre of the circle
-    // Assuming equal distance between the cameras
-    // Assume the first one is occurs at 0
-    double AngleBetweenCameras = (2*M_PI)/(NoCameraTraps-1);
-    
     
     //Creates a list of pointers to the CTs
     std::vector<CameraTrap*> All_CT(NoCameraTraps);
@@ -275,8 +280,6 @@ int main(){
         // This is for the simplicity of calculation
         All_CT[i] = new CameraTrap(i //identifier;
                                    , DetectorRadius //radius
-                                   , RadiusCameraCircle //FOR TRANSECTS
-                                   , AngleBetweenCameras //FOR TRANSECTS
                                    );
         
         //Saves the locations and the angle of the camera
@@ -285,7 +288,6 @@ int main(){
         "," << All_CT[i]->getYloc() << //...
         "," << All_CT[i]->getAngle() << //...
         "," << All_CT[i]->getHalfAngle() << //4th column
-        "," << SpeedCamera << //5th column
         "\n";
     };
     //Closes the csv camera file
@@ -303,7 +305,7 @@ int main(){
     
     //Creates the file 
     std::ofstream Settings;
-    Settings.open(make_filenamesettings(SaveDirectory,"Settings", ".csv").c_str());
+    Settings.open(make_filenamesettings(SaveDirectory,"Settings.csv").c_str());
 
     //Simulation values - #Animals, #Steps, #HR, #CT
     Settings
@@ -312,7 +314,6 @@ int main(){
         << "Area"<< "," << area << "\n"
         << "LengthMonitoring" << "," << LengthMonitoring << "\n"
         << "AverageSizeHR" << "," << AverageSizeHR << "\n"
-        << "SpeedCamera"  << "," <<  SpeedCamera << "\n"
         << "NoRunIn" << "," <<  NoRunIn << "\n"
         << "NoOfIterations" << "," << NoOfIterations << "\n"
         << "NoSteps"   << "," << NoSteps << "\n"
@@ -347,7 +348,7 @@ int main(){
     ///////////////////////////////
     // Creates file and saves it in with name refering the simulation number in the "SaveDirectory"
     std::ofstream Captures;
-    Captures.open(make_filenamesettings(SaveDirectory, ",Captures",".csv" ).c_str());
+    Captures.open(make_filenamesettings(SaveDirectory, ",Captures.csv" ).c_str());
     // Header for the file
     Captures << "AnimalNumber" <<
         "," << "Time_step" <<
@@ -360,6 +361,9 @@ int main(){
         "," << "Angle from centre of camera to bat" <<
         "," << "Angle from bat to camera" <<
         "\n";
+        
+         
+
     
     //////////////////////////////////////////////////////////////////////////////////////////////////
     // Starts a loop for the rest of the code                                                       //
@@ -393,20 +397,7 @@ int main(){
     ///  - Creates locations for HR and saves the locations                                 ///
     ///////////////////////////////////////////////////////////////////////////////////////////
     
-    //Creates files
-    // Saves it with a name which is a composite of Save Directory (craeted above), "HomeRange",
-    //      the iteration number which is actually the starting seed.
-    // Gives the file a header
-    /*
-    std::ofstream HomeRangefile;
-    HomeRangefile.open(make_filename(SaveDirectory, ",HomeRange",iterationnumber,".csv").c_str());
-    HomeRangefile   <<"HomeRangeID" <<
-                "," << "XLocation" <<
-                "," << "YLocation" <<
-                "," << "Size" <<
-                "\n";
-        
-    //*/
+
     //std::cout<<"HomeRange"<<std::endl;
     //Creates a vecter of pointers to Home ranges
     std::vector<HomeRange*> AllHR(NoHR);
@@ -438,18 +429,21 @@ int main(){
         //std::cout<< "HomeRange: " <<i <<"/"<<NoHR<<std::endl;
         AllHR[i] =new HomeRange(i //identifier; //The HR id number
                               , RandomNumberStreamHR[i] // Seed for random variables
-                              , RadiusCameraCircle
                               );
         
-
+        if(SaveHR==1){
+            HomeRangefile   << iterationnumber <<
+                        "," << i <<
+                        "," << AllHR[i]->getHomeX()<<
+                        "," << AllHR[i]->getHomeY()<<
+                        "," << AllHR[i]->getHomeSize()<<
+                        "\n";
+        };
         
         
     }; // END OF FOR LOOP
     
-    ///*
-    // Closes the HomeRange CSV file
-    //HomeRangefile.close();
-    // */
+
     std::cout<<"HR complete"<<std::endl;
     
     ////////////////////////////////////////////////////////////////////////////////////////////
@@ -838,6 +832,10 @@ int main(){
     //Closes the files Movement files
     //TO BE UNCOMMENTED WITH MOVEMENT SECTION!!
     Movement.close();
+        
+    
+    // Closes the HomeRange CSV file
+    HomeRangefile.close();
         
     }; //end if test
     // Prints to screem to inform finished calculating captures

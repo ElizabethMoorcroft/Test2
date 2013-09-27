@@ -37,7 +37,6 @@
 HomeRange::HomeRange(){};
 HomeRange::HomeRange(int a//identifier; //The HR id number
                      ,double b
-                     ,double c
                      ){
 
     identifier = a; //The HR id number
@@ -48,7 +47,6 @@ HomeRange::HomeRange(int a//identifier; //The HR id number
     
     //Seed for random numbers
     double SEED = b;
-    double RadiusCameraCircle = c;
 
     //std::cout<<"SEED: " <<SEED <<std::endl;
     
@@ -64,16 +62,6 @@ HomeRange::HomeRange(int a//identifier; //The HR id number
         RandomNumberStreamHRlocation[i] =double(rand());
     };
 
-    //std::cout<<"percentagemales"<< percentagemales<<" SEX: "<<sex<< std::endl;
-    /////////////////////////
-    ///Temporary variables///
-    /////////////////////////
-    
-    double temp_x;
-    double temp_y;
-    //double temp_size;
-    
-    
     
     //Creates a random number object
     RandNum Number1;
