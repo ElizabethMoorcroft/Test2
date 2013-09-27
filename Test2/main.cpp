@@ -128,20 +128,7 @@ int main(){
          area = (Sq_MaxX-Sq_MinX)*(Sq_MaxY-Sq_MinY);
          NoAnimal = floor(DensityAnimals*area);
     }else if(HR_SolidBoundaries==1){
-        if(DetectorLayOut==2){
-            // If there is solid HR boundaries then can only detect the animals within
-            // one home range radius of a camera
-            // If the radius of the camera movement is less than the average home range then there is no hole
-            // in the middle of the camera circle
-            if(HR_AverageRadius>=RadiusCameraCircle){
-                area = pow(RadiusCameraCircle+HR_AverageRadius,2)*M_PI;
-                NoAnimal = floor(DensityAnimals*area);}
-            else{
-                area = pow(RadiusCameraCircle+HR_AverageRadius,2)*M_PI - pow(RadiusCameraCircle-HR_AverageRadius,2)*M_PI;
-                NoAnimal = floor(DensityAnimals*area);
-            } // End of Else
-        } // End of transect
-        else if (DetectorLayOut==1){// Grid of detectors
+        if (DetectorLayOut==1){// Grid of detectors
             // This puts them in a square, should be more of a blob shape
             area = ((Sq_MaxX-Sq_MinX)-HR_AverageRadius) *((Sq_MaxY-Sq_MinY)- HR_AverageRadius);
             NoAnimal = floor(DensityAnimals*area);
@@ -370,6 +357,8 @@ int main(){
         "," << "Ylocation" <<
         "," << "Percentage time within step" <<
         "," << "Call" <<
+        "," << "Angle from centre of camera to bat" <<
+        "," << "Angle from bat to camera" <<
         "\n";
     
     //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -408,7 +397,7 @@ int main(){
     // Saves it with a name which is a composite of Save Directory (craeted above), "HomeRange",
     //      the iteration number which is actually the starting seed.
     // Gives the file a header
-    ///*
+    /*
     std::ofstream HomeRangefile;
     HomeRangefile.open(make_filename(SaveDirectory, ",HomeRange",iterationnumber,".csv").c_str());
     HomeRangefile   <<"HomeRangeID" <<
@@ -441,12 +430,12 @@ int main(){
     for(int i=0; i<NoHR; i++){HomeRangeIDused[i]= NoHR+100;};
     
     // The number of male and female HR that have been allocated
-    double countmales =0;
+    //double countmales =0;
     //double NoMales=1;
         
     //Enters data for NoHR home ranges
     for(int i=0; i<NoHR; i++){
-        std::cout<< "HomeRange: " <<i <<"/"<<NoHR<<std::endl;
+        //std::cout<< "HomeRange: " <<i <<"/"<<NoHR<<std::endl;
         AllHR[i] =new HomeRange(i //identifier; //The HR id number
                               , RandomNumberStreamHR[i] // Seed for random variables
                               , RadiusCameraCircle
@@ -459,7 +448,7 @@ int main(){
     
     ///*
     // Closes the HomeRange CSV file
-    HomeRangefile.close();
+    //HomeRangefile.close();
     // */
     std::cout<<"HR complete"<<std::endl;
     
@@ -797,7 +786,7 @@ int main(){
             int stepcounter=0;
             //std::cout<<"Length of the first entry ="<<TempCaptures[stepcounter].size()<<std::endl;
             // Temp location file is written in csv file
-            while(TempCaptures[stepcounter].size()==8){
+            while(TempCaptures[stepcounter].size()==10){
                 //std::cout<<"Length of the current entry  = "<<TempCaptures[stepcounter].size()<<std::endl;
                 Captures<< TempCaptures[stepcounter][0] << //1st column, row
                 "," << TempCaptures[stepcounter][1] << //2nd column, row "stepcounter"
@@ -807,6 +796,8 @@ int main(){
                 "," << TempCaptures[stepcounter][5] <<
                 "," << TempCaptures[stepcounter][6] <<
                 "," << TempCaptures[stepcounter][7] <<
+                "," << TempCaptures[stepcounter][8] <<
+                "," << TempCaptures[stepcounter][9] <<
                 "\n";// New line
                 
                 stepcounter+=1;

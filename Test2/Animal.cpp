@@ -61,6 +61,8 @@ Animal::Animal( int a, int b,
     Home_y = u;
     Home_r = HR_AverageRadius ;
     
+    //std::cout<<Home_x<<", " <<Home_y <<std::endl;
+    
     //Movement variables
     Move_NonCorr = 0  ;// Always starts in a correlated walk (only really of consequence for Movement type 2)
     
@@ -256,7 +258,7 @@ void Animal::UpdateLocation (double seed){ // a is the number of seconds per ste
                 
                 // Produces error if the Next distance is less than zero
                 // But exits loop and continues with the rest of the code
-                if(NextDist<0){ std::cout<< "ERROR - Next dist: " << NextDist<<std::endl; tempcounter=1;};
+                if(NextDist<0){ std::cout<< "ERROR - Next dist: " << NextDist<<std::endl; exit(EXIT_FAILURE); tempcounter=1;};
                 
             }; // End of Else loop;
             

@@ -85,7 +85,7 @@ HomeRange::HomeRange(int a//identifier; //The HR id number
     
     //If HR_SolidBoundaries=0 HRs can be placed anywhere in the range
     if(HR_SolidBoundaries==0){
-        
+        //std::cout<<"No home range boundaries" <<std::endl;
         //Creates a random number stream
         //Positions 0 and 5 are used to create RandNum
         srand(RandomNumberStreamHRlocation[5]);
@@ -95,8 +95,8 @@ HomeRange::HomeRange(int a//identifier; //The HR id number
         };
         
         //Creates x and y locations
-        temp_x = Number1.AtoBUnif(RandomNumberStreamHRlocationT0[0], Sq_MinX, Sq_MaxX);
-        temp_y = Number1.AtoBUnif(RandomNumberStreamHRlocationT0[5], Sq_MinY, Sq_MaxY);
+        Home_X = Number1.AtoBUnif(RandomNumberStreamHRlocationT0[0], Sq_MinX, Sq_MaxX);
+        Home_Y = Number1.AtoBUnif(RandomNumberStreamHRlocationT0[5], Sq_MinY, Sq_MaxY);
         
         // If there are no HR boundaries there is no need to calculate temp_size
         
@@ -121,28 +121,8 @@ HomeRange::HomeRange(int a//identifier; //The HR id number
         double temp_r;
         double temp_theta;
         
-        if(DetectorLayOut==2){
-            //Calculates a random distance from the centre of the trapping circle
-            //Calculates a random angle
-            //This means that the can simply calculate 2 uniform values rather than recalucalte outside limits
-            double MinRadius =0;
-            if(RadiusCameraCircle-HR_AverageRadius>0){MinRadius=RadiusCameraCircle-HR_AverageRadius;};
-        
-            temp_r = Number1.AtoBUnif(RandomNumberStreamHRlocationT1[0], MinRadius, RadiusCameraCircle+HR_AverageRadius);
-            temp_theta = Number1.AtoBUnif(RandomNumberStreamHRlocationT1[5], 0, 2*M_PI);
-        
-            //Tempory x and y locations
-            //Using the r*sin(theta) and r*cos(theta) method gives x and y centred around (0,0)
-            temp_x = temp_r*sin(temp_theta);
-            temp_y = temp_r*cos(temp_theta);
-        
-            //Relocates so that centre is now Cir_CntX & Cir_CntY
-            Home_X = Cir_CntX +temp_x;
-            Home_Y = Cir_CntY +temp_y;
-        
-            // Calucalte a radom radius size for the HR
-        }
-        else if(DetectorLayOut==0){
+       if(DetectorLayOut==0){
+            //std::cout<<"Single detector"<<std::endl;
             temp_r = Number1.AtoBUnif(RandomNumberStreamHRlocationT1[0], 0, HR_AverageRadius + DetectorRadius);
             temp_theta = Number1.AtoBUnif(RandomNumberStreamHRlocationT1[5], 0, 2*M_PI);
             //Tempory x and y locations
