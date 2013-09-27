@@ -41,13 +41,16 @@ HomeRange::HomeRange(int a//identifier; //The HR id number
                      ){
 
     identifier = a; //The HR id number
+    recal=0;
+    
 
 
     
     //Seed for random numbers
     double SEED = b;
     double RadiusCameraCircle = c;
-    
+
+    //std::cout<<"SEED: " <<SEED <<std::endl;
     
     ////////////////////
     // Random stream ///
@@ -56,20 +59,19 @@ HomeRange::HomeRange(int a//identifier; //The HR id number
     // Used to seed other streams
     // Position 1 used to seed stream in 
     srand(SEED);
-    std::vector<double> RandomNumberStreamHRlocation;
-    RandomNumberStreamHRlocation.resize(7);
-    for(int i=0; i<7; i++){
+    std::vector<double> RandomNumberStreamHRlocation(11);
+    for(int i=0; i<11; i++){
         RandomNumberStreamHRlocation[i] =double(rand());
     };
-    
-    
+
+    //std::cout<<"percentagemales"<< percentagemales<<" SEX: "<<sex<< std::endl;
     /////////////////////////
     ///Temporary variables///
     /////////////////////////
     
     double temp_x;
     double temp_y;
-    double temp_size;
+    //double temp_size;
     
     
     
@@ -86,9 +88,8 @@ HomeRange::HomeRange(int a//identifier; //The HR id number
         
         //Creates a random number stream
         //Positions 0 and 5 are used to create RandNum
-        srand(SEED);
-        std::vector<double> RandomNumberStreamHRlocationT0;
-        RandomNumberStreamHRlocationT0.resize(6);
+        srand(RandomNumberStreamHRlocation[5]);
+        std::vector<double> RandomNumberStreamHRlocationT0(6);
         for(int i=0; i<6; i++){
             RandomNumberStreamHRlocationT0[i] = double(rand());
         };
@@ -98,7 +99,6 @@ HomeRange::HomeRange(int a//identifier; //The HR id number
         temp_y = Number1.AtoBUnif(RandomNumberStreamHRlocationT0[5], Sq_MinY, Sq_MaxY);
         
         // If there are no HR boundaries there is no need to calculate temp_size
-        temp_size = 0.0;
         
     }; //END IF HR_SolidBoundaries==0
     
@@ -112,9 +112,8 @@ HomeRange::HomeRange(int a//identifier; //The HR id number
 
         //Creates a random number stream
         //Positions 0 and 5 and 10 are used to create RandNum
-        srand(SEED);
-        std::vector<double> RandomNumberStreamHRlocationT1;
-        RandomNumberStreamHRlocationT1.resize(11);
+        srand(RandomNumberStreamHRlocation[10]);
+        std::vector<double> RandomNumberStreamHRlocationT1(11);
         for(int i=0; i<11; i++){
             RandomNumberStreamHRlocationT1[i] = double(rand());
         };
@@ -138,45 +137,58 @@ HomeRange::HomeRange(int a//identifier; //The HR id number
             temp_y = temp_r*cos(temp_theta);
         
             //Relocates so that centre is now Cir_CntX & Cir_CntY
-            temp_x = Cir_CntX +temp_x;
-            temp_y = Cir_CntY +temp_y;
+            Home_X = Cir_CntX +temp_x;
+            Home_Y = Cir_CntY +temp_y;
         
             // Calucalte a radom radius size for the HR
-            temp_size = HR_AverageRadius;
         }
         else if(DetectorLayOut==0){
             temp_r = Number1.AtoBUnif(RandomNumberStreamHRlocationT1[0], 0, HR_AverageRadius + DetectorRadius);
             temp_theta = Number1.AtoBUnif(RandomNumberStreamHRlocationT1[5], 0, 2*M_PI);
             //Tempory x and y locations
             //Using the r*sin(theta) and r*cos(theta) method gives x and y centred around (0,0)
-            temp_x = (Sq_MaxX/2) + temp_r*sin(temp_theta);
-            temp_y = (Sq_MaxY/2) + temp_r*cos(temp_theta);
-            temp_size = HR_AverageRadius;
+            Home_X = (Sq_MaxX/2) + temp_r*sin(temp_theta);
+            Home_Y = (Sq_MaxY/2) + temp_r*cos(temp_theta);
         }
         else if(DetectorLayOut==1){
-            // THIS NEEDS TO BE CHANGED
-            temp_r = Number1.AtoBUnif(RandomNumberStreamHRlocationT1[0], 0, HR_AverageRadius + DetectorRadius);
-            temp_theta = Number1.AtoBUnif(RandomNumberStreamHRlocationT1[5], 0, 2*M_PI);
-            //Tempory x and y locations
-            //Using the r*sin(theta) and r*cos(theta) method gives x and y centred around (0,0)
-            temp_x = (Sq_MaxX/2) + temp_r*sin(temp_theta);
-            temp_y = (Sq_MaxY/2) + temp_r*cos(temp_theta);
-            temp_size = HR_AverageRadius;
+
+            GridDetectors(RandomNumberStreamHRlocationT1[0]);
             
         };
     } //END IF HR_SolidBoundaries==1
     
-    
-    /////////////////////////////////
-    ///Allocations the x&y values ///
-    /////////////////////////////////
-    
-    //std::cout<<temp_x<<std::endl
-    // Assigns the temp values to the permanent values
-    Home_X = temp_x;
-    Home_Y = temp_y;
-    Home_Size = temp_size;
-    
+
     
 
 }; //END FUNCTION
+
+
+
+
+/*----------------------------------------------------------------------------------------
+ //
+ // Random home ranges when there is a grid of dectectors
+ //
+ //
+ //
+ ----------------------------------------------------------------------------------------*/
+
+void HomeRange::GridDetectors(double SEED){
+    
+    //Creates a random number object
+    RandNum Number1;
+    
+    // A new stream of random numbers
+    srand(SEED);
+    std::vector<double> RandomNumberStreamHRGridlocation(11);
+    for(int i=0; i<11; i++){
+        RandomNumberStreamHRGridlocation[i] =double(rand());
+    };
+    
+    // calculates the Home_X and home_Y
+    // between the minumum value that can be reached from a HR centre
+    // and the maximum values that can be reached from a HR centre
+    Home_X = Number1.AtoBUnif(RandomNumberStreamHRGridlocation[0], Xgridmin - HR_AverageRadius, MaxNoX*Xspace + HR_AverageRadius);
+    Home_Y = Number1.AtoBUnif(RandomNumberStreamHRGridlocation[10], Ygridmin - HR_AverageRadius, MaxNoY*Yspace + HR_AverageRadius);
+
+};

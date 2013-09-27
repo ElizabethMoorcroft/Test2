@@ -84,7 +84,7 @@ std::string make_directory( const std::string& directory){
 // - The boundary
 // - The movement type
 // - The animal denisty
-std::string SaveDirectory = make_directory("/Users/student/Documents/Bats/Simulations/Temporary");
+std::string SaveDirectory = make_directory("/Users/student/Documents/Bats/Simulations/Bats");
 
 /// END OF FILE NAMES
 
@@ -150,7 +150,7 @@ int main(){
             area = pow(HR_AverageRadius,2)*M_PI;
             NoAnimal = floor(DensityAnimals*area);
         };
-        
+    
          
     }// END OF IF HRBOUNDARIES
     
@@ -350,14 +350,6 @@ int main(){
         << "ProbChangeMoveState" << ","<< ProbChangeMoveState<< "\n"
     //Call parameters
         << "Call_halfwidth" << ","<< Call_halfwidth << "\n"
-    //For the attenuation of sound
-    /*
-        << "Temp" << ","<< Temp << "\n"
-        << "Hum"  << ","<< Hum<< "\n"
-        << "Freq" << ","<< Freq << "\n"
-        << "Amp"  << ","<< Amp<< "\n"
-        << "It"   << ","<< It << "\n"
-     */
     //Calculated values
         <<"DetectorRadius"<<","<<DetectorRadius<<"\n";
     //Closes file
@@ -416,19 +408,20 @@ int main(){
     // Saves it with a name which is a composite of Save Directory (craeted above), "HomeRange",
     //      the iteration number which is actually the starting seed.
     // Gives the file a header
-    /*
+    ///*
     std::ofstream HomeRangefile;
     HomeRangefile.open(make_filename(SaveDirectory, ",HomeRange",iterationnumber,".csv").c_str());
     HomeRangefile   <<"HomeRangeID" <<
                 "," << "XLocation" <<
                 "," << "YLocation" <<
+                "," << "Size" <<
                 "\n";
         
-    */
+    //*/
     //std::cout<<"HomeRange"<<std::endl;
     //Creates a vecter of pointers to Home ranges
     std::vector<HomeRange*> AllHR(NoHR);
-    
+    std::vector<std::vector<double>> CurrentHRLocation(NoHR);
     
     //List of random number for HRs
     //Uses RandomNumberStream as a seed for the stream
@@ -436,33 +429,39 @@ int main(){
     srand(RandomNumberStream[1]);
     std::vector<double> RandomNumberStreamHR(NoHR);
     for(int i=0; i<NoHR; i++){ RandomNumberStreamHR[i] = double (rand()); };
+        
+    srand(RandomNumberStream[6]);
+    std::vector<double> RandomNumberStreamHROverlap(NoHR);
+    for(int i=0; i<NoHR; i++){ RandomNumberStreamHROverlap[i] = double (rand()); };
     
     //std::cout<<"HR RandNum seeded"<<std::endl;
         
     // For when the max number of satrt location is 1
     std::vector<int> HomeRangeIDused(NoHR);
     for(int i=0; i<NoHR; i++){HomeRangeIDused[i]= NoHR+100;};
+    
+    // The number of male and female HR that have been allocated
+    double countmales =0;
+    //double NoMales=1;
         
     //Enters data for NoHR home ranges
     for(int i=0; i<NoHR; i++){
+        std::cout<< "HomeRange: " <<i <<"/"<<NoHR<<std::endl;
         AllHR[i] =new HomeRange(i //identifier; //The HR id number
                               , RandomNumberStreamHR[i] // Seed for random variables
                               , RadiusCameraCircle
                               );
-    
-        /*
-        HomeRangefile << AllHR[i]->getHomeID() << //1st column
-            "," << AllHR[i]->getHomeX() << //...
-            "," << AllHR[i]->getHomeY()  << //...
-            "\n";
-         */
+        
+
+        
+        
     }; // END OF FOR LOOP
     
-    /*
+    ///*
     // Closes the HomeRange CSV file
     HomeRangefile.close();
-     */
-    //std::cout<<"HR complete"<<std::endl;
+    // */
+    std::cout<<"HR complete"<<std::endl;
     
     ////////////////////////////////////////////////////////////////////////////////////////////
     ///                                     ANIMALS                                         ////
@@ -499,6 +498,11 @@ int main(){
     srand(RandomNumberStream[4]);
     std::vector<double> RandomNumberStreamAnimal3(NoAnimal);
     for(int i=0; i<NoAnimal; i++){RandomNumberStreamAnimal3[i]=double(rand());};
+        
+    // Random number stream seed for the seed for sex of the animal
+    // srand(RandomNumberStream[5]);
+    //std::vector<double> RandomNumberStreamAnimal4(NoAnimal);
+    //for(int i=0; i<NoAnimal; i++){RandomNumberStreamAnimal4[i]=double(rand());};
         
     //std::cout<<"Random numbers"<<std::endl;
     
@@ -730,12 +734,17 @@ int main(){
         // If the detector layout is a grid, then every detector needs to be checked at every time step.
         // This invloves an extra loop.
         else if( DetectorLayOut == 1){
-            //std::cout<<"Inside loop1 "<<Individual<<" "<<NoCT<<" "<< All_CT[NoCT]->getStepOn()<<std::endl;
+            
             // The camera only start after the the "Run in period"
             // Then they are only on at the corresponding the time step
             // Camera 0 is only on at NoRunIn, Camera 1 is only on at NoRunIn+1,....
             // The one is added on becuase start counting the number of steps at 0
             for(int time =0; time<NoSteps; time++ ){
+                //std::cout<<"Inside loop. Animal: "<< Individual<<
+                //        "Camera: "<<NoCT<<
+                //         "Step on: "<< All_CT[NoCT]->getStepOn()
+                //          <<std::endl;
+                
                 TimeStepTrap= time+1;
                 if(TempAllLocations[TimeStepTrap].size()>0){
                     previousx = TempAllLocations[TimeStepTrap-1][2];
@@ -743,7 +752,7 @@ int main(){
                     currentx = TempAllLocations[TimeStepTrap][2];
                     currenty = TempAllLocations[TimeStepTrap][3];
                     currentangle = TempAllLocations[TimeStepTrap][4];
-                    
+                    //std::cout<< "currentangle: " << All_CT[NoCT]->getHalfAngle() <<std::endl;
                     
                     
                     // Calcualtes whether the animal is captured
