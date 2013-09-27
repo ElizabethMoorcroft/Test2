@@ -21,6 +21,8 @@ class Animal {
     int step_number;
     //int Movement_type;
     
+    int male;
+    
     int Move_NonCorr;
     double Move_speed;
     double Move_maxangle;
