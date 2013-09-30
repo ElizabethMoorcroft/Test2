@@ -44,10 +44,7 @@ private:
     
 public:
     CameraTrap();
-    CameraTrap( int //ID No (Also time step)
-                ,double
-                ,double
-               ,double);
+    CameraTrap(int);
     std::vector<std::vector<double>> getCaptures(){return Captures;};
     
     void resetCaptures();

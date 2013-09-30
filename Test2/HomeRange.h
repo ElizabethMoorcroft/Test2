@@ -30,7 +30,6 @@ public:
     
     HomeRange();
     HomeRange(int //identifier; //The HR id number
-              , double
               , double);
     
     double getSex(){return sex;};

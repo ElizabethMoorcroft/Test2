@@ -16,37 +16,24 @@
 
 CameraTrap::CameraTrap(){};
 CameraTrap::CameraTrap(int a//CT_identifier;
-                       ,double d//radius;
-                       ,double RadiusCameraCircle
-                       ,double AngleBetweenCameras
-                       //,std::vector<std::vector<int>> //::Captures()
                        ){
     
     // Renames variables
     time1=0;
-    //std::cout<<DetectorLayOut<<std::endl;
     
-    //////////////////////////
-    /// Location of camera ///
-    //////////////////////////
-    if(DetectorLayOut ==0){ //Single sationary detector
-        location_x = (Sq_MaxX-Sq_MinX)/2;
-        location_y = (Sq_MaxY-Sq_MinY)/2;
-        angle = 0;
-        angle_HalfWidth = CameraWidth;
-        CT_StepOn = a + NoRunIn;
-    } //End OF Single sationary detector
-    //  Cameras in a Grid formation
-    else if(DetectorLayOut ==1){
-        double temp =floor((a+1)/MaxNoX);
-        location_x = (((a+1)/MaxNoX)-temp)*MaxNoX*Xspace + Xgridmin;
-        location_y = temp*Yspace + Ygridmin;
+    /*----------------------------------------------
+    // Location of camera
+    ------------------------------------------------*/
+    
+
+    double temp =floor((a+1)/MaxNoX);
+    location_x = (((a+1)/MaxNoX)-temp)*MaxNoX*Xspace + Xgridmin;
+    location_y = temp*Yspace + Ygridmin;
         
-        angle_HalfWidth = CameraWidth;
-        angle = 0;// If the turn may wish to change camera angles to random directions
-        //angle = RangeAngle(angle); // For use  when angle changes
-        CT_StepOn = 0 + NoRunIn; // The cameras are on at all steps!!
-    };
+    angle_HalfWidth = CameraWidth;
+    angle = 0;// If the turn may wish to change camera angles to random directions
+    //angle = RangeAngle(angle); // For use  when angle changes
+    CT_StepOn = 0 + NoRunIn; // The cameras are on at all steps!!
     
     
     
@@ -78,7 +65,7 @@ CameraTrap::CameraTrap(int a//CT_identifier;
     
     //Assigning varaibles
     CT_identifier = a;
-    radius =d;
+    radius = DetectorRadius;
     angle_HalfWidth = CameraWidth;
     Captures.resize(round(DensityAnimals*((Sq_MaxX-Sq_MinX)*(Sq_MaxY-Sq_MinY)))*3);
     capturecount=0;

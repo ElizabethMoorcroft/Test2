@@ -33,7 +33,7 @@
  --------------------------------------------------------------------------------------------------------*/
 Animal::Animal( ){};
 
-Animal::Animal( int a, int b,  
+Animal::Animal( int a, int b,
                double i, double j, double k,
                 double t, double u
                ) {
