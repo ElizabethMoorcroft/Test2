@@ -44,10 +44,7 @@ private:
     
 public:
     CameraTrap();
-    CameraTrap( int //ID No (Also time step)
-                ,double
-                ,double
-               ,double);
+    CameraTrap(int);
     std::vector<std::vector<double>> getCaptures(){return Captures;};
     
     void resetCaptures();
@@ -103,7 +100,9 @@ public:
                         ,double //location_x_animal
                         ,double //location_y_animal
                         ,double //time
-                        ,int call
+                        ,int //call
+                        ,double // CamToBat
+                        ,double // BatToCam
                         );
     int CapturesIndividual(double  //x location animal
                             ,double //y location animal
