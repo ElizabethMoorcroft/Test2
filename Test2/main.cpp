@@ -418,7 +418,8 @@ int main(){
             //Sets seed for a random number
             //Random number stream for the movemnet of the animal
             srand(RandomNumberStreamAnimalMove[i]);
-            std::vector<double> RandomNumberCurrentAnimal(NoSteps*100);
+            std::vector<double> RandomNumberCurrentAnimal(NoSteps*100+1);
+            for(int i=0; i<NoSteps*100+1; i++){ RandomNumberCurrentAnimal[i]=double(rand()); };
             
             // For each step, Updates animal location
             double stepcount;
@@ -574,6 +575,8 @@ int main(){
     
     // Destructors For Camera Traps
     for(int i=0; i<NoCameraTraps; i++){delete All_CT[i];}
+    
+    std::cout<<"Finished" <<std::endl;
     
     // Return is null
     return 0;
