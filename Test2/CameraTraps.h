@@ -103,6 +103,7 @@ public:
                         ,int //call
                         ,double // CamToBat
                         ,double // BatToCam
+                        , double // DistToCam
                         );
     int CapturesIndividual(double  //x location animal
                             ,double //y location animal
