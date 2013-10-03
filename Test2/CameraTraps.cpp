@@ -195,7 +195,7 @@ double CameraTrap::GradientFromAngle(double angle){
 /*-------------------------------------------------
  // Updates captures vectors with new captures
 -------------------------------------------------*/
-void CameraTrap::UpdateCaptures(double Individual_ID,double itnumber,double location_x_animal,double location_y_animal,double time, int call, double CamToBat, double BatToCam){
+void CameraTrap::UpdateCaptures(double Individual_ID,double itnumber,double location_x_animal,double location_y_animal,double time, int call, double CamToBat, double BatToCam , double DistToCam){
     
     /*---------------------------------------------------------------------------------------------------------
      // Check for specific case of interest
@@ -214,6 +214,7 @@ void CameraTrap::UpdateCaptures(double Individual_ID,double itnumber,double loca
     myvector[7] = call;
     myvector[8] = CamToBat;
     myvector[9] = BatToCam;
+    myvector[10] = DistToCam;
     Captures[capturecount]=myvector;
     capturecount+=1;
 };
@@ -773,7 +774,7 @@ int CameraTrap::CapturesIndividual(double location_x_animal,
     
     // If on the exact same spot as the camera assume it will be captured
     if(approximatelyequal(location_x_animal,location_x) && approximatelyequal(location_y_animal,location_y)){
-        UpdateCaptures(Individual_ID,itnumber,location_x_animal,location_y_animal,time,call,0,0);
+        UpdateCaptures(Individual_ID,itnumber,location_x_animal,location_y_animal,time,call,0,0,0);
         captured = 1;
     }
     
@@ -810,7 +811,7 @@ int CameraTrap::CapturesIndividual(double location_x_animal,
             if(CameraWidth == M_PI){
                 double AngleFromBatCentre = RangeAngle(AngleFromCamera+M_PI);
                 if(AngleFromBatCentre>M_PI){AngleFromBatCentre-=2*M_PI;};
-                UpdateCaptures(Individual_ID,itnumber,location_x_animal,location_y_animal,time,call,AngleFromCameraCentre,AngleFromBatCentre);
+                UpdateCaptures(Individual_ID,itnumber,location_x_animal,location_y_animal,time,call,AngleFromCameraCentre,AngleFromBatCentre,diff_animal_camera);
             }
             /*---------------------------------------------------------------------------------------------------------
              // Check for specific case of interest
@@ -867,7 +868,7 @@ int CameraTrap::CapturesIndividual(double location_x_animal,
                     if(Individual_ID== 11 && CT_StepOn>174 && CT_StepOn<176){std::cout<<"Captured with a 360 call"<<std::endl;};
                      //----------------------------------------------------------------------------------------------------------*/
                     // Call the update captures function and let captured ==1.
-                    UpdateCaptures(Individual_ID,itnumber,location_x_animal,location_y_animal,time,call,AngleFromCameraCentre, AngleFromBatCentre);
+                    UpdateCaptures(Individual_ID,itnumber,location_x_animal,location_y_animal,time,call,AngleFromCameraCentre, AngleFromBatCentre,diff_animal_camera);
                     captured = 1;
                 }
                 
@@ -910,7 +911,7 @@ int CameraTrap::CapturesIndividual(double location_x_animal,
                         //----------------------------------------------------------------------------------------------------------*/
                         
                         // If it's in the possible angle then record in vector
-                        UpdateCaptures(Individual_ID,itnumber,location_x_animal,location_y_animal,time,call,AngleFromCameraCentre, AngleFromBatCentre);
+                        UpdateCaptures(Individual_ID,itnumber,location_x_animal,location_y_animal,time,call,AngleFromCameraCentre, AngleFromBatCentre,diff_animal_camera);
                         captured = 1;           
                     };//End of IF  - "detector in the width of the call"
                 }; // End of ELSE  - "Not a 360 call"
