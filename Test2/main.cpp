@@ -111,6 +111,7 @@ int main(){
         "," << "Call" <<
         "," << "Angle from centre of camera to bat" <<
         "," << "Angle from bat to camera" <<
+        "," << "Distance from animal to camera" <<
         "\n";
     
     //Creates file for Movement (CSV file) and writes in the header
@@ -582,5 +583,5 @@ int main(){
     return 0;
 }; 
 /*------------------------------------------------------
-///        !!!   END OF CODE   !!!!   
+//                 !!!   END OF CODE   !!!!   
 ---------------------------------------------------------*/
