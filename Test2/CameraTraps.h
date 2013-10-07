@@ -36,9 +36,7 @@ private:
     double c_detector2;
     int vh_det1; // If the line describing detctor1 is vertical =1; horozonatl =2; else=0
     int vh_det2; // If the line describing detctor1 is vertical =1; horozonatl =2; else=0
-    
-    clock_t time1;
-    
+        
     std::vector<std::vector<double>> Captures;
     std::vector<double> myvector;
     
@@ -73,7 +71,6 @@ public:
     double getYloc(){return location_y;};
     double getAngle(){return angle;};
     double getHalfAngle(){return angle_HalfWidth;};
-    clock_t gettime(){return time1;};
     
     // Range of angle between 0 and 2pi
     double RangeAngle(double);
@@ -82,63 +79,26 @@ public:
     
     bool approximatelyequal(double, double);
     
-    std::vector <long double> AngleAndCircInteraction(double, double, double, double, double);
-    std::vector <long double> VertAndCircInteraction(double, double, double, double);
-    std::vector <long double> HorzAndCircInteraction(double, double, double, double);
-    std::vector <long double> AngleAndAngleInteraction(double, double, double, double);
+    std::vector <double> AngleAndCircInteraction(double, double, double, double, double);
+    std::vector <double> VertAndCircInteraction(double, double, double, double);
+    std::vector <double> HorzAndCircInteraction(double, double, double, double);
+    std::vector <double> AngleAndAngleInteraction(double, double, double, double);
     double HorzAndAngleInteraction(double, double, double);
     double VertAndAngleInteraction(double, double, double);
 
     
     
     std::vector <double> TimeAndAngleCal(double, double, double, double, double);
-    
     double GradientFromAngle(double);
+    void UpdateCaptures(double,double,double,double,double,int,double,double, double);
+    int CapturesIndividual(double, double, int, double, double, int ,double ,int);
     
-    void UpdateCaptures(double //Individual_ID
-                        ,double //itnumber
-                        ,double //location_x_animal
-                        ,double //location_y_animal
-                        ,double //time
-                        ,int //call
-                        ,double // CamToBat
-                        ,double // BatToCam
-                        , double // DistToCam
-                        );
-    int CapturesIndividual(double  //x location animal
-                            ,double //y location animal
-                            ,int // Animal ID
-                            ,double //Call angle
-                            , double//Movement angle
-                           , int //iternation number
-                           ,double //time
-                           ,int // call
-                       );
-    
-    int CapturesIntersection(double  //x location animal
-                             , double //y location animal
-                             , double,double //previous x/y
-                             , int // Animal ID
-                             , double //Call angle
-                             , double//Movement angle
-                             , int //iternation number
-                          );
+    int CapturesIntersection(double, double, double, double, int, double, double, int);
     
     int CameraAndMovement(double, double, double, double,  int,  double,   double,
                         int, double, double, double, double, double, int, double);
-    
-    int CameraCircAndMovement(double, //location_x_animal,
-                            double, //location_y_animal,
-                            double, // previous_x_animal,
-                            double, // previous_y_animal,
-                            int, // Individual_ID,
-                            double, // call_halfwidth,
-                            double, // move_angle,
-                            int, // itnumber,
-                            double, // m_animal,
-                            double, // c_animal,
-                            double // disttotal
-                            );
+    int CameraCircAndMovement(double, double, double, double, int, double, double,
+                            int, double, double, double );
     
     
     /* ---------------------------------------- */

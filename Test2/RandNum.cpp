@@ -14,10 +14,10 @@
 
 //Calcaulte a random variable that is normally distribtued
 //But if the value is negative them it recalculates it until +ve
-long double RandNum::PositiveNormal (double seed,double Mean,double SD){
+double RandNum::PositiveNormal (double seed,double Mean,double SD){
     
     
-    long double RV_1;
+    double RV_1;
     
     srand(seed);
     std::vector<double> RandomNumberStreamTemp;
@@ -43,8 +43,8 @@ long double RandNum::PositiveNormal (double seed,double Mean,double SD){
         // Y =sqrt(R)*cos(Theta)
         
         //Two varaibels from random uniform dist
-        long double v1 = ((long double) rand()/RAND_MAX);
-        long double v2 = ((long double) rand()/RAND_MAX);
+        double v1 = ((double) rand()/RAND_MAX);
+        double v2 = ((double) rand()/RAND_MAX);
         
         //Generate Expoential(1/2) and Uniform(0,2pi) from v1&v2
         v1 = -2*log(v1);
@@ -75,7 +75,7 @@ long double RandNum::PositiveNormal (double seed,double Mean,double SD){
 //a is the seed value
 //b is the current angle
 //c is the +/- range
-long double RandNum::AtoRangeBUnif (double a,double b,double c){
+double RandNum::AtoRangeBUnif (double a,double b,double c){
     
     double Seed= a;
     
@@ -83,7 +83,7 @@ long double RandNum::AtoRangeBUnif (double a,double b,double c){
     srand(Seed);
     
     // Uniform 0 - 1 random number
-    long double v1 = ((long double) rand()/RAND_MAX);
+    double v1 = ((long double) rand()/RAND_MAX);
     
     // Uniform -1 - 1 random number
     v1 = (v1-0.5)*2;
@@ -105,18 +105,13 @@ long double RandNum::AtoRangeBUnif (double a,double b,double c){
 //a is the seed value
 //b is the Min value
 //c is the Max value
-long double RandNum::AtoBUnif (double a,double b,double c){
-    
-    //Rename variables
-    double Seed= a;
-    double Min= b;
-    double Max= c;
+double RandNum::AtoBUnif (double Seed,double Min,double Max){
     
     //Sets seed for a random number
     srand(Seed);
     
     // Uniform 0 - 1 random number
-    long double v1 = ((long double) rand()/RAND_MAX);
+    double v1 = ((double) rand()/RAND_MAX);
     
     double range = Max - Min;
     

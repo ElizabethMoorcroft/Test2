@@ -20,30 +20,22 @@ class HomeRange{
     
     int sex;
     
-    int recal;
-    
-
-    
     //std::vector<double> HRvalues; // Size of HR & Location of Home Range X&Y
 
 public:
     
     HomeRange();
-    HomeRange(int //identifier; //The HR id number
-              , double);
+    HomeRange(int, double); //identifier, seed
     
     double getSex(){return sex;};
-    
     double getHomeSize(){return Home_Size;};
     double getHomeX(){return Home_X;};
     double getHomeY(){return Home_Y;};
     double getHomeID(){return identifier;};
     
     void CheckForOverlap(std::vector<std::vector<double>>, double);
-    
-    void GridDetectors(double);
+    void GridDetectors(double, double);
     void RecalGridDetectors(double);
-
     
 };
 
