@@ -45,8 +45,7 @@ std::string make_directory( const std::string& directory){
     double denistyCal = DensityAnimals*pow(10,6);
     int maxseed = NoOfIterations+Seed;
     std::ostringstream result;
-    result  << directory
-            << ",Boundary="     << boundary
+    result  << directory << boundary
             << ",Density="      << denistyCal
             << ",Speed="        << AnimalSpeed
             << ",Iterations="   << Seed << "-" << maxseed
@@ -61,7 +60,7 @@ std::string make_directory( const std::string& directory){
 };
 
 // Base name each file
-std::string SaveDirectory = make_directory("/Users/student/Documents/Bats/Simulations/Bats");
+std::string SaveDirectory = make_directory("/Users/student/Documents/Bats/Simulations/Test");
 
 /// END OF FILE NAMES
 
@@ -73,6 +72,7 @@ std::string SaveDirectory = make_directory("/Users/student/Documents/Bats/Simula
 
 int main(){
     
+    clock_t t = clock();
     //Calculates some values before the before the iteration of loop starts
     int NoCameraTraps = MaxNoX * MaxNoY;    
     double area = (Sq_MaxX-Sq_MinX)*(Sq_MaxY-Sq_MinY);
@@ -578,6 +578,8 @@ int main(){
     for(int i=0; i<NoCameraTraps; i++){delete All_CT[i];}
     
     std::cout<<"Finished" <<std::endl;
+    t = clock()- t;
+    std::cout<<t/CLOCKS_PER_SEC <<std::endl;
     
     // Return is null
     return 0;

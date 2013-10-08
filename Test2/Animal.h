@@ -19,7 +19,6 @@ class Animal {
     int identifier;
     int HomeRange_id;
     int step_number;
-    //int Movement_type;
     
     int male;
     
@@ -37,18 +36,11 @@ class Animal {
     double NextAngle;
     double NextDist;
 
-    int SolidHomeRangeBoundary;  // HR = 1=Y or 0=N
     double Home_x;
     double Home_y;
     double Home_r;
     
-    //double Call_amp;
-    //double Call_freq;
     double Call_width;
-    
-    clock_t timeLE1;
-     clock_t timeLE2;
-    clock_t timeLE3;
     
     int locationvectorcount;
     
@@ -63,10 +55,7 @@ public:
              double, double);
     void Set_MoveValue (double,double);
     void Set_HRValues (int, int, double, double, double );
-    //void NewLocationMT0(double);
-    //void NewLocationCorr(double, double);
-    //void NewLocationMT2(double, double);
-    //void NewLocationUnCorr(double, double);
+
     
     double RangeAngle(double);
     
@@ -90,9 +79,6 @@ public:
     double CalNext_Y(double);
     
     double getCallWidth(){return Call_width;};
-    double gettime1(){return timeLE1;};
-    double gettime2(){return timeLE2;};
-    double gettime3(){return timeLE3;};
     std::vector<std::vector<double>> getAllLocations(){return All_locations;};
     std::vector<std::vector<double>> getEndStepLocations(){return EndStep_locations;};
     

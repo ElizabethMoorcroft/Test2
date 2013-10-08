@@ -56,7 +56,6 @@ Animal::Animal( int a, int b,
     Call_width = Call_halfwidth;
     
     // Variables to do with HR
-    SolidHomeRangeBoundary = HR_SolidBoundaries  ;  // HR = 1=Y or 0=N
     Home_x = t;
     Home_y = u;
     Home_r = HR_AverageRadius ;
@@ -172,7 +171,7 @@ void Animal::UpdateLocation (double seed){ // a is the number of seconds per ste
     };
     
     // HR bounding movement 
-    if(SolidHomeRangeBoundary==1){
+    if(HR_SolidBoundaries==1){
         NewLocation(RandomNumberUpdateMovement[0], RandomNumberUpdateMovement[500]);
         double DistToHR = DistToHRCentre();
         int count=1;
@@ -203,7 +202,7 @@ void Animal::UpdateLocation (double seed){ // a is the number of seconds per ste
         
         
     } //End of solid boundaries
-    else if(SolidHomeRangeBoundary==0){/// HR NOT bounding movement
+    else if(HR_SolidBoundaries==0){/// HR NOT bounding movement
         
         //std::cout<<"NoSolid"<<std::endl;
         

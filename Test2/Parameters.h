@@ -29,7 +29,7 @@ const int SaveCamera = 1; // Saves the camera locations (constant throughout all
 //Simulation values - #Animals, #Steps, #HR, #CT
 const double DensityAnimals = 1*pow(10,-6); // XX*10^-6 Density/m^2  => XX Density/KM^2
 const double AverageSizeHR = 1; //Average number of animals per roost/HR
-const int NoOfIterations = 10; // No of iterations with the settings
+const int NoOfIterations = 1; // No of iterations with the settings
 
 // Time
 const int NoRunIn = 0; // Number of steps before cameras are "activated"
