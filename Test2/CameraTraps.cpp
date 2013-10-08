@@ -360,7 +360,7 @@ std::vector <double> CameraTrap::TimeAndAngleCal(double Y, double X, double prev
     double distedge = DistTwoPoints(X,previous_x_animal,Y,previous_y_animal);
     double time = distedge/disttotal;
     //Find the angle 
-    double AngleBatCap = AngleTwoPoints(X,previous_x_animal,Y,previous_y_animal);
+    double AngleBatCap = AngleTwoPoints(previous_x_animal,X,previous_y_animal,Y);
     
     if((approximatelyequal(Y,previous_y_animal) && approximatelyequal(X,previous_x_animal))
        ||approximatelyequal(AngleBatCap,2*M_PI)){AngleBatCap=0;};
