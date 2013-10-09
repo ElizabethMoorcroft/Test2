@@ -34,14 +34,11 @@ class Animal {
     double NextY;
     double NextAngle;
     double NextDist;
-    
-    double Call_width;
-    
+        
     int locationvectorcount;
     
     std::vector<double> mylocationvector;
     std::vector<std::vector<double>> All_locations;
-    std::vector<std::vector<double>> EndStep_locations;
 
 public:
     Animal();
@@ -51,7 +48,6 @@ public:
     double getCurrentX(){return  Current_x;};
     double getCurrentY(){return  Current_y;};
     double getID(){return identifier;};
-    double getCallWidth(){return Call_width;};
     
     std::vector<std::vector<double>> getAllLocations(){return All_locations;};
     

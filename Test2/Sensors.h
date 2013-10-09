@@ -1,5 +1,5 @@
 //
-//  CameraTraps.h
+//  Sensor.h
 //  Test2
 //
 //  Created by Elizabeth Moorcroft on 28/03/2013.
@@ -11,10 +11,10 @@
 #include <math.h>
 #include <time.h>
 #include <vector>
-#ifndef Test2_CameraTraps_h
-#define Test2_CameraTraps_h
+#ifndef Test2_Sensors_h
+#define Test2_Sensors_h
 
-class CameraTrap {
+class Sensor {
     
 private:
     int CT_identifier;
@@ -41,8 +41,8 @@ private:
     std::vector<double> myvector;
     
 public:
-    CameraTrap();
-    CameraTrap(int);
+    Sensor();
+    Sensor(int, double, double);
     std::vector<std::vector<double>> getCaptures(){return Captures;};
     
     void resetCaptures();
@@ -59,6 +59,7 @@ public:
     void setC_detector2(double a){c_detector2 = a;};
     void setVH_det1(int a){vh_det1 = a;}; // If the line describing detctor1 is vertical =1; horozonatl =2; else=0
     void setVH_det2(int a){vh_det2 = a;};
+    void setStepOn(int a){CT_StepOn = a;};
     // Functions to alter StepOn
     void Add1StepOn();
     void ResetStepOn();
@@ -71,6 +72,8 @@ public:
     double getYloc(){return location_y;};
     double getAngle(){return angle;};
     double getHalfAngle(){return angle_HalfWidth;};
+    double getRadius(){return radius;};
+
     
     // Range of angle between 0 and 2pi
     double RangeAngle(double);
@@ -79,8 +82,8 @@ public:
     
     bool approximatelyequal(double, double);
     
-    std::vector <double> AngleAndCircInteraction(double, double, double, double, double);
-    std::vector <double> VertAndCircInteraction(double, double, double, double);
+    std::vector <double> AngleAndCircInteraction(double, double);
+    std::vector <double> VertAndCircInteraction(double);
     std::vector <double> HorzAndCircInteraction(double, double, double, double);
     std::vector <double> AngleAndAngleInteraction(double, double, double, double);
     double HorzAndAngleInteraction(double, double, double);

@@ -24,6 +24,7 @@
 #include "Animal.h"
 #include "RandNum.h"
 #include "Parameters.h"
+#include "Sensors.h"
 
 
 /*--------------------------------------------------------------------------------------------------------
@@ -47,9 +48,6 @@ Animal::Animal(int a, double i, double j, double k) {
     // When initialising the step number and the current distance travelled will always be set to zero
     step_number = 0;
     Total_distance = 0;
-    
-    // Variables to do with calls, in case become RV later in the code
-    Call_width = Call_halfwidth;
     
     //Set up like this so in the future can be initalized as RV??
     Move_maxangle = CorrWalkMaxAngleChange;
@@ -127,7 +125,7 @@ double Animal::RangeAngle(double angle){
  // The cover that governs the updating of the 
  // movement of a given animal
  ----------------------------------------------*/
-void Animal::UpdateLocation (double seed){ // a is the number of seconds per step, b is the random seed
+void  Animal::UpdateLocation (double seed){ // a is the number of seconds per step, b is the random seed
     
     //std::cout <<"Inside Update locations"<< std::endl;
     
@@ -143,7 +141,7 @@ void Animal::UpdateLocation (double seed){ // a is the number of seconds per ste
         
     int tempcounter = 0;
     while(tempcounter<1){
-            
+                
         //std::cout<< "ENTERED WHILE" << std::endl;
         // If the movement finishes inside the environment
         if(NextX < Sq_MaxX && NextX > Sq_MinX && NextY < Sq_MaxY && NextY > Sq_MinY){
@@ -197,7 +195,7 @@ void Animal::UpdateLocation (double seed){ // a is the number of seconds per ste
     
     //Increases step number by one once the animal finishes moving in the environment
     step_number =step_number+1;
-        
+    
 };//End of update location
 
 
@@ -254,8 +252,6 @@ void Animal::LeaveEnterWorld(double YBoundExit, double XBoundExit, double YBound
         //This means that it exits the world at maximum value of y and at the corresponding x value
         tempExitsY = YBoundExit;
         tempExitsX = CalNext_X(tempDistToTopBoundary);
-        
-     
         
         //New starting position and angle
         Current_y = YBoundEnter;

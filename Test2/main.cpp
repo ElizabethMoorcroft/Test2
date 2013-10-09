@@ -17,7 +17,7 @@
 //Header files
 #include "Animal.h"
 #include "RandNum.h"
-#include "CameraTraps.h"
+#include "Sensors.h"
 #include "Parameters.h"
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -49,16 +49,16 @@ std::string make_directory( const std::string& directory){
             << ",Speed="        << AnimalSpeed
             << ",Iterations="   << Seed << "-" << maxseed
             << ",StepLength="   << StepLength
-            << ",DetectorRadius=" << DetectorRadius
-            << ",CallHalfwidth=" << Call_halfwidth
-            << ",CameraHalfwidth=" << CameraWidth
+         //   << ",DetectorRadius=" << DetectorRadius
+         //   << ",CallHalfwidth=" << Call_halfwidth
+         //   << ",CameraHalfwidth=" << CameraWidth
             << ",CorrWalkMaxAngleChange=" <<CorrWalkMaxAngleChange
         ;
     return result.str();
 };
 
 // Base name each file
-std::string SaveDirectory = make_directory("/Users/student/Documents/Bats/Simulations/Bats");
+std::string SaveDirectory = make_directory("/Users/student/Documents/Bats/Simulations/Test");
 
 /// END OF FILE NAMES
 
@@ -76,7 +76,8 @@ int main(){
     //Calculates some values before the before the iteration of loop starts
     double area = (Sq_MaxX-Sq_MinX)*(Sq_MaxY-Sq_MinY);
     int NoAnimal = floor(DensityAnimals*area);
-         
+    int NoSensors = LengthSW*LengthSR;
+    
     /*-------------------------------------------------------
      // Creates files for saving - Including headings
      --------------------------------------------------------*/
@@ -89,7 +90,7 @@ int main(){
             "," << "Y location" <<
             "," << "CentreAngle" <<
             "," << "HalfWidthAngle" <<
-            "," << "Camera Speed" <<
+            "," << "Radius" <<
             "\n";
         ;
     } else {Cameras << "Not saved";}
@@ -105,8 +106,8 @@ int main(){
         "," << "Ylocation" <<
         "," << "Percentage time within step" <<
         "," << "Call" <<
-        "," << "Angle from centre of camera to bat" <<
-        "," << "Angle from bat to camera" <<
+        "," << "Angle from centre of camera to animal" <<
+        "," << "Angle from animal to camera" <<
         "," << "Distance from animal to camera" <<
         "\n";
     
@@ -143,12 +144,13 @@ int main(){
              << "Sq_MaxX" << ","<<  Sq_MaxX << "\n"
              << "Sq_MinY" << ","<<  Sq_MinY << "\n"
              << "Sq_MaxY" << ","<<  Sq_MaxY << "\n"
-             << "CameraWidth" << "," << CameraWidth<< "\n"
+       //      << "CameraWidth" << "," << CameraWidth<< "\n"
              << "StepLength" << ","<< StepLength << "\n"
              << "CorrWalkMaxAngleChange" << ","<<   CorrWalkMaxAngleChange<< "\n"
              << "AnimalSpeed" << ","<< AnimalSpeed<< "\n"
-             << "Call_halfwidth" << ","<< Call_halfwidth << "\n"
-             << "DetectorRadius"<<","<<DetectorRadius<<"\n";
+         //    << "Call_halfwidth" << ","<< Call_halfwidth << "\n"
+          //   << "DetectorRadius"<<","<<DetectorRadius<<"\n"
+            ;
     //Closes file
     Settings.close();
     
@@ -172,10 +174,11 @@ int main(){
     
     //Test on the camera trap
     ///////////THIS NEEDS UPDATING!!!!
+    /*
     int test=0;
     if(test==1){
-        CameraTrap CT1;
-        CT1 = CameraTrap(1); // ID
+        Sensor CT1;
+        CT1 = Sensor(1); // ID
         CT1.TestCI();
         CT1.TestVertAndAngleInteraction();
         CT1.TestHorzAndAngleInteraction();
@@ -187,7 +190,7 @@ int main(){
         CT1.TestGradientFromAngle();
         CT1.TestCapturesIntersection();
     };
-    
+    */
     ///////////////////////////////////////////////////////////////////////////////////////
     //                          CALCULATES LOCATION OF CAMERA TRAPS                     ///
     //                                                                                  ///
@@ -196,23 +199,36 @@ int main(){
     // Saves the locations in a CSV file                                                ///
     ///////////////////////////////////////////////////////////////////////////////////////
     //Creates a list of pointers to the CTs
-    CameraTrap CT(0);
-    if(SaveCamera==1){
-        //Saves the locations and the angle of the camera
-        Cameras << CT.getID() << //1st column
-            "," << CT.getXloc() << //2nd column
-            "," << CT.getYloc() << //...
-            "," << CT.getAngle() << //...
-            "," << CT.getHalfAngle() << //4th column
-            "\n";
+    
+    std::vector<Sensor*> AllSensors(NoSensors);
+    
+    int sensorcount(0);
+    for(int sensor1 =0; sensor1<LengthSW; sensor1 ++){
+        for(int sensor=0; sensor<LengthSR; sensor++){
+            
+            AllSensors[sensorcount] =new Sensor(sensorcount,SensorWidth[sensor1],SensorRadius[sensor]);
+    
+    
+            if(SaveCamera==1){
+                //Saves the locations and the angle of the camera
+                Cameras << AllSensors[sensorcount] -> getID() << //1st column
+                    "," << AllSensors[sensorcount] -> getXloc() << //2nd column
+                    "," << AllSensors[sensorcount] -> getYloc() << //...
+                    "," << AllSensors[sensorcount] -> getAngle() << //...
+                    "," << AllSensors[sensorcount] -> getHalfAngle() << //4th column
+                    "," << AllSensors[sensorcount] -> getRadius() << //4th column
+                    "\n";
+                sensorcount +=1;
+            };
+        };
     };
     //Closes the csv camera file
     Cameras.close();
     
     // This should not be here - once I know how to test properly then can get ride of this
     //std::cout<<"Finish Camera traps"<<std::endl;
-    if(test==0)
-    {
+    //if(test==0)
+    //{
         
     /*------------------------------------------------------------------------------------------------
     //                                      Iteration Loop
@@ -241,7 +257,6 @@ int main(){
         srand(iterationnumber);
         std::vector<double> RandomNumberStream(101);
         for(int i=0; i<101; i++){RandomNumberStream[i] = double (rand());};
-
      
         /*------------------------------------------------------  
         //              Creation of animals and movement
@@ -258,7 +273,7 @@ int main(){
         //  - Creates CSV documents with save animal parameters
         //  - Creates CSV documents with save animal movements
         //  - Allocates start location, simulates movement                                     
-        ---------------------------------------------------------*/    
+        ---------------------------------------------------------*/ 
         //Creates a vecter of pointers to individuals
         std::vector<Animal*> AllAnimals(NoAnimal);
     
@@ -289,7 +304,7 @@ int main(){
          ---------------------------------------------------------*/
         for(int i=0; i<NoAnimal; i++){
             //Print out animal number to screen
-            //std::cout <<"Animal:" << i+1 <<"/" << NoAnimal << std::endl;
+            std::cout <<"Animal:" << i+1 <<"/" << NoAnimal << std::endl;
             RandNum RandomNumber1;
             srand(RandomNumberStreamAnimalStart[i]);
             std::vector<double> RandomNumberStreamAnimalStartLoc(151);
@@ -307,28 +322,35 @@ int main(){
 
             /*------------------------------------------------------ 
             // Update location
-            ---------------------------------------------------------*/ 
+            ---------------------------------------------------------*/
             //Sets seed for a random number
             //Random number stream for the movemnet of the animal
             srand(RandomNumberStreamAnimalMove[i]);
-            std::vector<double> RandomNumberCurrentAnimal(NoSteps*100);
-            
+            std::vector<double> RandomNumberCurrentAnimal(NoSteps*101);
+            for(int i=0; i<NoSteps*101; i++){RandomNumberCurrentAnimal[i]=double(rand());};
+
             // For each step, Updates animal location
             double stepcount;
             for(int j=0; j<NoSteps; j++){
                 stepcount = j*100;
-                AllAnimals[i] -> UpdateLocation(RandomNumberCurrentAnimal[stepcount]);
+                 AllAnimals[i] -> UpdateLocation(RandomNumberCurrentAnimal[stepcount]);
             }; //End of j loop for Steps
             
-            // If the movement is to be saved in the csv file then entre this loop
-            if(SaveMovement==1){
-                //std::cout <<"Update all locations"<< std::endl;
-                // Creates a temp matrix for "all locations"
-                std::vector<std::vector<double>> TempAllLocations = AllAnimals[i]->getAllLocations();
-                // Temp location file is written in csv file
-                // Each location is a seperate row  - the number of rows = "TempAllLocations.size()"
-                for(int stepcounter=0; stepcounter<TempAllLocations.size(); stepcounter++){
-                    if(TempAllLocations[stepcounter].size()>0){
+            // Variables for calculating captures
+            double previousx; double previousy;
+            double currentx; double currenty; double currentangle;
+            double sensorx;double sensory;
+            double disttosensorprevious; double disttosensorcurrent;
+            int capturecount;
+            
+            // Creates a temp matrix for "all locations"
+            std::vector<std::vector<double>> TempAllLocations = AllAnimals[i]->getAllLocations();
+            
+            // Temp location file is written in csv file
+            // Each location is a seperate row  - the number of rows = "TempAllLocations.size()"
+            for(int stepcounter=0; stepcounter<TempAllLocations.size(); stepcounter++){
+                if(TempAllLocations[stepcounter].size()>0){
+                    if(SaveMovement==1){
                         Movement<< TempAllLocations[stepcounter][0] << //1st column, row "stepcounter"
                             "," << TempAllLocations[stepcounter][1] << //2nd column, row "stepcounter"
                             "," << TempAllLocations[stepcounter][2] << //...
@@ -339,69 +361,50 @@ int main(){
                             "," << TempAllLocations[stepcounter][7] << //8th column, row "stepcounter"
                             "," << iterationnumber <<                  // itertaion number
                             "\n";                                      // New line
-                    }; //END of STEPCOUNTER LOOP
-                }; //END OF FOR LOOP
-            }; // END OF IF LOOP FOR SAVING
-        }; //End of i loop for EACH ANIMALS
-    
-        /*--------------------------------------------------------------
-        //                         CAPTURES
-        //
-        // Calcualtes whether any animals have been captured by cameras
-        //  - There is no random numbers used here
-        //  - Cycles through each time step for each individual and 
-        //     checks whether they are captured
-        //  - Saves the Animal ID, Camera ID and Time Step in a CSV file                       
-        --------------------------------------------------------------*/
-        // For each individual check each camera location and see whether they were captured
-        //Each camera is only at a their location for one time interval
-        for(int Individual=0; Individual<NoAnimal; Individual++){
-            //std::cout <<"Animal:" << Individual+1 <<"/" << NoAnimal << std::endl;
-
-            // The call width of each individual does not change throughout the simulation
-            // Therefore it doesn't need to be called for each camera
-            double callangle = AllAnimals[Individual]->getCallWidth();
-            std::vector<std::vector<double>> TempAllLocations = AllAnimals[Individual]->getAllLocations();
-        
-            // Variables for calculating captures
-            int TimeStepTrap =0;
-            double previousx; double previousy;double currentx; double currenty; double currentangle;
-            int capturecount;
-             
-            // The camera only start after the the "Run in period"
-            // Then they are only on at the corresponding the time step
-            // Camera 0 is only on at NoRunIn, Camera 1 is only on at NoRunIn+1,....
-            // The one is added on becuase start counting the number of steps at 0
-            for(int time =0; time<NoSteps; time++ ){
-                //std::cout <<"Animal:" << Individual+1 <<"/" << NoAnimal << " Time: "<< time<<std::endl;
-                TimeStepTrap= time+1;
-                if(TempAllLocations[TimeStepTrap].size()>0 && TempAllLocations[TimeStepTrap][7]==0){
-                        previousx = TempAllLocations[TimeStepTrap-1][2];
-                        previousy = TempAllLocations[TimeStepTrap-1][3];
-                        currentx = TempAllLocations[TimeStepTrap][2];
-                        currenty = TempAllLocations[TimeStepTrap][3];
-                        currentangle = TempAllLocations[TimeStepTrap][4];
+                    }; // END OF IF LOOP FOR SAVING
                     
-                    // Calcualtes whether the animal is captured
-                    capturecount = CT.CapturesIntersection(currentx,currenty,previousx,previousy,Individual,callangle,currentangle,iterationnumber);
-                
-                    }; //END OF IF TempAllLocations
-                    // Resets the step on to zero because the cameras are used in the next iteration and they need to
-                    // the start step on to be zero. 
-                    CT.Add1StepOn();
-            };// END OF FOR time LOOP
+                    // for each step calcualte past location and current location, and direction when leaving past location
+                    if(TempAllLocations[stepcounter][1]>0){
+                        previousx = TempAllLocations[stepcounter-1][2];
+                        previousy = TempAllLocations[stepcounter-1][3];
+                        currentx = TempAllLocations[stepcounter][2];
+                        currenty = TempAllLocations[stepcounter][3];
+                        currentangle = TempAllLocations[stepcounter-1][4];
+                        // Calcualtes whether the animal is captured
+                            
+                        for(int sensor=0; sensor<NoSensors; sensor++){
+                            //std::cout<<"Sensor: "<<sensor << "/" << NoSensors <<std::endl;
+                            sensorx = AllSensors[sensor] -> getXloc();
+                            sensory = AllSensors[sensor] -> getYloc();
+                            AllSensors[sensor] -> setStepOn(TempAllLocations[stepcounter][1]);
+                            
+                            disttosensorprevious = sqrt(pow(previousx - sensorx,2)+pow(previousy - sensory,2));
+                            disttosensorcurrent = sqrt(pow(currentx - sensorx,2)+pow(currenty - sensory,2));
+
+                            if(disttosensorprevious<100 && disttosensorcurrent<100){
+                                for(int callsize=0; callsize<LengthCW; callsize++){
+                                    capturecount = AllSensors[sensor] ->CapturesIntersection(currentx,currenty,previousx,previousy,i,CallWidth[callsize],currentangle,iterationnumber);
+                                };
+                            };// End of if distancetosensor
+                        }; // END of IF stepcounter
+                    }; // end of if stepcounter
+                };// END OF FOR time LOOP
+                };
+                /*------------------------------------------------------
+                 // SAVING THE CAPTURES
+                 ---------------------------------------------------------*/
+                // Retreaves all of the captures
+                //std::cout<<"getcaptures"<<std::endl;
+            for(int sensor=0; sensor<NoSensors; sensor++){
+                std::vector<std::vector<double>> TempCaptures = AllSensors[sensor] -> getCaptures();
+
             
-            /*------------------------------------------------------
-            // SAVING THE CAPTURES
-            ---------------------------------------------------------*/
-            // Retreaves all of the captures
-            std::vector<std::vector<double>> TempCaptures = CT.getCaptures();
-            
-            //STarts looking dor the first entry
-            int stepcounter=0;
-            // Temp location file is written in csv file
-            while(TempCaptures[stepcounter].size()==11){
-                    Captures<< TempCaptures[stepcounter][0] << //1st column, row
+                //STarts looking dor the first entry
+                int stepcounter=0;
+                // Temp location file is written in csv file
+                while(TempCaptures[stepcounter].size()==11){
+                    //if(sensorr==5){std::cout<<"stepcounter" << stepcounter <<std::endl;}
+                        Captures<< TempCaptures[stepcounter][0] << //1st column, row
                         "," << TempCaptures[stepcounter][1] << //2nd column, row "stepcounter"
                         "," << TempCaptures[stepcounter][2] << //...
                         "," << TempCaptures[stepcounter][3] <<
@@ -414,11 +417,13 @@ int main(){
                         "," << TempCaptures[stepcounter][10] <<
                         "\n";                                  // New line
                 
-                    stepcounter+=1;
-                }; //End of step counter loop
-            CT.resetCaptures();
-            // This is done because the StepNo is changed for everytime step and needs to be reset to 0
-            CT.ResetStepOn();
+                        stepcounter+=1;
+                    }; //End of step counter loop
+                AllSensors[sensor] -> resetCaptures();
+                // This is done because the StepNo is changed for everytime step and needs to be reset to 0
+                AllSensors[sensor] -> ResetStepOn();
+            }; //END OF FOR LOOP
+            //std::cout<<"endcaptures"<<std::endl;
         }; //End of Individual loop
         
         /*------------------------------------------------------
@@ -436,7 +441,7 @@ int main(){
     Captures.close();
     Movement.close();
         
-    }; //end if test
+   // }; //end if test
     
     std::cout<<"Finished" <<std::endl;
         
