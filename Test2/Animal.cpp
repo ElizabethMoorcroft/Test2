@@ -87,7 +87,7 @@ void Animal::LocationVector(double locationx, double locationy, int LeaveEntreCo
     mylocationvector[1] = step_number;
     mylocationvector[2] = locationx;
     mylocationvector[3] = locationy;
-    mylocationvector[4] = Current_angle;
+    mylocationvector[4] = NextAngle;
     mylocationvector[5] = Total_distance;
     mylocationvector[6] = AnimalSpeed;
     mylocationvector[7] = LeaveEntreCode;

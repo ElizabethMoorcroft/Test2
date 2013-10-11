@@ -24,8 +24,8 @@ private:
     double location_y;
     
     double radius;
-    double angle; // Direction of the camera
-    double angle_HalfWidth; // Half width of the camera 
+    double angle; // Direction of the Sensor
+    double angle_HalfWidth; // Half width of the Sensor
     int capturecount;
     
     double g_detector1; // gradient of dectector1
@@ -98,9 +98,9 @@ public:
     
     int CapturesIntersection(double, double, double, double, int, double, double, int);
     
-    int CameraAndMovement(double, double, double, double,  int,  double,   double,
+    int SensorAndMovement(double, double, double, double,  int,  double,   double,
                         int, double, double, double, double, double, int, double);
-    int CameraCircAndMovement(double, double, double, double, int, double, double,
+    int SensorCircAndMovement(double, double, double, double, int, double, double,
                             int, double, double, double );
     
     

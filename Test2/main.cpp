@@ -51,7 +51,7 @@ std::string make_directory( const std::string& directory){
             << ",StepLength="   << StepLength
          //   << ",DetectorRadius=" << DetectorRadius
          //   << ",CallHalfwidth=" << Call_halfwidth
-         //   << ",CameraHalfwidth=" << CameraWidth
+         //   << ",SensorHalfwidth=" << SensorWidth
             << ",CorrWalkMaxAngleChange=" <<CorrWalkMaxAngleChange
         ;
     return result.str();
@@ -81,34 +81,33 @@ int main(){
     /*-------------------------------------------------------
      // Creates files for saving - Including headings
      --------------------------------------------------------*/
-    //Creates file for Cameras (CSV file) and writes in the header
-    std::ofstream Cameras;
-    Cameras.open(make_filename(SaveDirectory, ",Cameras.csv" ).c_str());
-    if(SaveCamera==1){
-        Cameras << "ID" <<
+    //Creates file for Sensors (CSV file) and writes in the header
+    std::ofstream Sensors;
+    Sensors.open(make_filename(SaveDirectory, ",Sensors.csv" ).c_str());
+    if(SaveSensor==1){
+        Sensors << "ID" <<
             "," << "X location" <<
             "," << "Y location" <<
             "," << "CentreAngle" <<
             "," << "HalfWidthAngle" <<
             "," << "Radius" <<
             "\n";
-        ;
-    } else {Cameras << "Not saved";}
+    } else {Sensors << "Not saved";}
     
     //Creates file for Captures (CSV file) and writes in the header
     std::ofstream Captures;
     Captures.open(make_filename(SaveDirectory, ",Captures.csv" ).c_str());
     Captures << "AnimalNumber" <<
         "," << "Time_step" <<
-        "," << "CameraID" <<
+        "," << "SensorID" <<
         "," << "Iteration number" <<
         "," << "X location" <<
         "," << "Ylocation" <<
         "," << "Percentage time within step" <<
         "," << "Call" <<
-        "," << "Angle from centre of camera to animal" <<
-        "," << "Angle from animal to camera" <<
-        "," << "Distance from animal to camera" <<
+        "," << "Angle from centre of sensor to animal" <<
+        "," << "Angle from animal to sensor" <<
+        "," << "Distance from animal to sensor" <<
         "\n";
     
     //Creates file for Movement (CSV file) and writes in the header
@@ -144,7 +143,7 @@ int main(){
              << "Sq_MaxX" << ","<<  Sq_MaxX << "\n"
              << "Sq_MinY" << ","<<  Sq_MinY << "\n"
              << "Sq_MaxY" << ","<<  Sq_MaxY << "\n"
-       //      << "CameraWidth" << "," << CameraWidth<< "\n"
+       //      << "SensorWidth" << "," << SensorWidth<< "\n"
              << "StepLength" << ","<< StepLength << "\n"
              << "CorrWalkMaxAngleChange" << ","<<   CorrWalkMaxAngleChange<< "\n"
              << "AnimalSpeed" << ","<< AnimalSpeed<< "\n"
@@ -172,7 +171,7 @@ int main(){
         std::cout<<"No steps, Increase Length of monitoring"<< std::endl; exit (EXIT_FAILURE);
     };
     
-    //Test on the camera trap
+    //Test on the sensor
     ///////////THIS NEEDS UPDATING!!!!
     /*
     int test=0;
@@ -192,9 +191,9 @@ int main(){
     };
     */
     ///////////////////////////////////////////////////////////////////////////////////////
-    //                          CALCULATES LOCATION OF CAMERA TRAPS                     ///
+    //                          CALCULATES LOCATION OF Sensors                          ///
     //                                                                                  ///
-    // Creates Camera traps as they do not change location when the movement changes    ///
+    // Creates Sensors as they do not change location when the movement changes    ///
     //  - only after the set up parameters change (change in length of study, etc)      ///
     // Saves the locations in a CSV file                                                ///
     ///////////////////////////////////////////////////////////////////////////////////////
@@ -209,9 +208,9 @@ int main(){
             AllSensors[sensorcount] =new Sensor(sensorcount,SensorWidth[sensor1],SensorRadius[sensor]);
     
     
-            if(SaveCamera==1){
-                //Saves the locations and the angle of the camera
-                Cameras << AllSensors[sensorcount] -> getID() << //1st column
+            if(SaveSensor==1){
+                //Saves the locations and the angle of the Sensor
+                Sensors << AllSensors[sensorcount] -> getID() << //1st column
                     "," << AllSensors[sensorcount] -> getXloc() << //2nd column
                     "," << AllSensors[sensorcount] -> getYloc() << //...
                     "," << AllSensors[sensorcount] -> getAngle() << //...
@@ -222,11 +221,11 @@ int main(){
             };
         };
     };
-    //Closes the csv camera file
-    Cameras.close();
+    //Closes the csv Sensor file
+    Sensors.close();
     
     // This should not be here - once I know how to test properly then can get ride of this
-    //std::cout<<"Finish Camera traps"<<std::endl;
+    //std::cout<<"Finish Sensor traps"<<std::endl;
     //if(test==0)
     //{
         
@@ -239,7 +238,7 @@ int main(){
     // This means that can run simulations in blocks 1-10 then 11-20 etc                            
     ------------------------------------------------------------------------------------------------*/
     for(int iterationnumber=Seed; iterationnumber<Seed + NoOfIterations; iterationnumber++){
-        std::cout<<"Iteration: "<<iterationnumber<<"/"<<Seed + NoOfIterations<<std::endl;
+        std::cout<<"Iteration: "<<iterationnumber<<"/"<<Seed + NoOfIterations -1<<std::endl;
     
         /*-------------------------------------------------------
          // START OF RANDOM NUMBER STREAM
@@ -304,7 +303,7 @@ int main(){
          ---------------------------------------------------------*/
         for(int i=0; i<NoAnimal; i++){
             //Print out animal number to screen
-            std::cout <<"Animal:" << i+1 <<"/" << NoAnimal << std::endl;
+            //std::cout <<"Animal:" << i+1 <<"/" << NoAnimal << std::endl;
             RandNum RandomNumber1;
             srand(RandomNumberStreamAnimalStart[i]);
             std::vector<double> RandomNumberStreamAnimalStartLoc(151);
@@ -369,7 +368,7 @@ int main(){
                         previousy = TempAllLocations[stepcounter-1][3];
                         currentx = TempAllLocations[stepcounter][2];
                         currenty = TempAllLocations[stepcounter][3];
-                        currentangle = TempAllLocations[stepcounter-1][4];
+                        currentangle = TempAllLocations[stepcounter][4];
                         // Calcualtes whether the animal is captured
                             
                         for(int sensor=0; sensor<NoSensors; sensor++){
@@ -380,25 +379,43 @@ int main(){
                             
                             disttosensorprevious = sqrt(pow(previousx - sensorx,2)+pow(previousy - sensory,2));
                             disttosensorcurrent = sqrt(pow(currentx - sensorx,2)+pow(currenty - sensory,2));
-
-                            if(disttosensorprevious<100 && disttosensorcurrent<100){
+                            
+                           /* if(disttosensorprevious<100 ){
+                                std::cout<<"disttosensorprevious: "<<disttosensorprevious <<std::endl;
+                            };
+                            if(disttosensorcurrent<100 ){
+                                std::cout<<"disttosensorcurrent: "<<disttosensorcurrent <<std::endl;
+                            };*/
+                            
+                            if(disttosensorprevious<200 && disttosensorcurrent<200){
+                                /*std::cout<<" check" <<std::endl;
+                                std::cout<< " currentx: " <<currentx
+                                        <<" currenty: " <<currenty
+                                        <<" previousx: " << previousx
+                                        << " previousy: " << previousy
+                                        << " i: " <<i
+                                       // << "CallWidth[callsize]: "<< CallWidth[callsize]
+                                        << " currentangle: " << currentangle
+                                        << " iterationnumber: " << iterationnumber
+                                << std::endl;*/
                                 for(int callsize=0; callsize<LengthCW; callsize++){
+                                    //std::cout<< "CallWidth[callsize]: "<< CallWidth[callsize]<< std::endl;
+
                                     capturecount = AllSensors[sensor] ->CapturesIntersection(currentx,currenty,previousx,previousy,i,CallWidth[callsize],currentangle,iterationnumber);
-                                };
-                            };// End of if distancetosensor
-                        }; // END of IF stepcounter
-                    }; // end of if stepcounter
-                };// END OF FOR time LOOP
-                };
-                /*------------------------------------------------------
-                 // SAVING THE CAPTURES
-                 ---------------------------------------------------------*/
-                // Retreaves all of the captures
-                //std::cout<<"getcaptures"<<std::endl;
+                                }; // end of call loop
+                            };// End of if distance close to sensor
+                        }; // END of sensor for loop
+                    }; // end of if not first step
+                };// END of check movement exists
+            }; // End of for step loop
+            /*------------------------------------------------------
+            // SAVING THE CAPTURES
+            ---------------------------------------------------------*/
+            // Retreaves all of the captures
+            //std::cout<<"getcaptures"<<std::endl;
             for(int sensor=0; sensor<NoSensors; sensor++){
                 std::vector<std::vector<double>> TempCaptures = AllSensors[sensor] -> getCaptures();
 
-            
                 //STarts looking dor the first entry
                 int stepcounter=0;
                 // Temp location file is written in csv file
