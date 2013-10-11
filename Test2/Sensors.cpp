@@ -134,7 +134,7 @@ double Sensor::AngleTwoPoints(double X1, double X2, double Y1, double Y2){
     double diffx = (X2-X1);
     double diffy = (Y2-Y1);
     // Gives the angle from north
-    double theta = atan(diffy/diffx);// - M_PI_2;
+    double theta = atan(diffx/diffy);// - M_PI_2;
     if(diffx<0){theta+= M_PI; if(diffy>0){theta+= M_PI;};}
     //if(diffy<0){theta-= M_PI/2;}
     //Gets rid of negative values
@@ -163,11 +163,11 @@ double Sensor::GradientFromAngle(double angle){
 -------------------------------------------------*/
 void Sensor::UpdateCaptures(double Individual_ID,double itnumber,double location_x_animal,double location_y_animal,double time, int call, double CamToAnimal, double AnimalToCam , double DistToCam){
     
-    //*---------------------------------------------------------------------------------------------------------
+    /*---------------------------------------------------------------------------------------------------------
      // Check for specific case of interest
-    // if(Individual_ID== 471 && CT_StepOn>212 && CT_StepOn<214){
+     if(Individual_ID== 471 && CT_StepOn>212 && CT_StepOn<214){
     std::cout<<"Caught!"<<std::endl; //<<CT_StepOn << " time: "<< time <<std::endl;
-   //  };
+     };
      //----------------------------------------------------------------------------------------------------------*/
     
     myvector[0] = Individual_ID;
@@ -390,15 +390,15 @@ int Sensor::CapturesIntersection(double location_x_animal, double location_y_ani
     //double disttotalcam = DistTwoPoints(location_x,location_x_animal,location_y,location_y_animal);
 
     //if(disttotalcam<20){std::cout<<"Hello"<<std::endl;}
-    //*---------------------------------------------------------------------------------------------------------
+    /*---------------------------------------------------------------------------------------------------------
     // Check for specific case of interest
-   // if(Individual_ID== 471 && CT_StepOn>212 && CT_StepOn<214){
+    if(Individual_ID== 471 && CT_StepOn>212 && CT_StepOn<214){
         std::cout<<"Start, "<<"location animal: "<<location_x_animal<<", " <<location_y_animal // Current location
                     <<", Past location animal: "<<previous_x_animal<<", "<< previous_y_animal
                     << ", move_angle: " <<move_angle
                     <<", radius: " <<radius
         << std::endl;
-   // };
+    };
     //----------------------------------------------------------------------------------------------------------*/
     
     // finds the total distance travelled between it's new location and it's old location
@@ -482,7 +482,7 @@ int Sensor::SensorCircAndMovement(double location_x_animal, double location_y_an
                                   double m_animal, double c_animal,                         // Gradient/intercept of animal
                                   double disttotal){                                        // Total distance moved
     
-    std::cout<<"SensorCircAndMovement " << "move_angle "<< move_angle<<std::endl;
+    //std::cout<<"SensorCircAndMovement " << "move_angle "<< move_angle<<std::endl;
 
     // Initial a variable for the total number of times the animal is captured on the circle part of the detector    
     // TandA is for the Time and Angle of the intercept value
@@ -520,11 +520,9 @@ int Sensor::SensorCircAndMovement(double location_x_animal, double location_y_an
     for(int v=0; v<2; v++){ 
         //time and angle of the interscept
         TandA = TimeAndAngleCal(XandY[(v*2)+1], XandY[v*2], previous_y_animal, previous_x_animal, disttotal);
-        //*---------------------------------------------------------------------------------------------------------
+        /*---------------------------------------------------------------------------------------------------------
          // Check for specific case of interest
-        //if(Individual_ID== 0 && CT_StepOn>653 && CT_StepOn<658){
-           // if(disttotalcam<20){
-        if(XandY[(v*2)+1]>0){
+        if(Individual_ID== 0 && CT_StepOn>653 && CT_StepOn<658){
         std::cout<<
         "XandY[(v*2)+1]: "<< XandY[(v*2)+1] << " XandY[v*2]: "<<  XandY[v*2]<<
         " previous_y_animal: "<< previous_y_animal << " previous_x_animal: "<<  previous_x_animal<<
@@ -678,7 +676,7 @@ int Sensor::SensorAndMovement(double location_x_animal, double location_y_animal
         
     }//--------END OF DIFFERENT ANGLE ANIMAL MOVEMENT ---------------//
     else{
-        std::cout<<"Something is very wrong with Sensor::SensorAndMovement " <<  std::endl;
+        //std::cout<<"Something is very wrong with Sensor::SensorAndMovement " <<  std::endl;
         exit (EXIT_FAILURE);
     };
     
@@ -732,9 +730,7 @@ int Sensor::CapturesIndividual(double location_x_animal,
                                    double time,
                                    int call
                                    ){
-    //if(Individual_ID== 471 && CT_StepOn>212 && CT_StepOn<214){
-    std::cout<<"InCap, radius" << radius <<std::endl;
-//};
+    //if(Individual_ID== 471 && CT_StepOn>212 && CT_StepOn<214){std::cout<<"InCap, radius" << radius <<std::endl;};
     
     int captured=0;    
     double AngleFromSensor = 0;
