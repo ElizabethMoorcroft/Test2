@@ -17,8 +17,8 @@
 class Sensor {
     
 private:
-    int CT_identifier;
-    int CT_StepOn;
+    int Sensor_identifier;
+    int Sensor_StepOn;
     
     double location_x;
     double location_y;
@@ -59,15 +59,15 @@ public:
     void setC_detector2(double a){c_detector2 = a;};
     void setVH_det1(int a){vh_det1 = a;}; // If the line describing detctor1 is vertical =1; horozonatl =2; else=0
     void setVH_det2(int a){vh_det2 = a;};
-    void setStepOn(int a){CT_StepOn = a;};
+    void setStepOn(int a){Sensor_StepOn = a;};
     // Functions to alter StepOn
     void Add1StepOn();
     void ResetStepOn();
     
     
     // "Get" functions
-    double getID(){return CT_identifier;};
-    double getStepOn(){return CT_StepOn;};
+    double getID(){return Sensor_identifier;};
+    double getStepOn(){return Sensor_StepOn;};
     double getXloc(){return location_x;};
     double getYloc(){return location_y;};
     double getAngle(){return angle;};

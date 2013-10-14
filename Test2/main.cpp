@@ -176,18 +176,18 @@ int main(){
     /*
     int test=0;
     if(test==1){
-        Sensor CT1;
-        CT1 = Sensor(1); // ID
-        CT1.TestCI();
-        CT1.TestVertAndAngleInteraction();
-        CT1.TestHorzAndAngleInteraction();
-        CT1.TestAngleAndAngleInteraction();
-        CT1.TestHorzAndCircInteraction();
-        CT1.TestVertAndCircInteraction();
-        CT1.TestAngleAndCircInteraction();
-        CT1.TestTimeAndAngleCal();
-        CT1.TestGradientFromAngle();
-        CT1.TestCapturesIntersection();
+        Sensor Sensor1;
+        Sensor1 = Sensor(1); // ID
+        Sensor1.TestCI();
+        Sensor1.TestVertAndAngleInteraction();
+        Sensor1.TestHorzAndAngleInteraction();
+        Sensor1.TestAngleAndAngleInteraction();
+        Sensor1.TestHorzAndCircInteraction();
+        Sensor1.TestVertAndCircInteraction();
+        Sensor1.TestAngleAndCircInteraction();
+        Sensor1.TestTimeAndAngleCal();
+        Sensor1.TestGradientFromAngle();
+        Sensor1.TestCapturesIntersection();
     };
     */
     ///////////////////////////////////////////////////////////////////////////////////////
@@ -197,7 +197,7 @@ int main(){
     //  - only after the set up parameters change (change in length of study, etc)      ///
     // Saves the locations in a CSV file                                                ///
     ///////////////////////////////////////////////////////////////////////////////////////
-    //Creates a list of pointers to the CTs
+    //Creates a list of pointers to the Sensors
     
     std::vector<Sensor*> AllSensors(NoSensors);
     
@@ -303,7 +303,7 @@ int main(){
          ---------------------------------------------------------*/
         for(int i=0; i<NoAnimal; i++){
             //Print out animal number to screen
-            //std::cout <<"Animal:" << i+1 <<"/" << NoAnimal << std::endl;
+            std::cout <<"Animal:" << i+1 <<"/" << NoAnimal << std::endl;
             RandNum RandomNumber1;
             srand(RandomNumberStreamAnimalStart[i]);
             std::vector<double> RandomNumberStreamAnimalStartLoc(151);
