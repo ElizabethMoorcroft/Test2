@@ -14,7 +14,7 @@
 
 //Calcaulte a random variable that is normally distribtued
 //But if the value is negative them it recalculates it until +ve
-double RandNum::PositiveNormal (double seed,double Mean,double SD){
+double RandNum::PositiveNormal (double& seed, double Mean, double SD){
     
     
     double RV_1;
@@ -75,7 +75,7 @@ double RandNum::PositiveNormal (double seed,double Mean,double SD){
 //a is the seed value
 //b is the current angle
 //c is the +/- range
-double RandNum::AtoRangeBUnif (double a,double b,double c){
+double RandNum::AtoRangeBUnif (double& a,double b,double c){
     
     double Seed= a;
     
@@ -105,7 +105,7 @@ double RandNum::AtoRangeBUnif (double a,double b,double c){
 //a is the seed value
 //b is the Min value
 //c is the Max value
-double RandNum::AtoBUnif (double Seed,double Min,double Max){
+double RandNum::AtoBUnif (double& Seed,double Min,double Max){
     
     //Sets seed for a random number
     srand(Seed);

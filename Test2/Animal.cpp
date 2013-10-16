@@ -81,7 +81,7 @@ Animal::Animal(int a, double i, double j, double k) {
  // Updates the vectors which contain the movement
  // of the animals
  ----------------------------------------------*/
-void Animal::LocationVector(double locationx, double locationy, int LeaveEntreCode, int End){
+void Animal::LocationVector(double& locationx, double& locationy, int LeaveEntreCode, int End){
     //Records exit of the world
     mylocationvector[0] = identifier;
     mylocationvector[1] = step_number;
@@ -134,10 +134,10 @@ void  Animal::UpdateLocation (double seed){ // a is the number of seconds per st
     //  -> To start a new stream of RandNum for the probability of changing states in 2 state corr walk (MoveType==2)
     srand(seed);
     std::vector<double> RandomNumberMovement(101);
-    for(int i=0; i<101; i++){ RandomNumberMovement[i] = double(rand());};
+    for(int i=0; i<101; i++){RandomNumberMovement[i] = double(rand());};
 
     //std::cout<<"NewLocation"<<std::endl;
-    NewLocation(RandomNumberMovement[0], RandomNumberMovement[500]);
+    NewLocation(RandomNumberMovement[0], RandomNumberMovement[50]);
         
     int tempcounter = 0;
     while(tempcounter<1){
@@ -203,7 +203,7 @@ void  Animal::UpdateLocation (double seed){ // a is the number of seconds per st
  // New location works out which movement type 
  // is needed initiating the correct function
  ----------------------------------------------*/
-void Animal::NewLocation (double seed, double seed2){
+void Animal::NewLocation (double& seed, double& seed2){
 
     //set up a random number
     RandNum Number1;
@@ -231,7 +231,7 @@ void Animal::NewLocation (double seed, double seed2){
  --------------------------------------------------------------------------------------------------------*/
 
 
-void Animal::LeaveEnterWorld(double YBoundExit, double XBoundExit, double YBoundEnter, double XBoundEnter){
+void Animal::LeaveEnterWorld(const double& YBoundExit, const double& XBoundExit, const double& YBoundEnter, const double& XBoundEnter){
     
     //std::cout <<"Entre LeaveEnterWorld"<<std::endl;
     

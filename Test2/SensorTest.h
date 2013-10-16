@@ -13,6 +13,9 @@
 
 class SensorTest {
 public:
+    
+    void RunSensorTests();
+    
     //---- Constructor -----//
     void SensorTest_construct();
     
@@ -20,8 +23,33 @@ public:
     void SensorTest_setgetAngle();
     void SensorTest_setgetHalfAngle();
     
-    // ---- Function ----//
+    // ---- Functions ----//
     void SensorTest_CaptureIndividual1();
+    void SensorTest_CaptureIndividual2();
+    void SensorTest_CaptureIndividual3();
+    void SensorTest_CaptureIndividual4();
+    void SensorTest_CaptureIndividual5();
+    void SensorTest_CaptureIndividual6();
+    
+    void TestVertAndAngleInteraction();
+    void TestHorzAndAngleInteraction();
+    void TestAngleAndAngleInteraction();
+    void TestHorzAndCircInteraction();
+    void TestVertAndCircInteraction();
+    void TestAngleAndCircInteraction();
+    
+    void TestGradientFromAngle();
+    
+    void Test_CapturesIntersection1();
+    void Test_CapturesIntersection2();
+    void Test_CapturesIntersection3();
+    void Test_CapturesIntersection4();
+    void Test_CapturesIntersection5();
+    void Test_CapturesIntersection6();
+    void Test_CapturesIntersection7();
+    void Test_CapturesIntersection8();
+    void Test_CapturesIntersection9();
+    void Test_CapturesIntersection10();
     
 };
 

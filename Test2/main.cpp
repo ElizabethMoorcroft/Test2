@@ -18,6 +18,7 @@
 #include "Animal.h"
 #include "RandNum.h"
 #include "Sensors.h"
+#include "SensorTest.h"
 #include "Parameters.h"
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -138,13 +139,13 @@ int main(){
              << "LengthMonitoring" << "," << LengthMonitoring << "\n"
              << "NoOfIterations" << "," << NoOfIterations << "\n"
              << "NoSteps"   << "," << NoSteps << "\n"
+             << "StepLength"   << "," << StepLength << "\n"
              << "Seed" << "," << Seed << "\n"
              << "Sq_MinX" << ","<<  Sq_MinX << "\n"
              << "Sq_MaxX" << ","<<  Sq_MaxX << "\n"
              << "Sq_MinY" << ","<<  Sq_MinY << "\n"
              << "Sq_MaxY" << ","<<  Sq_MaxY << "\n"
        //      << "SensorWidth" << "," << SensorWidth<< "\n"
-             << "StepLength" << ","<< StepLength << "\n"
              << "CorrWalkMaxAngleChange" << ","<<   CorrWalkMaxAngleChange<< "\n"
              << "AnimalSpeed" << ","<< AnimalSpeed<< "\n"
          //    << "Call_halfwidth" << ","<< Call_halfwidth << "\n"
@@ -173,9 +174,12 @@ int main(){
     
     //Test on the sensor
     ///////////THIS NEEDS UPDATING!!!!
-    /*
-    int test=0;
+    
+    int test=1;
     if(test==1){
+        SensorTest ST1;
+        ST1.RunSensorTests();
+     /*
         Sensor Sensor1;
         Sensor1 = Sensor(1); // ID
         Sensor1.TestCI();
@@ -188,8 +192,8 @@ int main(){
         Sensor1.TestTimeAndAngleCal();
         Sensor1.TestGradientFromAngle();
         Sensor1.TestCapturesIntersection();
-    };
-    */
+      */
+    }else{
     ///////////////////////////////////////////////////////////////////////////////////////
     //                          CALCULATES LOCATION OF Sensors                          ///
     //                                                                                  ///
@@ -228,7 +232,12 @@ int main(){
     //std::cout<<"Finish Sensor traps"<<std::endl;
     //if(test==0)
     //{
-        
+    
+    srand(Seed);
+    std::vector<double> InitailRandomNumberStream(NoOfIterations*NoOfIterations);
+    for(int i=0; i<NoOfIterations*NoOfIterations; i++){InitailRandomNumberStream[i] = double (rand());};
+    
+    
     /*------------------------------------------------------------------------------------------------
     //                                      Iteration Loop
     //
@@ -238,7 +247,7 @@ int main(){
     // This means that can run simulations in blocks 1-10 then 11-20 etc                            
     ------------------------------------------------------------------------------------------------*/
     for(int iterationnumber=Seed; iterationnumber<Seed + NoOfIterations; iterationnumber++){
-        std::cout<<"Iteration: "<<iterationnumber<<"/"<<Seed + NoOfIterations -1<<std::endl;
+        std::cout<<"Iteration: "<<iterationnumber<<"/"<<Seed + NoOfIterations -1 <<std::endl;
     
         /*-------------------------------------------------------
          // START OF RANDOM NUMBER STREAM
@@ -253,7 +262,7 @@ int main(){
          //  - RandomNumberStreamAnimalAngle (random direction)
          //  - RandomNumberStreamAnimalMove (Seed for movement)
         --------------------------------------------------------*/
-        srand(iterationnumber);
+        srand(InitailRandomNumberStream[iterationnumber*NoOfIterations]);
         std::vector<double> RandomNumberStream(101);
         for(int i=0; i<101; i++){RandomNumberStream[i] = double (rand());};
      
@@ -281,14 +290,14 @@ int main(){
         //Creates 1 Random number for the seed each Animal for the following
         //Random number stream for choosing HR
         srand(RandomNumberStream[25]);
-        std::vector<double> RandomNumberStreamAnimalStart(NoAnimal);
-        for(int i=0; i<NoAnimal; i++){ RandomNumberStreamAnimalStart[i]=double(rand()); };
+        std::vector<double> RandomNumberStreamAnimalStart(pow(NoAnimal,3));
+        for(int i=0; i<pow(NoAnimal,3); i++){ RandomNumberStreamAnimalStart[i]=double(rand()); };
 
     
         // Random number stream seed for the seed for the movement
         srand(RandomNumberStream[75]);
-        std::vector<double> RandomNumberStreamAnimalMove(NoAnimal);
-        for(int i=0; i<NoAnimal; i++){RandomNumberStreamAnimalMove[i]=double(rand());};
+        std::vector<double> RandomNumberStreamAnimalMove(pow(NoAnimal,3));
+        for(int i=0; i<pow(NoAnimal,3); i++){RandomNumberStreamAnimalMove[i]=double(rand());};
         
         /*------------------------------------------------------
          // Creating  animals and animal movement
@@ -305,12 +314,13 @@ int main(){
             //Print out animal number to screen
             std::cout <<"Animal:" << i+1 <<"/" << NoAnimal << std::endl;
             RandNum RandomNumber1;
-            srand(RandomNumberStreamAnimalStart[i]);
+            srand(RandomNumberStreamAnimalStart[i*pow(NoAnimal,2)]);
             std::vector<double> RandomNumberStreamAnimalStartLoc(151);
-            for(int i=0; i<151; i++){RandomNumberStreamAnimalStartLoc[i]=double(rand());};
+            for(int j=0; j<151; j++){RandomNumberStreamAnimalStartLoc[j]=double(rand());};
             double xlocation = RandomNumber1.AtoBUnif(RandomNumberStreamAnimalStartLoc[50],Sq_MinX,Sq_MaxX);
             double ylocation = RandomNumber1.AtoBUnif(RandomNumberStreamAnimalStartLoc[100],Sq_MinY,Sq_MaxY);
-        
+            
+            
             // To choose a start angle, sets up a random number class
             // Uses a radom number from stream RandomNumberStreamAnimalAngle for a random seed
             double CurrentAngleTemp = RandomNumber1.AtoBUnif(RandomNumberStreamAnimalStartLoc[150],0,(2*M_PI));
@@ -318,27 +328,25 @@ int main(){
             // New animal given start locations - at the centre of the home range
             //  Inputs are: ID & Starts location (x,y) &  Initial angle
             AllAnimals[i] =new Animal(i, xlocation, ylocation, CurrentAngleTemp);
-
-            /*------------------------------------------------------ 
+            
+            /*------------------------------------------------------
             // Update location
             ---------------------------------------------------------*/
             //Sets seed for a random number
             //Random number stream for the movemnet of the animal
-            srand(RandomNumberStreamAnimalMove[i]);
-            std::vector<double> RandomNumberCurrentAnimal(NoSteps*101);
-            for(int i=0; i<NoSteps*101; i++){RandomNumberCurrentAnimal[i]=double(rand());};
+            srand(RandomNumberStreamAnimalMove[i*NoAnimal]);
+            std::vector<double> RandomNumberCurrentAnimal(NoSteps*1000);
+            for(int j=0; j<NoSteps*1000; j++){RandomNumberCurrentAnimal[j]=double(rand());};
 
             // For each step, Updates animal location
             double stepcount;
             for(int j=0; j<NoSteps; j++){
-                stepcount = j*100;
+                stepcount = j*1000;
                  AllAnimals[i] -> UpdateLocation(RandomNumberCurrentAnimal[stepcount]);
             }; //End of j loop for Steps
             
             // Variables for calculating captures
-            double previousx; double previousy;
-            double currentx; double currenty; double currentangle;
-            double sensorx;double sensory;
+            double sensorx; double sensory;
             double disttosensorprevious; double disttosensorcurrent;
             int capturecount;
             
@@ -349,12 +357,17 @@ int main(){
             // Each location is a seperate row  - the number of rows = "TempAllLocations.size()"
             for(int stepcounter=0; stepcounter<TempAllLocations.size(); stepcounter++){
                 if(TempAllLocations[stepcounter].size()>0){
+            
+                    double &currentx = TempAllLocations[stepcounter][2];
+                    double &currenty = TempAllLocations[stepcounter][3];
+                    double &currentangle = TempAllLocations[stepcounter][4];
+                    
                     if(SaveMovement==1){
                         Movement<< TempAllLocations[stepcounter][0] << //1st column, row "stepcounter"
                             "," << TempAllLocations[stepcounter][1] << //2nd column, row "stepcounter"
-                            "," << TempAllLocations[stepcounter][2] << //...
-                            "," << TempAllLocations[stepcounter][3] << //...
-                            "," << TempAllLocations[stepcounter][4] << //...
+                            "," << currentx << //...
+                            "," << currenty << //...
+                            "," << currentangle << //...
                             "," << TempAllLocations[stepcounter][5] << //...
                             "," << TempAllLocations[stepcounter][6] << //...
                             "," << TempAllLocations[stepcounter][7] << //8th column, row "stepcounter"
@@ -364,13 +377,11 @@ int main(){
                     
                     // for each step calcualte past location and current location, and direction when leaving past location
                     if(TempAllLocations[stepcounter][1]>0){
-                        previousx = TempAllLocations[stepcounter-1][2];
-                        previousy = TempAllLocations[stepcounter-1][3];
-                        currentx = TempAllLocations[stepcounter][2];
-                        currenty = TempAllLocations[stepcounter][3];
-                        currentangle = TempAllLocations[stepcounter][4];
+                        double &previousx = TempAllLocations[stepcounter-1][2];
+                        double &previousy = TempAllLocations[stepcounter-1][3];
                         // Calcualtes whether the animal is captured
-                            
+                        
+                        double checkforcapture =StepLengthDist*2;
                         for(int sensor=0; sensor<NoSensors; sensor++){
                             //std::cout<<"Sensor: "<<sensor << "/" << NoSensors <<std::endl;
                             sensorx = AllSensors[sensor] -> getXloc();
@@ -380,24 +391,7 @@ int main(){
                             disttosensorprevious = sqrt(pow(previousx - sensorx,2)+pow(previousy - sensory,2));
                             disttosensorcurrent = sqrt(pow(currentx - sensorx,2)+pow(currenty - sensory,2));
                             
-                           /* if(disttosensorprevious<100 ){
-                                std::cout<<"disttosensorprevious: "<<disttosensorprevious <<std::endl;
-                            };
-                            if(disttosensorcurrent<100 ){
-                                std::cout<<"disttosensorcurrent: "<<disttosensorcurrent <<std::endl;
-                            };*/
-                            
-                            if(disttosensorprevious<200 && disttosensorcurrent<200){
-                                /*std::cout<<" check" <<std::endl;
-                                std::cout<< " currentx: " <<currentx
-                                        <<" currenty: " <<currenty
-                                        <<" previousx: " << previousx
-                                        << " previousy: " << previousy
-                                        << " i: " <<i
-                                       // << "CallWidth[callsize]: "<< CallWidth[callsize]
-                                        << " currentangle: " << currentangle
-                                        << " iterationnumber: " << iterationnumber
-                                << std::endl;*/
+                            if(disttosensorprevious<checkforcapture  && disttosensorcurrent<checkforcapture ){
                                 for(int callsize=0; callsize<LengthCW; callsize++){
                                     //std::cout<< "CallWidth[callsize]: "<< CallWidth[callsize]<< std::endl;
 
@@ -458,7 +452,7 @@ int main(){
     Captures.close();
     Movement.close();
         
-   // }; //end if test
+    }; //end if test
     
     std::cout<<"Finished" <<std::endl;
         

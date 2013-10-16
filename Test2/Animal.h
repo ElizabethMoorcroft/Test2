@@ -52,10 +52,10 @@ public:
     std::vector<std::vector<double>> getAllLocations(){return All_locations;};
     
     // Calculations
-    void NewLocation(double, double);
-    void LeaveEnterWorld(double, double, double, double);
+    void NewLocation(double&, double&);
+    void LeaveEnterWorld(const double&, const double&, const double&, const double&);
     void UpdateLocation (double);
-    void LocationVector(double, double, int, int);
+    void LocationVector(double&, double&, int, int);
     double CalNext_X(double);
     double CalNext_Y(double);
     double RangeAngle(double);
