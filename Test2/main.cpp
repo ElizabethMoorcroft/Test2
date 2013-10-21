@@ -370,7 +370,7 @@ int main(){
          ---------------------------------------------------------*/
         for(int i=0; i<NoAnimal; i++){
             //Print out animal number to screen
-            //std::cout <<"Animal:" << i+1 <<"/" << NoAnimal << std::endl;
+            std::cout <<"Animal:" << i+1 <<"/" << NoAnimal << std::endl;
         
             // Sets seed for a random number so that can choose a home range centre at random
             srand(RandomNumberStreamAnimalHR[i]);

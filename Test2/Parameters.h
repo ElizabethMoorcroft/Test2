@@ -22,18 +22,18 @@
 //////////////////////////////////////////////////
 
 // Saving settings
-const int SaveMovement =1; // Saves the movement of the animals for all simulations // 1-saves; 0-doesn't save
+const int SaveMovement =0; // Saves the movement of the animals for all simulations // 1-saves; 0-doesn't save
 const int SaveHR = 0;// Saves the Home range values for each all, all simulations// 1-saves; 0-doesn't save
 const int SaveCamera = 1; // Saves the camera locations (constant throughout all simulations) // 1-saves; 0-doesn't save
 
 //Simulation values - #Animals, #Steps, #HR, #CT
-const double DensityAnimals = 1*pow(10,-6); // XX*10^-6 Density/m^2  => XX Density/KM^2
+const double DensityAnimals = 70*pow(10,-6); // XX*10^-6 Density/m^2  => XX Density/KM^2
 const double AverageSizeHR = 1; //Average number of animals per roost/HR
 const int NoOfIterations = 1; // No of iterations with the settings
 
 // Time
 const int NoRunIn = 0; // Number of steps before cameras are "activated"
-const double LengthMonitoring = 1.5*(60*60); //Length of monitoring in seconds. XX*(60*60)secs => XX hrs
+const double LengthMonitoring = 60*24*(60*60); //Length of monitoring in seconds. XX*(60*60)secs => XX hrs
 
 
 //HR set up value
@@ -57,7 +57,7 @@ const double DetectorLayOut = 0; // 0 is a single stationary; 1 is a grid;
 
 // The grid will be a  a standard HR away from the edge of the world
 // A value for HR must be entered even if this is not required for movement
-const double MaxNoX = 2;
+const double MaxNoX = 1;
 const double MaxNoY = 1;
 const double Xgridmin = Sq_MinX + HR_AverageRadius;
 const double Ygridmin = Sq_MinY + HR_AverageRadius;
@@ -65,14 +65,14 @@ const double Xspace = (Sq_MaxX - Sq_MinX - 2*HR_AverageRadius)/(MaxNoX+1);
 const double Yspace = (Sq_MaxY - Sq_MinY - 2*HR_AverageRadius)/(MaxNoY+1);
 
 // Camera width/Radius
-const double CameraWidth = 180*M_PI/180; // In Radians. Half width. X°= X*pi/180rads
-const double DetectorRadius = 11; // meters
+const double CameraWidth = 90*M_PI/180; // In Radians. Half width. X°= X*pi/180rads
+const double DetectorRadius = 20; // meters
 
 //Radom number seed
 const int Seed =1;
 
 //Animal parameters
-const double AnimalSpeed = 10; // ms^-1
+const double AnimalSpeed = 0.46; // ms^-1
 const double ProbChangeMoveState = 0;//Probability of switching from coorelated to non-correlated
 const double CorrWalkMaxAngleChange = 0*M_PI/180; // In Radians. Half width. X°= X*pi/180rads
 
