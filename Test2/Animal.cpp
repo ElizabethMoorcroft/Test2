@@ -53,8 +53,8 @@ Animal::Animal(int a, double i, double j, double k) {
     Move_maxangle = CorrWalkMaxAngleChange;
     
     // Updates the location vector
-    All_locations.resize(2*NoSteps+5);
-    mylocationvector.resize(8);
+    All_locations.resize(10*NoSteps);
+    mylocationvector.resize(9);
     locationvectorcount =0;
     
     //Entres the start location into the matrix
@@ -91,8 +91,12 @@ void Animal::LocationVector(double& locationx, double& locationy, int LeaveEntre
     mylocationvector[5] = Total_distance;
     mylocationvector[6] = AnimalSpeed;
     mylocationvector[7] = LeaveEntreCode;
+    mylocationvector[8] = NextDist;
+
     All_locations[locationvectorcount]= mylocationvector;
     locationvectorcount+=1;
+    
+    //if(All_locations.size()>2*NoSteps){std::cout <<"id: " << identifier << " step no: " <<step_number << std::endl;};
 };
 
 //Needs test
@@ -127,7 +131,7 @@ double Animal::RangeAngle(double angle){
  ----------------------------------------------*/
 void  Animal::UpdateLocation (double seed){ // a is the number of seconds per step, b is the random seed
     
-    //std::cout <<"Inside Update locations"<< std::endl;
+    //std::cout <<"Inside Update locations: "<< seed<< std::endl;
     
     // This starts a stream of random numbers used twice
     //  -> To start a new stream of RandNum for the update of movement
@@ -209,7 +213,7 @@ void Animal::NewLocation (double& seed, double& seed2){
     RandNum Number1;
     //Correlated random walk
     // Calculate a distance value
-    NextDist = Number1.PositiveNormal (seed,StepLengthDist,StepLengthDist/10);
+    NextDist = Number1.PositiveNormal(seed,StepLengthDist,StepLengthDist/10);
 
     //calculates a new random angle of movement
     NextAngle = Number1.AtoRangeBUnif(seed2,Current_angle,Move_maxangle);
@@ -246,6 +250,8 @@ void Animal::LeaveEnterWorld(const double& YBoundExit, const double& XBoundExit,
     double tempExitsY =0;
     double tempExitsX =0;
     
+    double tempdisttrav=0;
+    
     if(tempDistToSideBoundary>tempDistToTopBoundary | tempDistToSideBoundary ==0 ){
     
         //std::cout <<"Top"<<std::endl;
@@ -257,11 +263,9 @@ void Animal::LeaveEnterWorld(const double& YBoundExit, const double& XBoundExit,
         Current_y = YBoundEnter;
         Current_x = tempExitsX;
         Current_angle = NextAngle;
-        
         // The distance left to travel
-        NextDist -= tempDistToTopBoundary;
-        // The current distance travelled
-        Total_distance += tempDistToTopBoundary;
+        tempdisttrav = tempDistToTopBoundary;
+
         
     }// end of exit by the top/bottom of the world 
     else{
@@ -275,10 +279,12 @@ void Animal::LeaveEnterWorld(const double& YBoundExit, const double& XBoundExit,
         Current_x = XBoundEnter;
         Current_angle = NextAngle;
         
+        tempdisttrav = tempDistToSideBoundary;
+
         // The distance left to travel
-        NextDist -=tempDistToSideBoundary;
+        //NextDist -=tempDistToSideBoundary;
         // The current distance travelled
-        Total_distance += tempDistToSideBoundary;
+        //Total_distance += tempDistToSideBoundary;
         //std::cout <<"leaves Side"<<std::endl;
     }; // end of exit by the side of world
 
@@ -287,9 +293,18 @@ void Animal::LeaveEnterWorld(const double& YBoundExit, const double& XBoundExit,
     NextX = CalNext_X(NextDist);
     NextY = CalNext_Y(NextDist);
     
+    //std::cout<<"NextDist: " <<NextDist <<std::endl;
+
+    
     //Updates the location vector with the EXIT location
     LocationVector(tempExitsX,tempExitsY,0,0);
     // Updates the location vector with the RE-ENTRY location
     LocationVector(Current_x,Current_y,1,0);
+    
+    if(tempDistToSideBoundary>tempDistToTopBoundary | tempDistToSideBoundary ==0 ){
+        NextDist -= tempdisttrav;
+        // The current distance travelled
+        Total_distance += tempdisttrav;
+    };
 
 };

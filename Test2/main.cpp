@@ -59,7 +59,7 @@ std::string make_directory( const std::string& directory){
 };
 
 // Base name each file
-std::string SaveDirectory = make_directory("/Users/student/Documents/Bats/Simulations/Test");
+std::string SaveDirectory = make_directory("/Users/student/Documents/Bats/Simulations/TestCaps");
 
 /// END OF FILE NAMES
 
@@ -79,6 +79,7 @@ int main(){
     int NoAnimal = floor(DensityAnimals*area);
     int NoSensors = LengthSW*LengthSR;
     
+    std::cout<<"StepLengthDist: " <<StepLengthDist <<std::endl;
     /*-------------------------------------------------------
      // Creates files for saving - Including headings
      --------------------------------------------------------*/
@@ -125,6 +126,7 @@ int main(){
             "," << "TotalDistance" <<
             "," << "Speed" <<
             "," << "Re-enterWorld" <<
+            "," << "Dist" <<
             "," << "Iternation number" <<
             "\n";
     } else {Movement << "Not saved";}
@@ -175,7 +177,7 @@ int main(){
     //Test on the sensor
     ///////////THIS NEEDS UPDATING!!!!
     
-    int test=1;
+    int test=0;
     if(test==1){
         SensorTest ST1;
         ST1.RunSensorTests();
@@ -233,11 +235,6 @@ int main(){
     //if(test==0)
     //{
     
-    srand(Seed);
-    std::vector<double> InitailRandomNumberStream(NoOfIterations*NoOfIterations);
-    for(int i=0; i<NoOfIterations*NoOfIterations; i++){InitailRandomNumberStream[i] = double (rand());};
-    
-    
     /*------------------------------------------------------------------------------------------------
     //                                      Iteration Loop
     //
@@ -262,7 +259,7 @@ int main(){
          //  - RandomNumberStreamAnimalAngle (random direction)
          //  - RandomNumberStreamAnimalMove (Seed for movement)
         --------------------------------------------------------*/
-        srand(InitailRandomNumberStream[iterationnumber*NoOfIterations]);
+        srand(iterationnumber);
         std::vector<double> RandomNumberStream(101);
         for(int i=0; i<101; i++){RandomNumberStream[i] = double (rand());};
      
@@ -290,14 +287,14 @@ int main(){
         //Creates 1 Random number for the seed each Animal for the following
         //Random number stream for choosing HR
         srand(RandomNumberStream[25]);
-        std::vector<double> RandomNumberStreamAnimalStart(pow(NoAnimal,3));
-        for(int i=0; i<pow(NoAnimal,3); i++){ RandomNumberStreamAnimalStart[i]=double(rand()); };
+        std::vector<double> RandomNumberStreamAnimalStart(pow(NoAnimal,2));
+        for(int i=0; i<pow(NoAnimal,2); i++){ RandomNumberStreamAnimalStart[i]=double(rand()); };
 
     
         // Random number stream seed for the seed for the movement
         srand(RandomNumberStream[75]);
-        std::vector<double> RandomNumberStreamAnimalMove(pow(NoAnimal,3));
-        for(int i=0; i<pow(NoAnimal,3); i++){RandomNumberStreamAnimalMove[i]=double(rand());};
+        std::vector<double> RandomNumberStreamAnimalMove(pow(NoAnimal,2));
+        for(int i=0; i<pow(NoAnimal,2); i++){RandomNumberStreamAnimalMove[i]=double(rand());};
         
         /*------------------------------------------------------
          // Creating  animals and animal movement
@@ -312,9 +309,9 @@ int main(){
          ---------------------------------------------------------*/
         for(int i=0; i<NoAnimal; i++){
             //Print out animal number to screen
-            std::cout <<"Animal:" << i+1 <<"/" << NoAnimal << std::endl;
+            //std::cout <<"Animal:" << i+1 <<"/" << NoAnimal << std::endl;
             RandNum RandomNumber1;
-            srand(RandomNumberStreamAnimalStart[i*pow(NoAnimal,2)]);
+            srand(RandomNumberStreamAnimalStart[i*NoAnimal]);
             std::vector<double> RandomNumberStreamAnimalStartLoc(151);
             for(int j=0; j<151; j++){RandomNumberStreamAnimalStartLoc[j]=double(rand());};
             double xlocation = RandomNumber1.AtoBUnif(RandomNumberStreamAnimalStartLoc[50],Sq_MinX,Sq_MaxX);
@@ -371,6 +368,7 @@ int main(){
                             "," << TempAllLocations[stepcounter][5] << //...
                             "," << TempAllLocations[stepcounter][6] << //...
                             "," << TempAllLocations[stepcounter][7] << //8th column, row "stepcounter"
+                            "," << TempAllLocations[stepcounter][8] << //8th column, row "stepcounter"
                             "," << iterationnumber <<                  // itertaion number
                             "\n";                                      // New line
                     }; // END OF IF LOOP FOR SAVING

@@ -110,12 +110,12 @@ void SensorTest::SensorTest_CaptureIndividual1(){
 
 void SensorTest::SensorTest_CaptureIndividual2(){
     Sensor Sensor1;
-    Sensor1 = Sensor(1, M_PI, 1);
- 
+    Sensor1 = Sensor(1, M_PI_2, 1);
+    Sensor1.setXLoc(0); Sensor1.setYLoc(0); Sensor1.setAngle(0); Sensor1.setRadius(1);
     int Estimate;
-    //location_x_animal,location_y_animal,Individual_ID,call_halfwidth,move_angle,itnumber,time.
+    //double location_x_animal, double location_y_animal, int Individual_ID, double call_halfwidth, double move_angle, int itnumber, double time, int call
     Sensor1.setXLoc(0); Sensor1.setYLoc(0);
-    Estimate = Sensor1.CapturesIndividual(1,2,1,M_PI,0,0,0,0); // Animal is on boundary and facing away
+    Estimate = Sensor1.CapturesIndividual(0,1,1,M_PI,M_PI,0,0,0); // Animal is on boundary and facing away
     if(Estimate!=1){
         std::cout<<"Error! Failed Sensor test - TestCI: "<<"2" <<std::endl;
         exit (EXIT_FAILURE);
@@ -125,11 +125,10 @@ void SensorTest::SensorTest_CaptureIndividual2(){
  
  void SensorTest::SensorTest_CaptureIndividual3(){
     Sensor Sensor1;
-    Sensor1 = Sensor(1, M_PI/4, 0);
+    Sensor1 = Sensor(1, M_PI/2, 0);
     Sensor1.setXLoc(0); Sensor1.setYLoc(0);
     int Estimate;
-    Sensor1.setAngle(0);
-    Sensor1.setHalfAngle(0);
+    //Sensor1.setAngle(0); Sensor1.setHalfAngle(0);
     Estimate = Sensor1.CapturesIndividual(0.5,0.5,1,M_PI,0,0,0,0); // Animal is on within boundary and facing towards, Sensor is facing towards
     if(Estimate!=1){
         std::cout<<"Error! Failed Sensor test - TestCI: "<<"3" <<std::endl;

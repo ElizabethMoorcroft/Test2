@@ -50,8 +50,8 @@ public:
     // "Set functions"
     void setXLoc(double a){location_x = a;};
     void setYLoc(double a){location_y = a;};
-    void setAngle(double a){angle = a;};
-    void setHalfAngle(double a){angle_HalfWidth = a;return;};
+    void setAngle(double a);
+    void setHalfAngle(double a);
     void setRadius(double a){radius = a;};
     void setM_detector1(double a){m_detector1 = a;};
     void setM_detector2(double a){m_detector2 = a;};
