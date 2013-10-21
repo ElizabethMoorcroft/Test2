@@ -19,17 +19,18 @@ long double RandNum::PositiveNormal (double seed,double Mean,double SD){
     
     long double RV_1;
     
-    srand(seed);
-    std::vector<double> RandomNumberStreamTemp;
-    RandomNumberStreamTemp.resize(1000);
-    for(int i=0; i<1000; i++){
-        RandomNumberStreamTemp[i] =double (rand());
-    };
+
     
-    int count=0;
+    int count=2;
     
     //Does the follwing while RV_1 is less than 0
-    do{
+    while(RV_1<=0){
+        
+        srand(seed);
+        std::vector<double> RandomNumberStreamTemp(count);
+        for(int i=0; i<count; i++){
+            RandomNumberStreamTemp[i] =double (rand());
+        };
         // set random seed for the varaibles
         srand(RandomNumberStreamTemp[count]);
         
@@ -43,16 +44,16 @@ long double RandNum::PositiveNormal (double seed,double Mean,double SD){
         // Y =sqrt(R)*cos(Theta)
         
         //Two varaibels from random uniform dist
-        long double v1 = ((long double) rand()/RAND_MAX);
-        long double v2 = ((long double) rand()/RAND_MAX);
+        double v1 = ((double) rand()/RAND_MAX);
+        double v2 = ((double) rand()/RAND_MAX);
         
         //Generate Expoential(1/2) and Uniform(0,2pi) from v1&v2
-        v1 = -2*log(v1);
-        v2 = -2*M_PI*log(v2);
+        double R = -2*log(v1);
+        double theta = 2*M_PI*v2;
         
         //Generate a normal from v1/v2
-        RV_1 = sqrt(v1)*sin(v2);
-        /*RV_2 = sqrt(v1)*cos(v2);*/
+        RV_1 = sqrt(R)*sin(theta);
+        /*RV_2 = sqrt(R)*cos(theta);*/
         
         //Converts the RV_1 with a Norm(0,1) to a Norm(b,c)
         RV_1 = RV_1*SD + Mean;
@@ -61,7 +62,7 @@ long double RandNum::PositiveNormal (double seed,double Mean,double SD){
         count=count+1;
 
         
-    } while(RV_1<=0);
+    };
 
     return (RV_1);
     
