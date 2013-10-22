@@ -55,6 +55,7 @@ public:
     void setCurrentY(double a){Current_y = a;};
     void setNextX(double a){Current_x = a;};
     void setNextY(double a){Current_y = a;};
+    void setlargelocationvector(double a){All_locations.resize(10*a);}
     
     // Get functions
     double getCurrentX(){return  Current_x;};

@@ -75,6 +75,8 @@ void Animal::setMove_speed(double a){
     StepLengthDist = StepLength*Move_speed;
 };
 
+
+
 /*--------------------------------------------------------------------------------------------------------
  //
  //                                        Mutiple use functions
@@ -155,7 +157,7 @@ void  Animal::UpdateLocation (double seed){ // a is the number of seconds per st
         // If the movement finishes inside the environment
         if(NextX < Sq_MaxX && NextX > Sq_MinX && NextY < Sq_MaxY && NextY > Sq_MinY){
             
-            //std::cout<< "If entered" << std::endl;
+            //std::cout<< "If entered: " << Current_x<< " "<<Current_y << std::endl;
             
             //Can save the temp location as the current location
             // rewrite current locaion
@@ -306,16 +308,9 @@ void Animal::LeaveEnterWorld(const double& YBoundExit, const double& XBoundExit,
     
     //std::cout<<"NextDist: " <<NextDist <<std::endl;
 
-    
     //Updates the location vector with the EXIT location
     LocationVector(tempExitsX,tempExitsY,0,0);
     // Updates the location vector with the RE-ENTRY location
     LocationVector(Current_x,Current_y,1,0);
     
-    //if(tempDistToSideBoundary>tempDistToTopBoundary | tempDistToSideBoundary ==0 ){
-     //   NextDist -= tempdisttrav;
-        // The current distance travelled
-     //   Total_distance += tempdisttrav;
-    //};
-
 };

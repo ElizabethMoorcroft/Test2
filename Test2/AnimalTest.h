@@ -23,10 +23,15 @@ public:
     
     //Gets and Sets
     
-    //------------------ Calculations ----------------//
-    void test_NewLocation(double&, double&);
-    void test_UpdateLocation(double);
+    //------------------ Calculations ----------------//    
     void test_LocationVector(double&, double&, int, int);
+    
+    // Correct entering and leaving of world
+    void test_UpdateLocation(double);
+    
+    // Testing that a new location is created.
+    void test_NewLocation1(); // Done
+    void test_NewLocation2(); // Done
     
     // Correct entering and leaving of world
     void test_LeaveEnterWorld1(); // Done
