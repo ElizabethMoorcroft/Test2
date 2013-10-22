@@ -15,22 +15,50 @@
 class AnimalTest {
 public:
     
+    // Run all tests
     void RunAnimalTests();
     
+    // Creating animals
     void test_createanimal(int, double, double, double);
     
-    // Calculations
+    //Gets and Sets
+    
+    //------------------ Calculations ----------------//
     void test_NewLocation(double&, double&);
-    void test_LeaveEnterWorld(const double&, const double&, const double&, const double&);
-    void test_UpdateLocation (double);
+    void test_UpdateLocation(double);
     void test_LocationVector(double&, double&, int, int);
-    double test_CalNext_X(double);
-    double test_CalNext_Y(double);
-    double test_RangeAngle(double);
+    
+    // Correct entering and leaving of world
+    void test_LeaveEnterWorld1(); // Done
+    void test_LeaveEnterWorld2(); // Done
+    void test_LeaveEnterWorld3(); // Done
+    void test_LeaveEnterWorld4(); // Done
+    
+    // Calculating next locations from angle and distance
+    //X
+    void test_CalNext_X1(); // Done
+    void test_CalNext_X2(); // Done
+    void test_CalNext_X3(); // Done
+    void test_CalNext_X4(); // Done
+    void test_CalNext_X5(); // Done
+    void test_CalNext_X6(); // Done
+    //Y
+    void test_CalNext_Y1(); // Done
+    void test_CalNext_Y2(); // Done
+    void test_CalNext_Y3(); // Done
+    void test_CalNext_Y4(); // Done
+    void test_CalNext_Y5(); // Done
+    void test_CalNext_Y6(); // Done
+    
+    // Testing +ve change of angle
+    void test_RangeAngle1(); // Done
+    void test_RangeAngle2(); // Done
+    void test_RangeAngle3(); // Done
+    void test_RangeAngle4(); // Done
     
     //whole object
-    void test_totaldistance(double);
-    void test_changeangle(double);
+    void test_totaldistance(double); // Done
+    void test_changeangle(double);   // Done
     
 };
 

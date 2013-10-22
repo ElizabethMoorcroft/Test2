@@ -49,7 +49,12 @@ public:
     //Set functions
     void setMove_speed(double a);
     void setMove_maxangle(double a){Move_maxangle=a;};
-
+    void setNextAngle(double a){NextAngle=a;};
+    void setNextDist(double a){NextDist=a;};
+    void setCurrentX(double a){Current_x = a;};
+    void setCurrentY(double a){Current_y = a;};
+    void setNextX(double a){Current_x = a;};
+    void setNextY(double a){Current_y = a;};
     
     // Get functions
     double getCurrentX(){return  Current_x;};
@@ -58,6 +63,8 @@ public:
     double getTotalDistance(){return Total_distance;};
     double getNextDist(){return NextDist;};
     double getNextAngle(){return NextAngle;};
+    double getNextX(){return NextX;};
+    double getNextY(){return NextY;};
     
     std::vector<std::vector<double>> getAllLocations(){return All_locations;};
     
