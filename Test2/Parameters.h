@@ -26,14 +26,14 @@ const int SaveMovement = 1; // Saves the movement of the animals for all simulat
 const int SaveSensor = 1; // Saves the Sensor locations (constant throughout all simulations) // 1-saves; 0-doesn't save
 
 //Simulation values - #Animals, #Iterations
-const double DensityAnimals = 70*pow(10,-6); // XX*10^-6 Density/m^2  => XX Density/KM^2
-const int NoOfIterations = 1; // No of iterations with the settings
+const double DensityAnimals = 20*pow(10,-6); // XX*10^-6 Density/m^2  => XX Density/KM^2
+const int NoOfIterations = 10; // No of iterations with the settings
 
 //Random number seed
-const int Seed =54; // initail start seed - becuase this is set makes result repilicable
+const int Seed =1; // initail start seed - becuase this is set makes result repilicable
 
 // Length of simulation
-const double LengthMonitoring = 2*24*(60*60); //Length of monitoring in seconds. XX*(60*60)secs => XX hrs
+const double LengthMonitoring = 0.5*24*(60*60); //Length of monitoring in seconds. XX*(60*60)secs => XX hrs
 
 //Size of the enviroment
 const double Sq_MinX = 0;       // Minimum x value of the environment

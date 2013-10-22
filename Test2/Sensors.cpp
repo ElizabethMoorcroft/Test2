@@ -48,6 +48,7 @@ Sensor::Sensor(int Id, double sensorhalfangle, double sensorradius){
     
     m_detector1 = GradientFromAngle(g_detector1);
     m_detector2 = GradientFromAngle(g_detector2);
+    
     c_detector1  = location_y - location_x*m_detector1;
     c_detector2  = location_y - location_x*m_detector2;
     
@@ -82,6 +83,19 @@ void Sensor::resetCaptures(){
     Captures.clear();
     Captures.resize(round(DensityAnimals*((Sq_MaxX-Sq_MinX)*(Sq_MaxY-Sq_MinY)))*3);
 };
+
+void Sensor::setXLoc(double a){
+    location_x = a;
+    c_detector1  = location_y - location_x*m_detector1;
+    c_detector2  = location_y - location_x*m_detector2;
+};
+
+void Sensor::setYLoc(double a){
+    location_y = a;
+    c_detector1  = location_y - location_x*m_detector1;
+    c_detector2  = location_y - location_x*m_detector2;
+};
+
 void Sensor::setAngle(double a){
     
     angle = a;
@@ -228,6 +242,7 @@ void Sensor::UpdateCaptures(int& Individual_ID,int& itnumber,double& location_x_
      };
      //----------------------------------------------------------------------------------------------------------*/
     
+    std::cout<<"Caught!"<<std::endl;
     myvector[0] = Individual_ID;
     myvector[1] = Sensor_StepOn;
     myvector[2] = Sensor_identifier;
@@ -274,6 +289,7 @@ double Sensor::VertAndAngleInteraction(double& Vert, double& m_Angle, double& c_
 double Sensor::HorzAndAngleInteraction(double& Horz, double& m_Angle, double& c_Angle){
     // y=mx+c
     // => x = (y-c) /m
+    std::cout<<" Horz: " <<Horz << " c_Angle: " <<c_Angle << " m_Angle: " << m_Angle<<std::endl;
     double XCoordinate = (Horz - c_Angle)/m_Angle;
     return(XCoordinate);
 };
@@ -315,8 +331,8 @@ std::vector <double> Sensor::VertAndCircInteraction(double& Vert){
     // =>
     // y = (+/-)sqrt (r^2 - (x-b)^2) +a
     std::vector <double> Coord(4);
-    long double Coordinate1 = sqrt(pow(radius,2) - pow((Vert - location_x),2))+ location_y;
-    long double Coordinate2 = -sqrt(pow(radius,2) - pow((Vert - location_x),2))+ location_y;
+    double Coordinate1 = sqrt(pow(radius,2) - pow((Vert - location_x),2))+ location_y;
+    double Coordinate2 = -sqrt(pow(radius,2) - pow((Vert - location_x),2))+ location_y;
     Coord[0] = Vert;
     Coord[1] = Coordinate1;
     Coord[2] = Vert;
@@ -459,13 +475,13 @@ int Sensor::CapturesIntersection(double& location_x_animal, double& location_y_a
     //if(disttotalcam<20){std::cout<<"Hello"<<std::endl;}
     /*---------------------------------------------------------------------------------------------------------
     // Check for specific case of interest
-    if(Sensor_identifier == 3 && Individual_ID== 0 && Sensor_StepOn>430 && Sensor_StepOn<432){
+    //if(Sensor_identifier == 3 && Individual_ID== 0 && Sensor_StepOn>430 && Sensor_StepOn<432){
         std::cout<<"Start, "<<"location animal: "<<location_x_animal<<", " <<location_y_animal // Current location
                     <<", Past location animal: "<<previous_x_animal<<", "<< previous_y_animal
                     << ", move_angle: " <<move_angle
                     <<", radius: " <<radius
         << std::endl;
-    };
+    //};
     //----------------------------------------------------------------------------------------------------------*/
     
     // finds the total distance travelled between it's new location and it's old location
@@ -477,11 +493,11 @@ int Sensor::CapturesIntersection(double& location_x_animal, double& location_y_a
     double c_animal  = currentlocy-currentlocx*m_animal;
     
     if(angle_HalfWidth < M_PI){ // If the Sensor width is 360˚ then the straight line edges are not important
-        /*---------------------------------------------------------------------------------------------------------
+        //*---------------------------------------------------------------------------------------------------------
          // Check for specific case of interest
-        if(Sensor_identifier == 3 && Individual_ID== 0 && Sensor_StepOn>430 && Sensor_StepOn<432){
-            std::cout<<"Dect1, "<<"m_animal: "<< m_animal<<", c_animal: "<< c_animal << "; m_detector1"<< m_detector1<< std::endl;
-        };
+        //if(Sensor_identifier == 3 && Individual_ID== 0 && Sensor_StepOn>430 && Sensor_StepOn<432){
+            std::cout<<"Dect1, "<<"m_animal: "<< m_animal<<", c_animal: "<< c_animal << "; m_detector1: "<< m_detector1<<"; c_detector1: "<< c_detector1 << std::endl;
+        //};
         //----------------------------------------------------------------------------------------------------------*/
         // Checks for crossing the boundaries for detector 1
         captured += SensorAndMovement(currentlocx, currentlocy,
@@ -493,11 +509,11 @@ int Sensor::CapturesIntersection(double& location_x_animal, double& location_y_a
                                   m_detector1, c_detector1, g_detector1, vh_det1,
                                   disttotal);
     
-        /*---------------------------------------------------------------------------------------------------------
+        //*---------------------------------------------------------------------------------------------------------
          // Check for specific case of interest
-        if(Sensor_identifier == 3 && Individual_ID== 0 && Sensor_StepOn>430 && Sensor_StepOn<432){
-            std::cout<<"Dect2, "<<"m_animal: "<< m_animal<<", c_animal: "<< c_animal << "; m_detector2"<< m_detector2<< std::endl;
-         };
+        //if(Sensor_identifier == 3 && Individual_ID== 0 && Sensor_StepOn>430 && Sensor_StepOn<432){
+            std::cout<<"Dect2, "<<"m_animal: "<< m_animal<<", c_animal: "<< c_animal << "; m_detector2: "<< m_detector2<< std::endl;
+        // };
          // ----------------------------------------------------------------------------------------------------------*/
         // Checks for crossing the boundaries for detector 2
         captured += SensorAndMovement(currentlocx,currentlocy,
@@ -576,10 +592,10 @@ int Sensor::SensorCircAndMovement(double& location_x_animal, double& location_y_
     
    /*---------------------------------------------------------------------------------------------------------
      // Check for specific case of interest
-     if(Individual_ID== 0 && Sensor_StepOn>17654 && Sensor_StepOn<17656){
+    // if(Individual_ID== 0 && Sensor_StepOn>17654 && Sensor_StepOn<17656){
         std::cout<<"XandY[0]: "<<XandY[0]<<", XandY[1]: "<<XandY[1]<<std::endl;
         std::cout<<"XandY[2]: "<<XandY[2]<<", XandY[3]: "<<XandY[3]<<std::endl;
-     };
+     //};
      //----------------------------------------------------------------------------------------------------------*/
     
     //--------- CHECK IN "CapturesIndividual" FOR CAPTURE ---------------//
@@ -590,14 +606,14 @@ int Sensor::SensorCircAndMovement(double& location_x_animal, double& location_y_
         TandA = TimeAndAngleCal(XandY[(v*2)+1], XandY[v*2], previous_y_animal, previous_x_animal, disttotal);
         /*---------------------------------------------------------------------------------------------------------
          // Check for specific case of interest
-         if(Sensor_identifier == 3 && Individual_ID== 0 && Sensor_StepOn>430 && Sensor_StepOn<432){
+        // if(Sensor_identifier == 3 && Individual_ID== 0 && Sensor_StepOn>430 && Sensor_StepOn<432){
         std::cout<<
         "XandY[(v*2)+1]: "<< XandY[(v*2)+1] << " XandY[v*2]: "<<  XandY[v*2]<<
         " previous_y_animal: "<< previous_y_animal << " previous_x_animal: "<<  previous_x_animal<<
         " current_y_animal: "<< location_y_animal << " location_x_animal: "<<  location_x_animal<<
         " m_animal: " << m_animal <<" c_animal: " << c_animal<<
         " TandA[0]: "<<TandA[0]<<", TandA[1]: "<<TandA[1]<< ", move_angle: "<<move_angle<<std::endl;
-         };
+         //};
          //----------------------------------------------------------------------------------------------------------*/
          
         // The time has to be less than the total distance away form starting location
@@ -694,6 +710,7 @@ int Sensor::SensorAndMovement(double& location_x_animal, double& location_y_anim
     
     //Animal has horizontal movement
     else if(currentlocy == previouslocy){
+        std::cout<<"Hi " <<std::endl;
         //Horzontal detector
         // Therefore they must both share the same y-coord
         if(det==2 && location_y== previouslocy){
@@ -712,7 +729,9 @@ int Sensor::SensorAndMovement(double& location_x_animal, double& location_y_anim
         else if(det==1){XandY[0] = location_x; XandY[1] = previouslocy;} // END OF IF DET ==1
         // Detector at angle
         // The y-coord of the movement, and the x-coord is calculated by HorzAndAngleInteraction
-        else {XandY[0] = HorzAndAngleInteraction(currentlocy, m_detector, c_detector); XandY[1] = currentlocy;};// END ELSE
+        else {
+            std::cout<<"Hi 2" <<std::endl;
+            XandY[0] = HorzAndAngleInteraction(currentlocy, m_detector, c_detector); XandY[1] = currentlocy;};// END ELSE
     }//--------END OF HORZONTAL ANIMAL MOVEMENT ---------------//
     
     
@@ -760,13 +779,13 @@ int Sensor::SensorAndMovement(double& location_x_animal, double& location_y_anim
     TandA = TimeAndAngleCal(XandY[1], XandY[0], previouslocy, previouslocx, disttotal);
     
     
-    /*---------------------------------------------------------------------------------------------------------
+    //*---------------------------------------------------------------------------------------------------------
     // Check for specific case of interest
-    if(Sensor_identifier == 3 && Individual_ID== 0 && Sensor_StepOn>430 && Sensor_StepOn<432){
+    //if(Sensor_identifier == 3 && Individual_ID== 0 && Sensor_StepOn>430 && Sensor_StepOn<432){
         std::cout<<"move_angle: "<<move_angle<<std::endl;
         std::cout<<"XandY[0]: "<<XandY[0] <<", XandY[1]: "<<XandY[1] <<std::endl;
         std::cout<<"TandA[0]: "<<TandA[0] <<", TandA[1]: "<<TandA[1] <<std::endl;
-    };
+    //};
     // ----------------------------------------------------------------------------------------------------------*/
     
     // The time has to be less than the total distance away form starting location

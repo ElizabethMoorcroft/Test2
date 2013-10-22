@@ -31,6 +31,8 @@ public:
     void SensorTest_CaptureIndividual5();
     void SensorTest_CaptureIndividual6();
     
+    void TestTimeAndAngleCal();
+
     void TestVertAndAngleInteraction();
     void TestHorzAndAngleInteraction();
     void TestAngleAndAngleInteraction();

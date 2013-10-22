@@ -48,8 +48,8 @@ public:
     void resetCaptures();
     
     // "Set functions"
-    void setXLoc(double a){location_x = a;};
-    void setYLoc(double a){location_y = a;};
+    void setXLoc(double a);
+    void setYLoc(double a);
     void setAngle(double a);
     void setHalfAngle(double a);
     void setRadius(double a){radius = a;};

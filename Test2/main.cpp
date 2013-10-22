@@ -59,7 +59,7 @@ std::string make_directory( const std::string& directory){
 };
 
 // Base name each file
-std::string SaveDirectory = make_directory("/Users/student/Documents/Bats/Simulations/TestCaps");
+std::string SaveDirectory = make_directory("/Users/student/Documents/Bats/Simulations/Test");
 
 /// END OF FILE NAMES
 
@@ -79,7 +79,6 @@ int main(){
     int NoAnimal = floor(DensityAnimals*area);
     int NoSensors = LengthSW*LengthSR;
     
-    std::cout<<"StepLengthDist: " <<StepLengthDist <<std::endl;
     /*-------------------------------------------------------
      // Creates files for saving - Including headings
      --------------------------------------------------------*/
@@ -177,7 +176,7 @@ int main(){
     //Test on the sensor
     ///////////THIS NEEDS UPDATING!!!!
     
-    int test=0;
+    int test=1;
     if(test==1){
         SensorTest ST1;
         ST1.RunSensorTests();
@@ -339,6 +338,7 @@ int main(){
             double stepcount;
             for(int j=0; j<NoSteps; j++){
                 stepcount = j*1000;
+                //if(j==0){std::cout<<"NoAnimal: " <<i <<" RandomNumberCurrentAnimal[stepcount]: " <<RandomNumberCurrentAnimal[stepcount]<<std::endl;}
                  AllAnimals[i] -> UpdateLocation(RandomNumberCurrentAnimal[stepcount]);
             }; //End of j loop for Steps
             

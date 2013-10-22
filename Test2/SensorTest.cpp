@@ -29,8 +29,9 @@ void SensorTest::RunSensorTests(){
     SensorTest_CaptureIndividual4();
     SensorTest_CaptureIndividual5();
     SensorTest_CaptureIndividual6();
+    std::cout<<"Passed - CaptureIndividual tests 1-6" <<std::endl;
     
-    /*
+    
     TestVertAndAngleInteraction();
     TestHorzAndAngleInteraction();
     TestAngleAndAngleInteraction();
@@ -39,7 +40,7 @@ void SensorTest::RunSensorTests(){
     TestAngleAndCircInteraction();
     
     TestGradientFromAngle();
-
+    
     Test_CapturesIntersection1();
     Test_CapturesIntersection2();
     Test_CapturesIntersection3();
@@ -50,7 +51,7 @@ void SensorTest::RunSensorTests(){
     Test_CapturesIntersection8();
     Test_CapturesIntersection9();
     Test_CapturesIntersection10();
-     */
+    
 };
 
 //---------------------- Constructor -------------------//
@@ -125,11 +126,11 @@ void SensorTest::SensorTest_CaptureIndividual2(){
  
  void SensorTest::SensorTest_CaptureIndividual3(){
     Sensor Sensor1;
-    Sensor1 = Sensor(1, M_PI/2, 0);
+    Sensor1 = Sensor(1, M_PI/2, 1);
     Sensor1.setXLoc(0); Sensor1.setYLoc(0);
     int Estimate;
     //Sensor1.setAngle(0); Sensor1.setHalfAngle(0);
-    Estimate = Sensor1.CapturesIndividual(0.5,0.5,1,M_PI,0,0,0,0); // Animal is on within boundary and facing towards, Sensor is facing towards
+    Estimate = Sensor1.CapturesIndividual(0.5,0.5,1,M_PI,0,0,0,0); // Animal is on within boundary and facing towards Sensor 
     if(Estimate!=1){
         std::cout<<"Error! Failed Sensor test - TestCI: "<<"3" <<std::endl;
         exit (EXIT_FAILURE);
@@ -138,7 +139,7 @@ void SensorTest::SensorTest_CaptureIndividual2(){
  
  void SensorTest::SensorTest_CaptureIndividual4(){
     Sensor Sensor1;
-    Sensor1 = Sensor(1, M_PI/4, 0);
+    Sensor1 = Sensor(1, M_PI/4, 1);
     Sensor1.setXLoc(0); Sensor1.setYLoc(0);
     int Estimate;
     Sensor1.setAngle(0); Sensor1.setHalfAngle(M_PI_4);
@@ -151,7 +152,7 @@ void SensorTest::SensorTest_CaptureIndividual2(){
  
  void SensorTest::SensorTest_CaptureIndividual5(){
     Sensor Sensor1;
-    Sensor1 = Sensor(1, M_PI/4, 0);
+    Sensor1 = Sensor(1, M_PI/4, 1);
     Sensor1.setXLoc(0); Sensor1.setYLoc(0);
     int Estimate;
     Sensor1.setAngle(0); Sensor1.setHalfAngle(M_PI_4);
@@ -164,12 +165,12 @@ void SensorTest::SensorTest_CaptureIndividual2(){
  
  void SensorTest::SensorTest_CaptureIndividual6(){
     Sensor Sensor1;
-    Sensor1 = Sensor(1, M_PI/4, 0);
+    Sensor1 = Sensor(1, M_PI/4, 1);
     Sensor1.setXLoc(0); Sensor1.setYLoc(0);
     int Estimate;
     Sensor1.setAngle(0); Sensor1.setHalfAngle(M_PI_4);
-    Estimate = Sensor1.CapturesIndividual(0,-0.5,1,M_PI/4,0,0,0,0); // Animal in range and facing towards Sensor, but Sensor facing away
-    if(Estimate!=1){
+    Estimate = Sensor1.CapturesIndividual(0,-0.5,1,M_PI/4,0,0,0,0); // Animal is out of range
+    if(Estimate!=0){
         std::cout<<"Error! Failed Sensor test - TestCI: "<<"6" <<std::endl;
         exit (EXIT_FAILURE);
     }
@@ -183,12 +184,11 @@ void SensorTest::SensorTest_CaptureIndividual2(){
  
  // Unit testing for:
  //      - VertAndAngleInteraction
-void Sensor::TestVertAndAngleInteraction(){
-    std::cout<<"Hello in vert/ange"<<std::endl;
+void SensorTest::TestVertAndAngleInteraction(){
  
     Sensor Sensor1;
     Sensor1 = Sensor(1, 0, 0);
- 
+    
     // Vertical line X = 0; Angle line: Gradient  = 1, Intercept = 5;
     // The intercept should be at (X= 0, Y=5)
     double v1 = 0; double v2 = 1; double v3 = 5;
@@ -212,12 +212,13 @@ void Sensor::TestVertAndAngleInteraction(){
     };
     //IF passed then print to screen
     std::cout<<"Passed! Sensor test - TestVertAndAngleInteraction"<< std::endl;
+    
  };
- 
+
 
  // Unit testing for:
  //      - TestHorzAndAngleInteraction
-void Sensor::TestHorzAndAngleInteraction(){
+void SensorTest::TestHorzAndAngleInteraction(){
  
     Sensor Sensor1;
     Sensor1 = Sensor(1, 0, 0);
@@ -250,7 +251,7 @@ void Sensor::TestHorzAndAngleInteraction(){
  
  // Unit testing for:
  //      - TestHorzAndAngleInteraction
-void Sensor::TestAngleAndAngleInteraction(){
+void SensorTest::TestAngleAndAngleInteraction(){
  
     Sensor Sensor1;
     Sensor1 = Sensor(1, 0, 0);
@@ -287,7 +288,7 @@ void Sensor::TestAngleAndAngleInteraction(){
  
  // Unit testing for:
  //      - TestHorzAndCircInteraction
- void Sensor::TestHorzAndCircInteraction(){
+ void SensorTest::TestHorzAndCircInteraction(){
  
     Sensor Sensor1;
     Sensor1 = Sensor(1, 0, 0);
@@ -337,9 +338,9 @@ void Sensor::TestAngleAndAngleInteraction(){
  // THIS NEEDS TO BE CHANGED TO CALCULATE ESTIMATE TO BE 4//
  // Unit testing for:
  //      - TestVertAndCircInteraction
- void Sensor::TestVertAndCircInteraction(){
+ void SensorTest::TestVertAndCircInteraction(){
      // Initate vector for results of the VertAndCircInteraction
-     std::vector <double> Estimate(2);
+     std::vector <double> Estimate(4);
  
      Sensor Sensor1;
      Sensor1 = Sensor(1, M_PI, 1);
@@ -347,20 +348,23 @@ void Sensor::TestAngleAndAngleInteraction(){
      
      double v1 = 0;
     Estimate = Sensor1.VertAndCircInteraction(v1);
-    if(Estimate[0]!=0 && Estimate[1]!=0){
+    if((Estimate[0]!=0 && Estimate[1]!=1 && Estimate[2]!=0 && Estimate[1]!=-1) ||
+       (Estimate[0]!=0 && Estimate[1]!=-1 && Estimate[2]!=0 && Estimate[1]!=1)){
         std::cout<<"Error! Failed Sensor test - TestVertAndCircInteraction: "<<"1" <<std::endl;
         exit (EXIT_FAILURE);
     }
      v1 = 1;
     Estimate = Sensor1.VertAndCircInteraction(v1);
-    if((Estimate[0]!=-1 && Estimate[1]!=1)||(Estimate[0]!=1 && Estimate[1]!=-1)){
+     if((Estimate[0]!=1 && Estimate[1]!=0 && Estimate[2]!=1 && Estimate[1]!=0) ){
         std::cout<<"Error! Failed Sensor test - TestVertAndCircInteraction: "<<"2" <<std::endl;
         exit (EXIT_FAILURE);
     }
+     
      v1 = 0.5;
     Estimate = Sensor1.VertAndCircInteraction(v1);
     double temp = sqrt(1-pow(0.5,2));
-    if((Estimate[0]!=-temp && Estimate[1]!=temp)||(Estimate[0]!=temp && Estimate[1]!=-temp)){
+    if((Estimate[0]!=-temp && Estimate[1]!=temp && Estimate[2]!=temp && Estimate[1]!=-temp) ||
+       (Estimate[0]!=temp && Estimate[1]!=-temp && Estimate[2]!=-temp && Estimate[1]!=temp)){
         std::cout<<"Error! Failed Sensor test - TestVertAndCircInteraction: "<<"3" <<std::endl;
         exit (EXIT_FAILURE);
     };
@@ -369,7 +373,7 @@ void Sensor::TestAngleAndAngleInteraction(){
  }; // END OF UNIT TEST
  
  
- void Sensor::TestAngleAndCircInteraction(){
+ void SensorTest::TestAngleAndCircInteraction(){
     std::vector <double> Estimate(4);
     Sensor Sensor1;
     Sensor1 = Sensor(1, 0, 1);
@@ -390,10 +394,10 @@ void Sensor::TestAngleAndAngleInteraction(){
  
      v1 = -1; v2 = 0;
     Estimate = Sensor1.AngleAndCircInteraction(v1,v2);
-    if(((Sensor1.approximatelyequal(Estimate[0],-temp) && (Sensor1.approximatelyequal(Estimate[2],temp)))
-    &&(Sensor1.approximatelyequal(Estimate[2],temp) && (Sensor1.approximatelyequal(Estimate[3],-temp))))
-    ||((Sensor1.approximatelyequal(Estimate[0],temp) && (Sensor1.approximatelyequal(Estimate[2],-temp)))
-    &&(Sensor1.approximatelyequal(Estimate[2],-temp) && (Sensor1.approximatelyequal(Estimate[3],temp))))){
+    if(((Sensor1.approximatelyequal(Estimate[0],-temp) && (Sensor1.approximatelyequal(Estimate[2],-temp)))
+    &&(Sensor1.approximatelyequal(Estimate[2],temp) && (Sensor1.approximatelyequal(Estimate[3],temp))))
+    ||((Sensor1.approximatelyequal(Estimate[0],temp) && (Sensor1.approximatelyequal(Estimate[2],temp)))
+    &&(Sensor1.approximatelyequal(Estimate[2],-temp) && (Sensor1.approximatelyequal(Estimate[3],-temp))))){
         std::cout<<"Error! Failed Sensor test - TestAngleAndCircInteraction: "<<"2" <<std::endl;
         exit (EXIT_FAILURE);
     }
@@ -415,7 +419,7 @@ void Sensor::TestAngleAndAngleInteraction(){
  
  
  //--------TIME ANGLE TEST  ---------------//
- void Sensor::TestTimeAndAngleCal(){
+ void SensorTest::TestTimeAndAngleCal(){
     std::vector <double> Estimate(2);
     Sensor Sensor1;
     Sensor1 = Sensor(1, 0, 0);
@@ -477,7 +481,7 @@ void Sensor::TestAngleAndAngleInteraction(){
 
 
 //---------- Test Gradient from angle -----------------//
-void Sensor::TestGradientFromAngle(){
+void SensorTest::TestGradientFromAngle(){
     // Initate double for results
     double Estimate;
     Sensor Sensor1;
@@ -544,7 +548,9 @@ void Sensor::TestGradientFromAngle(){
  
     int loc1; int loc2;
     Sensor Sensor1;
-    Sensor1 = Sensor(1, M_PI/4, 1);
+    Sensor1 = Sensor(1, M_PI, 1);
+     Sensor1.setXLoc(0); Sensor1.setYLoc(0);
+
  
     //-------------------------------------------------//
     // Vertical movement through the centre of sector
@@ -555,22 +561,23 @@ void Sensor::TestGradientFromAngle(){
     //  - At detector2 line  (X=0,Y=0,T=0)
     //  - At Circle line (X=0 ,Y=1 ,T=1)
     //  - At end of the step (X=0,Y=1,T=1)
-     double v1 = 0; double v2 = 1; double v3 = 0; double v4 = 0;
+     double v1 = 0; double v2 = 0; double v3 = 0; double v4 = 1;
      int v5 =1; int v7 =1;
-     double v6 =0;
+     double v6 = M_PI;
     Sensor1.CapturesIntersection(v1,v2,v3,v4, // Current x/y, previous x,y
                      v5, // ID
                      M_PI, //Call width - circular call (to make this easier!)
                      v6,  // move_angle,
                      v7); // IT
-     
      std::vector<std::vector<double>> caps = Sensor1.getCaptures();
+
+     
     for(int i=0; i<caps.size(); i++){
         if(caps[i].size()>0){
             // The maximum number of captures possible for any 1 movement is 5
             if(i>4){std::cout<<"Error! Failed Sensor test - TestCapturesIntersection: "<<"1a" <<std::endl;exit (EXIT_FAILURE);};
             
-            //std::cout<<Captures[i][4]<<", " <<Captures[i][5]<<", " <<Captures[i][6]<<std::endl;
+            //std::cout<<caps[i][4]<<", " <<caps[i][5]<<", " <<caps[i][6]<<std::endl;
             
             if(caps[i][4] ==0 && caps[i][5] ==0){loc1 += 1;};
             if(caps[i][4] ==0 && caps[i][5] ==1){loc2 += 1;};
@@ -581,7 +588,7 @@ void Sensor::TestGradientFromAngle(){
         };
     };
     //std::cout<<"loc1: "<< loc1<<", loc2: "<< loc1<< std::endl;
-    if(loc1!=2 || loc2!=2){
+    if(loc1!=0 || loc2!=1){
             std::cout<<"Error! Failed Sensor test - TestCapturesIntersection: "<<"1c" <<std::endl;
             exit (EXIT_FAILURE);
     };
@@ -594,6 +601,8 @@ void Sensor::TestGradientFromAngle(){
     int loc1 =0;
     int loc2 =0;
     Sensor Sensor1;
+     Sensor1 = Sensor(1, M_PI_4, 1);
+     Sensor1.setXLoc(0); Sensor1.setYLoc(0);
  
     //-------------------------------------------------//
     // Horizontal movement through the centre of sector
@@ -604,11 +613,12 @@ void Sensor::TestGradientFromAngle(){
     //  - At detector1 line (X=-0.5,Y=0.5,T=0)
     //  - At detector2 line  (X=0.5,Y=0.5,T=1)
     //  - Not at Circle line (X=0 ,Y= ,T= )
-    //  - At end of the step (X=0.5,Y=0.5,T=1)
      double v1 = 0.5; double v2 = 0.5; double v3 = -0.5; double v4 = 0.5;
      int v5 =1;
      double v6 =M_PI/2;
      int v7 =1;
+     std::cout<<"Hello 2"<<std::endl;
+
     Sensor1.CapturesIntersection(v1,v2,v3,v4, // Current x/y, previous x,y
                         v5, // ID
                         M_PI, //Call width - circular call (to make this easier!)
@@ -618,11 +628,12 @@ void Sensor::TestGradientFromAngle(){
     loc1 =0; loc2 =0;
     for(int i=0; i<caps.size(); i++){
         if(caps[i].size()>0){
+            std::cout<<"Hello "<<std::endl;
             // The maximum number of captures possible for any 1 movement is 5
             if(i>4){std::cout<<"Error! Failed Sensor test - TestCapturesIntersection: "<<"2a" <<std::endl;exit (EXIT_FAILURE);};
  
             //X,Y,TIME
-            //std::cout<<Captures[i][4]<<", " <<Captures[i][5]<<", "  <<Captures[i][6]<<std::endl;
+            std::cout<<caps[i][4]<<", " <<caps[i][5]<<", "  <<caps[i][6]<<std::endl;
  
             if(caps[i][4] ==0.5 && caps[i][5] ==0.5){loc1 += 1;};
             if(caps[i][4] ==-0.5 && caps[i][5] ==0.5){loc2 += 1;};
@@ -633,7 +644,7 @@ void Sensor::TestGradientFromAngle(){
         };
     };
     //std::cout<<"loc1: "<< loc1<<", loc2: "<< loc2<< std::endl;
-    if(loc1!=2 || loc2!=1){
+    if(loc1!=1 || loc2!=1){
         std::cout<<"Error! Failed Sensor test - TestCapturesIntersection: "<<"2c" <<std::endl;
         exit (EXIT_FAILURE);
     };

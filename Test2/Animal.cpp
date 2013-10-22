@@ -208,7 +208,9 @@ void  Animal::UpdateLocation (double seed){ // a is the number of seconds per st
  // is needed initiating the correct function
  ----------------------------------------------*/
 void Animal::NewLocation (double& seed, double& seed2){
-
+    
+    //std::cout<<"Seed: "<<seed <<std::endl;
+    
     //set up a random number
     RandNum Number1;
     //Correlated random walk
@@ -250,7 +252,7 @@ void Animal::LeaveEnterWorld(const double& YBoundExit, const double& XBoundExit,
     double tempExitsY =0;
     double tempExitsX =0;
     
-    double tempdisttrav=0;
+    //double tempdisttrav=0;
     
     if(tempDistToSideBoundary>tempDistToTopBoundary | tempDistToSideBoundary ==0 ){
     
@@ -264,7 +266,11 @@ void Animal::LeaveEnterWorld(const double& YBoundExit, const double& XBoundExit,
         Current_x = tempExitsX;
         Current_angle = NextAngle;
         // The distance left to travel
-        tempdisttrav = tempDistToTopBoundary;
+        //tempdisttrav = tempDistToTopBoundary;
+        // The distance left to travel
+        NextDist -=tempDistToTopBoundary;
+        // The current distance travelled
+        Total_distance += tempDistToTopBoundary;
 
         
     }// end of exit by the top/bottom of the world 
@@ -279,12 +285,12 @@ void Animal::LeaveEnterWorld(const double& YBoundExit, const double& XBoundExit,
         Current_x = XBoundEnter;
         Current_angle = NextAngle;
         
-        tempdisttrav = tempDistToSideBoundary;
+        //tempdisttrav = tempDistToSideBoundary;
 
         // The distance left to travel
-        //NextDist -=tempDistToSideBoundary;
+        NextDist -=tempDistToSideBoundary;
         // The current distance travelled
-        //Total_distance += tempDistToSideBoundary;
+        Total_distance += tempDistToSideBoundary;
         //std::cout <<"leaves Side"<<std::endl;
     }; // end of exit by the side of world
 
@@ -301,10 +307,10 @@ void Animal::LeaveEnterWorld(const double& YBoundExit, const double& XBoundExit,
     // Updates the location vector with the RE-ENTRY location
     LocationVector(Current_x,Current_y,1,0);
     
-    if(tempDistToSideBoundary>tempDistToTopBoundary | tempDistToSideBoundary ==0 ){
-        NextDist -= tempdisttrav;
+    //if(tempDistToSideBoundary>tempDistToTopBoundary | tempDistToSideBoundary ==0 ){
+     //   NextDist -= tempdisttrav;
         // The current distance travelled
-        Total_distance += tempdisttrav;
-    };
+     //   Total_distance += tempdisttrav;
+    //};
 
 };
