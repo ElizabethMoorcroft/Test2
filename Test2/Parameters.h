@@ -51,7 +51,6 @@ const double SensorRadius[LengthSR] = {1,5,10,20};
 //Movement parameters
 const double AnimalSpeed = 0.46;//0.46; // ms^-1
 const double StepLength = 5*60; //Length of each step in seconds
-const double StepLengthDist = StepLength*AnimalSpeed;
 const double CorrWalkMaxAngleChange = 0*M_PI/180; // In Radians. Half width. X°= X*pi/180rads
 
 //Call parameters

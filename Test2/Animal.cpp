@@ -44,6 +44,7 @@ Animal::Animal(int a, double i, double j, double k) {
     Current_y = j;
     Current_angle = k;
     Current_angle= RangeAngle(Current_angle);
+    StepLengthDist = StepLength*Move_speed;
     
     // When initialising the step number and the current distance travelled will always be set to zero
     step_number = 0;
@@ -68,7 +69,11 @@ Animal::Animal(int a, double i, double j, double k) {
  //                                        Set functions
  //
  --------------------------------------------------------------------------------------------------------*/
-
+//Set functions
+void Animal::setMove_speed(double a){
+    Move_speed = a;
+    StepLengthDist = StepLength*Move_speed;
+};
 
 /*--------------------------------------------------------------------------------------------------------
  //

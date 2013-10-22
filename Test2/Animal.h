@@ -23,6 +23,8 @@ class Animal {
     int Move_NonCorr;
     double Move_speed;
     double Move_maxangle;
+    double StepLengthDist;
+
         
     double Current_x;
     double Current_y;
@@ -44,10 +46,18 @@ public:
     Animal();
     Animal(int, double, double, double);
     
+    //Set functions
+    void setMove_speed(double a);
+    void setMove_maxangle(double a){Move_maxangle=a;};
+
+    
     // Get functions
     double getCurrentX(){return  Current_x;};
     double getCurrentY(){return  Current_y;};
     double getID(){return identifier;};
+    double getTotalDistance(){return Total_distance;};
+    double getNextDist(){return NextDist;};
+    double getNextAngle(){return NextAngle;};
     
     std::vector<std::vector<double>> getAllLocations(){return All_locations;};
     

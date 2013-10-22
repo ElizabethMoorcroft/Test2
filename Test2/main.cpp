@@ -16,6 +16,7 @@
 
 //Header files
 #include "Animal.h"
+#include "AnimalTest.h"
 #include "RandNum.h"
 #include "Sensors.h"
 #include "SensorTest.h"
@@ -180,6 +181,9 @@ int main(){
     if(test==1){
         SensorTest ST1;
         ST1.RunSensorTests();
+        
+        AnimalTest AT1;
+        AT1.RunAnimalTests();
      /*
         Sensor Sensor1;
         Sensor1 = Sensor(1); // ID
@@ -379,7 +383,7 @@ int main(){
                         double &previousy = TempAllLocations[stepcounter-1][3];
                         // Calcualtes whether the animal is captured
                         
-                        double checkforcapture =StepLengthDist*2;
+                        double checkforcapture =StepLength*AnimalSpeed*2;
                         for(int sensor=0; sensor<NoSensors; sensor++){
                             //std::cout<<"Sensor: "<<sensor << "/" << NoSensors <<std::endl;
                             sensorx = AllSensors[sensor] -> getXloc();

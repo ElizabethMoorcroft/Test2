@@ -15,6 +15,8 @@
 class AnimalTest {
 public:
     
+    void RunAnimalTests();
+    
     void test_createanimal(int, double, double, double);
     
     // Calculations
@@ -26,9 +28,9 @@ public:
     double test_CalNext_Y(double);
     double test_RangeAngle(double);
     
-    //object
-    void test_totaldistance();
-    void test_changeangle();
+    //whole object
+    void test_totaldistance(double);
+    void test_changeangle(double);
     
 };
 
