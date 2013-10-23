@@ -26,9 +26,6 @@ public:
     //------------------ Calculations ----------------//    
     void test_LocationVector(double&, double&, int, int);
     
-    // Correct entering and leaving of world
-    void test_UpdateLocation(double);
-    
     // Testing that a new location is created.
     void test_NewLocation1(); // Done
     void test_NewLocation2(); // Done
@@ -61,9 +58,11 @@ public:
     void test_RangeAngle3(); // Done
     void test_RangeAngle4(); // Done
     
-    //whole object
+    //whole object (by looping updatelocation)
     void test_totaldistance(double); // Done
     void test_changeangle(double);   // Done
+    void test_maxdisplacement();     // Done
+    void test_displacement();        // Done
     
 };
 

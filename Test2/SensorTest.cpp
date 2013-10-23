@@ -16,11 +16,14 @@ void SensorTest::RunSensorTests(){
     
     //std::cout<<"Hello"<<std::endl;
     
+    //---- Constructor -----//
     void SensorTest_construct();
+    //std::cout<<"Passed - Sensor test. Constructor" <<std::endl;
     
     //---- Get / Set -----//
     SensorTest_setgetAngle();
     SensorTest_setgetHalfAngle();
+    //std::cout<<"Passed - Sensor test. Gets & sets tests" <<std::endl;
     
     // ---- Functions ----//
     SensorTest_CaptureIndividual1();
@@ -29,8 +32,7 @@ void SensorTest::RunSensorTests(){
     SensorTest_CaptureIndividual4();
     SensorTest_CaptureIndividual5();
     SensorTest_CaptureIndividual6();
-    std::cout<<"Passed - CaptureIndividual tests 1-6" <<std::endl;
-    
+    //std::cout<<"Passed - Sensor test. CaptureIndividual tests 1-6" <<std::endl;
     
     TestVertAndAngleInteraction();
     TestHorzAndAngleInteraction();
@@ -38,8 +40,10 @@ void SensorTest::RunSensorTests(){
     TestHorzAndCircInteraction();
     TestVertAndCircInteraction();
     TestAngleAndCircInteraction();
+    //std::cout<<"Passed - Sensor test. Line interactions" <<std::endl;
     
     TestGradientFromAngle();
+    //std::cout<<"Passed - Sensor test. Geometry tests" <<std::endl;
     
     Test_CapturesIntersection1();
     Test_CapturesIntersection2();
@@ -51,7 +55,7 @@ void SensorTest::RunSensorTests(){
     Test_CapturesIntersection8();
     Test_CapturesIntersection9();
     Test_CapturesIntersection10();
-    std::cout<<"Passed - CaptureIntersection tests 1-10" <<std::endl;
+    //std::cout<<"Passed - Sensor test. CaptureIntersection tests 1-10" <<std::endl;
 
     
 };
@@ -213,7 +217,7 @@ void SensorTest::TestVertAndAngleInteraction(){
         exit (EXIT_FAILURE);
     };
     //IF passed then print to screen
-    std::cout<<"Passed! Sensor test - TestVertAndAngleInteraction"<< std::endl;
+    //std::cout<<"Passed! Sensor test - TestVertAndAngleInteraction"<< std::endl;
     
  };
 
@@ -247,7 +251,7 @@ void SensorTest::TestHorzAndAngleInteraction(){
         exit (EXIT_FAILURE);
     };
     //IF passed then print to screen
-    std::cout<<"Passed! Sensor test - TestHorzAndAngleInteraction "<< std::endl;
+    //std::cout<<"Passed! Sensor test - TestHorzAndAngleInteraction "<< std::endl;
  };// END OF UNIT TEST
  
  
@@ -285,8 +289,8 @@ void SensorTest::TestAngleAndAngleInteraction(){
         exit (EXIT_FAILURE);
     };
     //IF passed then print to screen
-    std::cout<<"Passed! Sensor test - TestAngleAndAngleInteraction"<< std::endl;
-    }; // END OF UNIT TEST
+    //std::cout<<"Passed! Sensor test - TestAngleAndAngleInteraction"<< std::endl;
+}; // END OF UNIT TEST
  
  // Unit testing for:
  //      - TestHorzAndCircInteraction
@@ -333,7 +337,7 @@ void SensorTest::TestAngleAndAngleInteraction(){
     exit (EXIT_FAILURE);
     };
     //IF passed then print to screen
-    std::cout<<"Passed! Sensor test - TestHorzAndCircInteraction"<< std::endl;
+    //std::cout<<"Passed! Sensor test - TestHorzAndCircInteraction"<< std::endl;
  }; // END OF UNIT TEST
  
  
@@ -371,7 +375,7 @@ void SensorTest::TestAngleAndAngleInteraction(){
         exit (EXIT_FAILURE);
     };
     //IF passed then print to screen
-    std::cout<<"Passed! Sensor test - TestVertAndCircInteraction"<< std::endl;
+   //std::cout<<"Passed! Sensor test - TestVertAndCircInteraction"<< std::endl;
  }; // END OF UNIT TEST
  
  
@@ -416,7 +420,7 @@ void SensorTest::TestAngleAndAngleInteraction(){
         std::cout<<"Error! Failed Sensor test - TestAngleAndCircInteraction: "<<"3" <<std::endl;
         exit (EXIT_FAILURE);
     }
-    std::cout<<"Passed! Sensor test - TestAngleAndCircInteraction"<< std::endl;
+    //std::cout<<"Passed! Sensor test - TestAngleAndCircInteraction"<< std::endl;
 };
  
  
@@ -476,7 +480,7 @@ void SensorTest::TestAngleAndAngleInteraction(){
         exit (EXIT_FAILURE);
     };
     // IF passed print to screen
-    std::cout<<"Passed! Sensor test - TestTimeAndAngleCal"<< std::endl;
+    //std::cout<<"Passed! Sensor test - TestTimeAndAngleCal"<< std::endl;
  };
 
 
@@ -538,7 +542,7 @@ void SensorTest::TestGradientFromAngle(){
         exit (EXIT_FAILURE);
     }
     // If passed print to screen
-    std::cout<<"Passed! Sensor test - TestGradientFromAngle"<< std::endl;
+    // std::cout<<"Passed! Sensor test - TestGradientFromAngle"<< std::endl;
 };
 //End of test for Gradient from angle//
 
@@ -1015,7 +1019,7 @@ void SensorTest::Test_CapturesIntersection9(){
         };
     };
             
-    std::cout<<"Passed! Sensor test - TestSensorAndMovement"<< std::endl;
+    //std::cout<<"Passed! Sensor test - TestSensorAndMovement"<< std::endl;
 };
 
 

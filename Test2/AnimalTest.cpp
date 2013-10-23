@@ -12,14 +12,16 @@
 
 void AnimalTest::RunAnimalTests(){
     
-    //std::cout<<"Hello"<<std::endl;
-    
     test_totaldistance(4);
-    std::cout<<"Passed - Animal total distance" <<std::endl;
+    //std::cout<<"Passed - Animal total distance" <<std::endl;
     
     test_changeangle(0);
     test_changeangle(M_PI_4);
-    std::cout<<"Passed - Animal change in move angle" <<std::endl;
+    //std::cout<<"Passed - Animal change in move angle" <<std::endl;
+    
+    test_displacement();
+    test_maxdisplacement();
+    //std::cout<<"Passed - Displacement" <<std::endl;
     
     test_CalNext_X1();
     test_CalNext_X2();
@@ -33,36 +35,74 @@ void AnimalTest::RunAnimalTests(){
     test_CalNext_Y4();
     test_CalNext_Y5();
     test_CalNext_Y6();
-    std::cout<<"Passed - Calculating next location" <<std::endl;
+    //std::cout<<"Passed - Calculating next location" <<std::endl;
     
     test_RangeAngle1();
     test_RangeAngle2();
     test_RangeAngle3();
     test_RangeAngle4();
-    std::cout<<"Passed - Angle range cals" <<std::endl;
+    //std::cout<<"Passed - Angle range cals" <<std::endl;
     
     test_LeaveEnterWorld1();
     test_LeaveEnterWorld2();
     test_LeaveEnterWorld3();
     test_LeaveEnterWorld4();
-    std::cout<<"Passed - Entering and leaving the world" <<std::endl;
+    //std::cout<<"Passed - Entering and leaving the world" <<std::endl;
 
     test_NewLocation1();
     test_NewLocation2();
-    std::cout<<"Passed - Calculating a random new location" <<std::endl;
-
+    //std::cout<<"Passed - Calculating a random new location" <<std::endl;
     
-    std::cout<<"Animal tests over" <<std::endl;
+    //std::cout<<"Passed all animal tests" <<std::endl;
     
 };
 
 
-void AnimalTest::test_totaldistance(double a){
+void AnimalTest::test_displacement(){
     
     // Set up new animal
     Animal Animal1;
-    Animal1 = Animal(1, 0, 1, M_PI_4);
-    Animal1.setMove_speed(a);
+    Animal1 = Animal(1, Sq_MinX+ 1,Sq_MinY+ 1, M_PI_4);
+    Animal1.setMove_speed(4);
+    Animal1.setMove_maxangle(0);
+    Animal1.setlargelocationvector(pow(10,7));
+    
+    double displacement =0;
+    int error =0;
+    double CX =Sq_MinX;     double CY =Sq_MinY;
+    
+    // Simulate 1mill next distances
+    for(int i=0; i<1*pow(10,6); i++){
+        srand(i);
+        std::vector<double> RandomNumberStream(50);
+        for(int j=0;j<50;j++){RandomNumberStream[j] = double (rand());};
+        
+        //std::cout<< i << " "<<RandomNumberStream[49] <<std::endl;
+
+        Animal1.UpdateLocation(RandomNumberStream[49]);
+        
+        displacement = sqrt(pow(Animal1.getCurrentX() - CX,2)+pow(Animal1.getCurrentY() - CY,2));
+        if(displacement==0){error+=1; std::cout<< i <<" CX: " <<CX <<" CY: "<<CY<<std::endl;};
+        
+        CX =Animal1.getCurrentX(); CY =Animal1.getCurrentY();
+    };
+    
+    //The average speed must be with in 1% of the true speed.
+    if(error > 0){
+        std::cout<<"Error! Failed Animal test - Individual displacement" <<std::endl;
+        exit (EXIT_FAILURE);
+    };
+    
+    //return 0;
+};
+
+void AnimalTest::test_maxdisplacement(){
+    
+    // Set up new animal
+    Animal Animal1;
+    Animal1 = Animal(1, Sq_MinX+ 1,Sq_MinY+ 1, M_PI_4);
+    Animal1.setMove_speed(4);
+    Animal1.setMove_maxangle(0);
     Animal1.setlargelocationvector(pow(10,7));
     
     //double totalNextDist =0;
@@ -73,6 +113,46 @@ void AnimalTest::test_totaldistance(double a){
         std::vector<double> RandomNumberStream(50);
         for(int j=0;j<50;j++){RandomNumberStream[j] = double (rand());};
         
+        Animal1.UpdateLocation(RandomNumberStream[49]);
+        
+        //totalNextDist += Animal1.getNextDist();
+    };
+    
+    double displacement = sqrt(pow(Animal1.getCurrentX() - Sq_MinX,2)+pow(Animal1.getCurrentY() - Sq_MinY,2));
+    
+    
+    //std::cout<<averagespeed<<std::endl;
+    
+    //The average speed must be with in 1% of the true speed.
+    if(displacement > sqrt(pow(Sq_MaxX-Sq_MinX,2)+pow(Sq_MaxY-Sq_MinY,2))){
+        std::cout<<"Error! Failed Animal test - Test total displacement" <<std::endl;
+        exit (EXIT_FAILURE);
+    };
+    
+    //return 0;
+};
+
+
+
+void AnimalTest::test_totaldistance(double a){
+    
+    // Set up new animal
+    Animal Animal1;
+    Animal1 = Animal(1, Sq_MinX+ 1,Sq_MinY+ 1, M_PI_4);
+    Animal1.setMove_speed(a);
+    Animal1.setMove_maxangle(0);
+    Animal1.setlargelocationvector(pow(10,7));
+    
+    //double totalNextDist =0;
+    
+    // Simulate 1mill next distances
+    for(int i=0; i<1*pow(10,6); i++){
+        
+        srand(i);
+        std::vector<double> RandomNumberStream(50);
+        for(int j=0;j<50;j++){RandomNumberStream[j] = double (rand());};
+        
+        //std::cout<< i  << " "<< RandomNumberStream[49]<<std::endl;
         Animal1.UpdateLocation(RandomNumberStream[49]);
         
         //totalNextDist += Animal1.getNextDist();
@@ -95,23 +175,29 @@ void AnimalTest::test_totaldistance(double a){
 void AnimalTest::test_changeangle(double a){
     // Set up new animal
     Animal Animal1;
-    Animal1 = Animal(1, 1, 1, M_PI);
+    Animal1 = Animal(1, Sq_MinX+ 1,Sq_MinY+ 1, M_PI_4);
+    Animal1.setMove_speed(4);
     Animal1.setMove_maxangle(a);
     Animal1.setlargelocationvector(pow(10,7));
     
-    double cangle = M_PI_4;
+    //double cangle = M_PI_4;
     
     std::vector<double> listofangles((1*pow(10,6)));
+    std::vector<double> listofanglesdiff((1*pow(10,6)));
+    srand(1);
     for(int i=0; i<1*pow(10,6); i++){
-        srand(i);
+        //srand(i);
         std::vector<double> RandomNumberStream(50);
         for(int j=0;j<50;j++){RandomNumberStream[j] = double (rand());};
         
         //if(i<100){std::cout<<RandomNumberStream[49]<<std::endl;}
         Animal1.UpdateLocation(RandomNumberStream[49]);
         
-        listofangles[i] = cangle - Animal1.getNextAngle();
-        cangle = Animal1.getNextAngle();
+        listofangles[i] = Animal1.getNextAngle();
+        if(i>0 && ((listofangles[i]-listofangles[i-1])<a && (listofangles[i]-listofangles[i-1])>-a)){
+            listofanglesdiff[i] =(listofangles[i]-listofangles[i-1]);
+        } else if(i>0){listofanglesdiff[i]= M_PI*2-listofangles[i] -listofangles[i-1] ;};
+        //cangle = Animal1.getNextAngle();
     };
     
     int errorcount = 0;
@@ -120,20 +206,22 @@ void AnimalTest::test_changeangle(double a){
     int distributionerror3 =0;
 
     if(a ==0){
-        for(int i=0; i<1*pow(10,6); i++){if( (listofangles[i]- 0)<-0.0001 && (listofangles[i]- 0)>0.0001){errorcount +=1;};};
+        for(int i=0; i<1*pow(10,6); i++){if((listofangles[i]- 0)<-0.0001 && (listofangles[i]- 0)>0.0001){errorcount +=1;};};
     }else{
-        for(int i=0; i<1*pow(10,6); i++){
-            if(listofangles[i] < -a || listofangles[i] > +a){errorcount +=1;};
-            if(listofangles[i] < 0){distributionerror1 +=1;};
-            if(listofangles[i] < -0.5*a){distributionerror2 +=1;};
-            if(listofangles[i] < -0.9*a){distributionerror3 +=1;};
+        for(int i=1; i<1*pow(10,6); i++){
+            if((listofanglesdiff[i]  < -a || listofanglesdiff[i] > +a)){
+                errorcount +=1;
+                std::cout<<i<< " "<<listofangles[i-1]<<  " "<<listofangles[i] <<" "<<listofanglesdiff[i]<< std::endl;
+            }
+            if(listofanglesdiff[i] < 0){distributionerror1 +=1;};
+            if(listofanglesdiff[i] < -0.5*a){distributionerror2 +=1; };
+            if(listofanglesdiff[i]< -0.9*a){distributionerror3 +=1;};
         };
     };
 
     //if(a>0){for(int i=0; i<1*pow(10,2); i++){std::cout<<listofangles[i]<<std::endl;}};
-    std::cout<<errorcount<<std::endl;
     //std::cout<<distributionerror1<<std::endl;
-    if(errorcount>1){
+    if(errorcount>0){
         std::cout<<"Error! Failed Animal test - TestChangeInAngle " << a <<std::endl;
         exit (EXIT_FAILURE);
     };
@@ -142,8 +230,8 @@ void AnimalTest::test_changeangle(double a){
              std::cout<<"Error! Failed Animal test - TestChangeInAngle (Distribution 1)" <<std::endl;
              exit (EXIT_FAILURE);
          }
-         if(distributionerror2>1*pow(10,6)*0.26 || distributionerror2<1*pow(10,6)*0.24){
-             std::cout<<"Error! Failed Animal test - TestChangeInAngle (Distribution 2)" <<std::endl;
+         if(distributionerror2>1*pow(10,6)*0.26 || distributionerror2<1*pow(10,6)*0.22){
+             std::cout<<"Error! Failed Animal test - TestChangeInAngle (Distribution 2)" << distributionerror2 <<std::endl;
              exit (EXIT_FAILURE);
          }
          if(distributionerror3>1*pow(10,6)*0.06 || distributionerror3<1*pow(10,6)*0.04){

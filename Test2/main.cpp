@@ -22,12 +22,14 @@
 #include "SensorTest.h"
 #include "Parameters.h"
 
-/////////////////////////////////////////////////////////////////////////////////////////////////////////
-//                                              FILE NAMES                                            ///
-//                                                                                                    ///
-// 3 functions which are used to create dynamic file names in order to save files.                    ///
-// Code needs tiding up a bit                                                                         ///
-/////////////////////////////////////////////////////////////////////////////////////////////////////////
+/*--------------------------------------------------------------------------------------------------
+ //
+ //                                              File names
+ //
+ // 3 functions which are used to create dynamic file names in order to save files.
+ // Code needs tiding up a bit
+ //
+ ---------------------------------------------------------------------------------------------------*/
 
 // Function for creating a dynamic file names for settings
 std::string make_filename( const std::string& directory ,const std::string& basename){
@@ -51,9 +53,6 @@ std::string make_directory( const std::string& directory){
             << ",Speed="        << AnimalSpeed
             << ",Iterations="   << Seed << "-" << maxseed
             << ",StepLength="   << StepLength
-         //   << ",DetectorRadius=" << DetectorRadius
-         //   << ",CallHalfwidth=" << Call_halfwidth
-         //   << ",SensorHalfwidth=" << SensorWidth
             << ",CorrWalkMaxAngleChange=" <<CorrWalkMaxAngleChange
         ;
     return result.str();
@@ -147,11 +146,8 @@ int main(){
              << "Sq_MaxX" << ","<<  Sq_MaxX << "\n"
              << "Sq_MinY" << ","<<  Sq_MinY << "\n"
              << "Sq_MaxY" << ","<<  Sq_MaxY << "\n"
-       //      << "SensorWidth" << "," << SensorWidth<< "\n"
              << "CorrWalkMaxAngleChange" << ","<<   CorrWalkMaxAngleChange<< "\n"
              << "AnimalSpeed" << ","<< AnimalSpeed<< "\n"
-         //    << "Call_halfwidth" << ","<< Call_halfwidth << "\n"
-          //   << "DetectorRadius"<<","<<DetectorRadius<<"\n"
             ;
     //Closes file
     Settings.close();
@@ -174,31 +170,20 @@ int main(){
         std::cout<<"No steps, Increase Length of monitoring"<< std::endl; exit (EXIT_FAILURE);
     };
     
-    //Test on the sensor
-    ///////////THIS NEEDS UPDATING!!!!
+    //Tests
     
-    int test=1;
-    if(test==1){
-        SensorTest ST1;
-        ST1.RunSensorTests();
+    //int test=1;
+    //if(test==1){
+    SensorTest ST1;
+    ST1.RunSensorTests();
         
-        AnimalTest AT1;
-        AT1.RunAnimalTests();
-     /*
-        Sensor Sensor1;
-        Sensor1 = Sensor(1); // ID
-        Sensor1.TestCI();
-        Sensor1.TestVertAndAngleInteraction();
-        Sensor1.TestHorzAndAngleInteraction();
-        Sensor1.TestAngleAndAngleInteraction();
-        Sensor1.TestHorzAndCircInteraction();
-        Sensor1.TestVertAndCircInteraction();
-        Sensor1.TestAngleAndCircInteraction();
-        Sensor1.TestTimeAndAngleCal();
-        Sensor1.TestGradientFromAngle();
-        Sensor1.TestCapturesIntersection();
-      */
-    }else{
+    AnimalTest AT1;
+    AT1.RunAnimalTests();
+    
+    std::cout<<"Passed all tests and checks"<< std::endl;
+
+
+    //}else{
     ///////////////////////////////////////////////////////////////////////////////////////
     //                          CALCULATES LOCATION OF Sensors                          ///
     //                                                                                  ///
@@ -454,7 +439,7 @@ int main(){
     Captures.close();
     Movement.close();
         
-    }; //end if test
+    //}; //end if test
     
     std::cout<<"Finished" <<std::endl;
         
