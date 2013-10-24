@@ -13,15 +13,16 @@
 void AnimalTest::RunAnimalTests(){
     
     test_totaldistance(4);
-    //std::cout<<"Passed - Animal total distance" <<std::endl;
+    std::cout<<"Passed - Animal total distance" <<std::endl;
     
     test_changeangle(0);
+    //std::cout<<"Passed - Animal change in move angle a" <<std::endl;
     test_changeangle(M_PI_4);
-    //std::cout<<"Passed - Animal change in move angle" <<std::endl;
+    std::cout<<"Passed - Animal change in move angle" <<std::endl;
     
     test_displacement();
     test_maxdisplacement();
-    //std::cout<<"Passed - Displacement" <<std::endl;
+    std::cout<<"Passed - Displacement" <<std::endl;
     
     test_CalNext_X1();
     test_CalNext_X2();
@@ -186,6 +187,7 @@ void AnimalTest::test_changeangle(double a){
     std::vector<double> listofanglesdiff((1*pow(10,6)));
     srand(1);
     for(int i=0; i<1*pow(10,6); i++){
+        //std::cout<<i<<std::endl;
         //srand(i);
         std::vector<double> RandomNumberStream(50);
         for(int j=0;j<50;j++){RandomNumberStream[j] = double (rand());};

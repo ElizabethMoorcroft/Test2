@@ -59,7 +59,7 @@ std::string make_directory( const std::string& directory){
 };
 
 // Base name each file
-std::string SaveDirectory = make_directory("/Users/student/Documents/Bats/Simulations/Test");
+std::string SaveDirectory = make_directory("/Users/student/Documents/Bats/Simulations/Run23Oct2013");
 
 /// END OF FILE NAMES
 
@@ -72,11 +72,11 @@ std::string SaveDirectory = make_directory("/Users/student/Documents/Bats/Simula
 int main(){
     
     //Clocks total run time
-    clock_t t = clock();
+    //clock_t t = clock();
     
     //Calculates some values before the before the iteration of loop starts
     double area = (Sq_MaxX-Sq_MinX)*(Sq_MaxY-Sq_MinY);
-    int NoAnimal = floor(DensityAnimals*area);
+    int NoAnimal = round(DensityAnimals*area);
     int NoSensors = LengthSW*LengthSR;
     
     /*-------------------------------------------------------
@@ -152,45 +152,44 @@ int main(){
     //Closes file
     Settings.close();
     
-    ///////////////////////////////////////////////////////////////////////////////////////
-    ///                                 !!! WARNINGS!!!                                 ///
-    /// Will automatically stop the simulation if certain conditions they               ///
-    /// aren't satisfied.                                                               ///
-    /// Includes a limited number of tests on the following functions:                  ///
-    ///         *CapturesIndividual                                                     ///
-    ///////////////////////////////////////////////////////////////////////////////////////
+    /*--------------------------------------------------------------------------------------------------
+     //
+     //                                 !!! WARNINGS && TESTS !!!
+     //
+     // Will automatically stop the simulation if certain conditions they aren't satisfied.
+     // Runs automated unit tests on:
+     //     * Animal
+     //     * Sensor
+     //
+     ---------------------------------------------------------------------------------------------------*/
+
    
     //Number of animals needs to be greater than zero
     if(NoAnimal<=0){
         std::cout<<"No of Animals = "<<NoAnimal<< ", Increase density"<< std::endl; exit (EXIT_FAILURE);
     };
-    
     // No steps
     if(NoSteps==0){
         std::cout<<"No steps, Increase Length of monitoring"<< std::endl; exit (EXIT_FAILURE);
     };
     
     //Tests
-    
-    //int test=1;
-    //if(test==1){
     SensorTest ST1;
     ST1.RunSensorTests();
-        
     AnimalTest AT1;
     AT1.RunAnimalTests();
     
     std::cout<<"Passed all tests and checks"<< std::endl;
+    //Clocks total run time
+    clock_t t = clock();
 
-
-    //}else{
-    ///////////////////////////////////////////////////////////////////////////////////////
-    //                          CALCULATES LOCATION OF Sensors                          ///
-    //                                                                                  ///
-    // Creates Sensors as they do not change location when the movement changes    ///
-    //  - only after the set up parameters change (change in length of study, etc)      ///
-    // Saves the locations in a CSV file                                                ///
-    ///////////////////////////////////////////////////////////////////////////////////////
+    /*--------------------------------------------------------------------------------------------------
+    //                                          Creating sensors
+    //
+    // Creates Sensors as they do not change location when the movement changes
+    //  - only after the set up parameters change (change in length of study, etc)
+    // Saves the locations in a CSV file
+     ---------------------------------------------------------------------------------------------------*/
     //Creates a list of pointers to the Sensors
     
     std::vector<Sensor*> AllSensors(NoSensors);
@@ -217,11 +216,6 @@ int main(){
     };
     //Closes the csv Sensor file
     Sensors.close();
-    
-    // This should not be here - once I know how to test properly then can get ride of this
-    //std::cout<<"Finish Sensor traps"<<std::endl;
-    //if(test==0)
-    //{
     
     /*------------------------------------------------------------------------------------------------
     //                                      Iteration Loop
@@ -332,7 +326,7 @@ int main(){
             }; //End of j loop for Steps
             
             // Variables for calculating captures
-            double sensorx; double sensory;
+            double sensorx; double sensory; double sensorradius;
             double disttosensorprevious; double disttosensorcurrent;
             int capturecount;
             
@@ -368,17 +362,22 @@ int main(){
                         double &previousy = TempAllLocations[stepcounter-1][3];
                         // Calcualtes whether the animal is captured
                         
+                        // Only check for the capture if the start and end locations are with a given distance "checkforcapture"
                         double checkforcapture =StepLength*AnimalSpeed*2;
                         for(int sensor=0; sensor<NoSensors; sensor++){
                             //std::cout<<"Sensor: "<<sensor << "/" << NoSensors <<std::endl;
                             sensorx = AllSensors[sensor] -> getXloc();
                             sensory = AllSensors[sensor] -> getYloc();
+                            sensorradius = AllSensors[sensor] -> getRadius();
+                            double checkforcaptureplusradius =checkforcapture+sensorradius;
+                            
+                            
                             AllSensors[sensor] -> setStepOn(TempAllLocations[stepcounter][1]);
                             
                             disttosensorprevious = sqrt(pow(previousx - sensorx,2)+pow(previousy - sensory,2));
                             disttosensorcurrent = sqrt(pow(currentx - sensorx,2)+pow(currenty - sensory,2));
                             
-                            if(disttosensorprevious<checkforcapture  && disttosensorcurrent<checkforcapture ){
+                            if(disttosensorprevious<checkforcaptureplusradius  && disttosensorcurrent<checkforcaptureplusradius ){
                                 for(int callsize=0; callsize<LengthCW; callsize++){
                                     //std::cout<< "CallWidth[callsize]: "<< CallWidth[callsize]<< std::endl;
 

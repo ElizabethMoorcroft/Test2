@@ -290,7 +290,7 @@ void Animal::LeaveEnterWorld(const double& YBoundExit, const double& XBoundExit,
         
     }// end of exit by the top/bottom of the world 
     else{
-       // std::cout <<"Side"<<std::endl;
+        //std::cout <<"Side"<<std::endl;
         //This means that it exits the world at maximum value of y and at the corresponding x value
         tempExitsX = XBoundExit;
         tempExitsY = CalNext_Y(tempDistToSideBoundary);

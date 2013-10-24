@@ -102,25 +102,6 @@ public:
                         int&, double&, double&, double&, double&, double&, int&, double&);
     int SensorCircAndMovement(double&, double&, double&, double&, int&, double&, double&,
                             int&, double&, double&, double& );
-    
-    
-    /* ---------------------------------------- */
-    // ------------ Test functions ------------ //
-    /* ---------------------------------------- */
-    
-    void TestCI();
-    void TestCapturesIntersection();
-    
-    void TestVertAndAngleInteraction();
-    void TestHorzAndAngleInteraction();
-    void TestAngleAndAngleInteraction();
-    void TestHorzAndCircInteraction();
-    void TestVertAndCircInteraction();
-    void TestAngleAndCircInteraction();
-    
-    void TestTimeAndAngleCal();
-    
-    void TestGradientFromAngle();
 
     
 };
