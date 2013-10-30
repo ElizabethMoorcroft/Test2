@@ -61,7 +61,10 @@ Sensor::Sensor(int Id, double sensorhalfangle, double sensorradius){
     if(g_detector2== 0 || g_detector2== M_PI|| g_detector2== 2*M_PI){vh_det2 = 1;} //Line is vertical
     else if(g_detector2 == M_PI/2 || g_detector2== 3*M_PI/2){vh_det2 = 2;} //Line is Horizontal
     
-    Captures.resize(round(DensityAnimals*((Sq_MaxX-Sq_MinX)*(Sq_MaxY-Sq_MinY)))*3);
+    Captures.resize(round(DensityAnimals*((Sq_MaxX-Sq_MinX)*(Sq_MaxY-Sq_MinY)))*NoSteps);
+    
+
+    
     capturecount=0;
     myvector.resize(10);
 };
@@ -147,6 +150,8 @@ void Sensor::setHalfAngle(double a){
     
     if(g_detector2== 0 || g_detector2== M_PI|| g_detector2== 2*M_PI){vh_det2 = 1;} //Line is vertical
     else if(g_detector2 == M_PI/2 || g_detector2== 3*M_PI/2){vh_det2 = 2;} //Line is Horizontal
+    
+    
 
 };
 
@@ -242,7 +247,7 @@ void Sensor::UpdateCaptures(int& Individual_ID,int& itnumber,double& location_x_
      };
      //----------------------------------------------------------------------------------------------------------*/
     
-    //std::cout<<"Caught!"<<std::endl;
+    //std::cout<<"Caught! "<< capturecount <<" " << Sensor_identifier<<std::endl;
     myvector[0] = Individual_ID;
     myvector[1] = Sensor_StepOn;
     myvector[2] = Sensor_identifier;

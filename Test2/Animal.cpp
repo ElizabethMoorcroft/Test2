@@ -44,7 +44,7 @@ Animal::Animal(int a, double i, double j, double k) {
     Current_y = j;
     Current_angle = k;
     Current_angle= RangeAngle(Current_angle);
-    Move_speed = AnimalSpeed;
+    Move_speed = AnimalSpeed/(1-perch);
     StepLengthDist = StepLength*Move_speed;
     
     // When initialising the step number and the current distance travelled will always be set to zero
@@ -61,7 +61,8 @@ Animal::Animal(int a, double i, double j, double k) {
     
     //Entres the start location into the matrix
     LocationVector(Current_x,Current_y,0,1);
-
+    
+    std::cout<<"Move speed " <<Move_speed<< std::endl;
 };
 
 
@@ -147,10 +148,24 @@ void  Animal::UpdateLocation (double seed){ // a is the number of seconds per st
     srand(seed);
     std::vector<double> RandomNumberMovement(101);
     for(int i=0; i<101; i++){RandomNumberMovement[i] = double(rand());};
-
+    
+    double probofperch=0;
+    
+    if(perch!=0){
+        //std::cout<<"Perching"<<std::endl;
+        RandNum Number1;
+        probofperch = Number1.AtoBUnif(RandomNumberMovement[100],0,1);
+    };
+    if(probofperch<(1-perch)){
     //std::cout<<"NewLocation"<<std::endl;
-    NewLocation(RandomNumberMovement[0], RandomNumberMovement[50]);
-        
+        NewLocation(RandomNumberMovement[0], RandomNumberMovement[50]);
+    }else{
+        NextX= Current_x;
+        NextY= Current_y;
+        NextDist = 0;
+        NextAngle = Current_angle;
+    }
+    
     int tempcounter = 0;
     while(tempcounter<1){
                 
@@ -238,6 +253,7 @@ void Animal::NewLocation (double& seed, double& seed2){
     NextX = CalNext_X(NextDist);
     NextY = CalNext_Y(NextDist);
     //std::cout<<"Next X & Y & Angle: "<<NextX <<" "<<NextY <<" "<< NextAngle <<std::endl;
+    
     
 };
 

@@ -59,7 +59,7 @@ std::string make_directory( const std::string& directory){
 };
 
 // Base name each file
-std::string SaveDirectory = make_directory("/Users/student/Documents/Bats/Simulations/Run23Oct2013");
+std::string SaveDirectory = make_directory("/Users/student/Documents/Bats/Simulations/Run23Oct2013Perch0.5");
 
 /// END OF FILE NAMES
 
@@ -113,7 +113,7 @@ int main(){
     //Creates file for Movement (CSV file) and writes in the header
     std::ofstream Movement;
     Movement.open(make_filename(SaveDirectory, ",Movement.csv" ).c_str());
-    if(SaveMovement==1){
+   // if(SaveMovement==1){
         //Creates a header for the file
         //This is not necessary but helps
         Movement << "AnimalNumber" <<
@@ -127,7 +127,7 @@ int main(){
             "," << "Dist" <<
             "," << "Iternation number" <<
             "\n";
-    } else {Movement << "Not saved";}
+   // } else {Movement << "Not saved";}
     
     // Saves the settings used
     std::ofstream Settings;
@@ -175,8 +175,8 @@ int main(){
     //Tests
     //SensorTest ST1;
     //ST1.RunSensorTests();
-    AnimalTest AT1;
-    AT1.RunAnimalTests();
+    //AnimalTest AT1;
+    //AT1.RunAnimalTests();
     
     std::cout<<"Passed all tests and checks"<< std::endl;
     //Clocks total run time
@@ -332,11 +332,14 @@ int main(){
             // Creates a temp matrix for "all locations"
             std::vector<std::vector<double>> TempAllLocations = AllAnimals[i]->getAllLocations();
             
+            int maxiteration=0;
+            
             // Temp location file is written in csv file
             // Each location is a seperate row  - the number of rows = "TempAllLocations.size()"
             for(int stepcounter=0; stepcounter<TempAllLocations.size(); stepcounter++){
                 if(TempAllLocations[stepcounter].size()>0){
-            
+                    maxiteration=stepcounter;
+                    
                     double &currentx = TempAllLocations[stepcounter][2];
                     double &currenty = TempAllLocations[stepcounter][3];
                     double &currentangle = TempAllLocations[stepcounter][4];
@@ -354,6 +357,7 @@ int main(){
                             "," << iterationnumber <<                  // itertaion number
                             "\n";                                      // New line
                     }; // END OF IF LOOP FOR SAVING
+                    
                     
                     // for each step calcualte past location and current location, and direction when leaving past location
                     if(TempAllLocations[stepcounter][1]>0){
@@ -387,6 +391,22 @@ int main(){
                     }; // end of if not first step
                 };// END of check movement exists
             }; // End of for step loop
+            
+            //std::cout<< TempAllLocations.size()<< std::endl;
+
+            Movement<< TempAllLocations[maxiteration][0] << //1st column, row "stepcounter"
+                "," << TempAllLocations[maxiteration][1] << //2nd column, row "stepcounter"
+                "," << TempAllLocations[maxiteration][2] << //...
+                "," << TempAllLocations[maxiteration][3] << //...
+                "," << TempAllLocations[maxiteration][4] << //...
+                "," << TempAllLocations[maxiteration][5] << //...
+                "," << TempAllLocations[maxiteration][6] << //...
+                "," << TempAllLocations[maxiteration][7] << //8th column, row "stepcounter"
+                "," << TempAllLocations[maxiteration][8] << //8th column, row "stepcounter"
+                "," << iterationnumber <<                  // itertaion number
+                "\n";                                      // New line
+
+            
             /*------------------------------------------------------
             // SAVING THE CAPTURES
             ---------------------------------------------------------*/
