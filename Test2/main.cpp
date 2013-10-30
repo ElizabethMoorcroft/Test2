@@ -102,12 +102,12 @@ int main(){
         "," << "Time_step" <<
         "," << "SensorID" <<
         "," << "Iteration number" <<
-        "," << "X location" <<
-        "," << "Ylocation" <<
-        "," << "Percentage time within step" <<
-        "," << "Angle from centre of sensor to animal" <<
+       // "," << "X location" << //5
+       // "," << "Ylocation" << //6
+       // "," << "Percentage time within step" << //7
+       // "," << "Angle from centre of sensor to animal" << //8
         "," << "Angle from animal to sensor" <<
-        "," << "Distance from animal to sensor" <<
+       // "," << "Distance from animal to sensor" << //10
         "\n";
     
     //Creates file for Movement (CSV file) and writes in the header
@@ -404,12 +404,12 @@ int main(){
                         "," << TempCaptures[stepcounter][1] << //2nd column, row "stepcounter"
                         "," << TempCaptures[stepcounter][2] << //...
                         "," << TempCaptures[stepcounter][3] <<
-                        "," << TempCaptures[stepcounter][4] <<
-                        "," << TempCaptures[stepcounter][5] <<
-                        "," << TempCaptures[stepcounter][6] <<
-                        "," << TempCaptures[stepcounter][7] <<
+                       // "," << TempCaptures[stepcounter][4] <<
+                       // "," << TempCaptures[stepcounter][5] <<
+                       // "," << TempCaptures[stepcounter][6] <<
+                       // "," << TempCaptures[stepcounter][7] <<
                         "," << TempCaptures[stepcounter][8] <<
-                        "," << TempCaptures[stepcounter][9] <<
+                       // "," << TempCaptures[stepcounter][9] <<
                         "\n";                                  // New line
                 
                         stepcounter+=1;
