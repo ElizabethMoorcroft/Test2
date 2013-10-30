@@ -105,7 +105,6 @@ int main(){
         "," << "X location" <<
         "," << "Ylocation" <<
         "," << "Percentage time within step" <<
-        "," << "Call" <<
         "," << "Angle from centre of sensor to animal" <<
         "," << "Angle from animal to sensor" <<
         "," << "Distance from animal to sensor" <<
@@ -174,8 +173,8 @@ int main(){
     };
     
     //Tests
-    SensorTest ST1;
-    ST1.RunSensorTests();
+    //SensorTest ST1;
+    //ST1.RunSensorTests();
     AnimalTest AT1;
     AT1.RunAnimalTests();
     
@@ -399,7 +398,7 @@ int main(){
                 //STarts looking dor the first entry
                 int stepcounter=0;
                 // Temp location file is written in csv file
-                while(TempCaptures[stepcounter].size()==11){
+                while(TempCaptures[stepcounter].size()==10){
                     //if(sensorr==5){std::cout<<"stepcounter" << stepcounter <<std::endl;}
                         Captures<< TempCaptures[stepcounter][0] << //1st column, row
                         "," << TempCaptures[stepcounter][1] << //2nd column, row "stepcounter"
@@ -411,7 +410,6 @@ int main(){
                         "," << TempCaptures[stepcounter][7] <<
                         "," << TempCaptures[stepcounter][8] <<
                         "," << TempCaptures[stepcounter][9] <<
-                        "," << TempCaptures[stepcounter][10] <<
                         "\n";                                  // New line
                 
                         stepcounter+=1;

@@ -30,7 +30,7 @@ const double DensityAnimals = 70*pow(10,-6); // XX*10^-6 Density/m^2  => XX Dens
 const int NoOfIterations = 50; // No of iterations with the settings
 
 //Random number seed
-const int Seed =1; // initail start seed - becuase this is set makes result repilicable
+const int Seed =51; // initail start seed - becuase this is set makes result repilicable
 
 // Length of simulation
 const double LengthMonitoring = 14*24*(60*60); //Length of monitoring in seconds. XX*(60*60)secs => XX hrs
@@ -53,7 +53,7 @@ const double SensorRadius[LengthSR] = {1,2,5,10,15,20,25,30,50,100,500};
 
 
 //Movement parameters
-const double AnimalSpeed = 0.46;//0.46; // ms^-1
+const double AnimalSpeed = 0.00012;//0.46; // ms^-1
 const double StepLength = 5*60; //Length of each step in seconds
 const double CorrWalkMaxAngleChange = 0*M_PI/180; // In Radians. Half width. X°= X*pi/180rads
 

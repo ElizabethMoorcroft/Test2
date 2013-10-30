@@ -63,7 +63,7 @@ Sensor::Sensor(int Id, double sensorhalfangle, double sensorradius){
     
     Captures.resize(round(DensityAnimals*((Sq_MaxX-Sq_MinX)*(Sq_MaxY-Sq_MinY)))*3);
     capturecount=0;
-    myvector.resize(11);
+    myvector.resize(10);
 };
 
 
@@ -250,10 +250,9 @@ void Sensor::UpdateCaptures(int& Individual_ID,int& itnumber,double& location_x_
     myvector[4] = location_x_animal;
     myvector[5] = location_y_animal;
     myvector[6] = time;
-    myvector[7] = call;
-    myvector[8] = CamToAnimal;
-    myvector[9] = AnimalToCam;
-    myvector[10] = DistToCam;
+    myvector[7] = CamToAnimal;
+    myvector[8] = AnimalToCam;
+    myvector[9] = DistToCam;
     Captures[capturecount]=myvector;
     capturecount+=1;
 };
@@ -539,6 +538,22 @@ int Sensor::CapturesIntersection(double& location_x_animal, double& location_y_a
                                       itnumber,
                                       m_animal, c_animal,
                                       disttotal);
+    
+    /*---------------------------------------------------------------------------------------------------------
+     // Check for specific case of interest
+     //if(Individual_ID== 0 && Sensor_StepOn>17654 && Sensor_StepOn<17656){
+     std::cout<<"End"<< std::endl;
+     //};
+     //----------------------------------------------------------------------------------------------------------*/
+    // Checks for crossing the boundaries for circular edge of detector
+    captured += CapturesIndividual(currentlocx,currentlocy,
+                                    Individual_ID,
+                                    call_halfwidth,
+                                    move_angle,
+                                    itnumber,
+                                    1,
+                                    0
+                                   );
     
     // If there are any captures then return 1 else return 0
     if(captured>=1){return(1);} else {return(0);};
