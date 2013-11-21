@@ -19,7 +19,7 @@ class AnimalMovement {
     
 public:
     AnimalMovement();
-    AnimalMovement( std::vector<Animal*> ,  std::vector<Sensor*>, std::ofstream &Captures, std::ofstream &Movement, double, double, int, int);
+    AnimalMovement( std::vector<Animal*> ,  std::vector<Sensor*>, std::ofstream &Captures, std::ofstream &Movement, double, double, int, int, double, double, double);
 };
 
 #endif /* defined(__Test2__AnimalMovement__) */

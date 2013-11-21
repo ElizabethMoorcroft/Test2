@@ -40,6 +40,10 @@ const double Sq_MinX = 0;        // Minimum x value of the environment
 const double Sq_MaxX = 7500;    // Maximum x value of the environment
 const double Sq_MinY = 0;        // Minimum y value of the environment
 const double Sq_MaxY = 7500;    // Maximum y value of the environment
+const double area = (Sq_MaxX-Sq_MinX)*(Sq_MaxY-Sq_MinY);
+
+// number of animals
+const int NoAnimal = round(DensityAnimals*area);
 
 // Sensor width/Radius
 const int LengthSW(21);

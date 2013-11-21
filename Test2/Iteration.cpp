@@ -16,9 +16,10 @@
 #include "Parameters.h"
 #include <vector>
 
+
 Iteration::Iteration(){};
 
-Iteration::Iteration(std::vector<Sensor*> AllSensors, std::ofstream &Captures, std::ofstream &Movement, int iterationnumber){
+Iteration::Iteration(std::vector<Sensor*> AllSensors, std::ofstream &Captures, std::ofstream &Movement, int iterationnumber, double speedvalue, double perchvalue, double maxchangeanglevalue){
     std::cout<<"Iteration: "<<iterationnumber<<"/"<<Seed + NoOfIterations -1 <<std::endl;
     
     /*-------------------------------------------------------
@@ -85,7 +86,7 @@ Iteration::Iteration(std::vector<Sensor*> AllSensors, std::ofstream &Captures, s
     for(int i=0; i<NoAnimal; i++){
         double randomstart = RandomNumberStreamAnimalStart[i*NoAnimal];
         double randommove = RandomNumberStreamAnimalMove[i*NoAnimal];
-        AnimalMovement::AnimalMovement( AllAnimals , AllSensors ,  Captures,  Movement, randomstart,  randommove, i, iterationnumber);
+        AnimalMovement::AnimalMovement( AllAnimals , AllSensors ,  Captures,  Movement, randomstart,  randommove, i, iterationnumber, speedvalue, perchvalue,maxchangeanglevalue);
         
     }; //End of Individual loop
     

@@ -48,6 +48,7 @@ public:
     
     //Set functions
     void setMove_speed(double a);
+    void setAnimalspeedPerch(double a, double b);
     void setMove_maxangle(double a){Move_maxangle=a;};
     void setNextAngle(double a){NextAngle=a;};
     void setNextDist(double a){NextDist=a;};

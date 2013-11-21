@@ -19,7 +19,7 @@ class Iteration {
     
 public:
     Iteration();
-    Iteration(std::vector<Sensor*>, std::ofstream &Captures, std::ofstream &Movement, int);
+    Iteration(std::vector<Sensor*>, std::ofstream &Captures, std::ofstream &Movement, int, double, double, double);
 };
 
 #endif /* defined(__Test2__Iteration__) */

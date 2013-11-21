@@ -77,6 +77,13 @@ void Animal::setMove_speed(double a){
     StepLengthDist = StepLength*Move_speed;
 };
 
+//Set functions
+void Animal::setAnimalspeedPerch(double a, double b){
+    Move_speed = a/(1-b);
+    StepLengthDist = StepLength*Move_speed;
+};
+
+
 
 
 /*--------------------------------------------------------------------------------------------------------

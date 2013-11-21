@@ -16,7 +16,7 @@
 
 AnimalMovement::AnimalMovement(){};
 
-AnimalMovement::AnimalMovement( std::vector<Animal*> AllAnimals ,  std::vector<Sensor*> AllSensors , std::ofstream &Captures, std::ofstream &Movement, double randomstart, double randommove, int i, int iterationnumber){
+AnimalMovement::AnimalMovement( std::vector<Animal*> AllAnimals ,  std::vector<Sensor*> AllSensors , std::ofstream &Captures, std::ofstream &Movement, double randomstart, double randommove, int i, int iterationnumber, double speedvalue, double perchvalue, double maxchangeanglevalue){
     
     //Print out animal number to screen
     //std::cout <<"Animal:" << i+1 <<"/" << NoAnimal << std::endl;
@@ -35,6 +35,8 @@ AnimalMovement::AnimalMovement( std::vector<Animal*> AllAnimals ,  std::vector<S
     // New animal given start locations - at the centre of the home range
     //  Inputs are: ID & Starts location (x,y) &  Initial angle
     AllAnimals[i] =new Animal(i, xlocation, ylocation, CurrentAngleTemp);
+    AllAnimals[i] -> setAnimalspeedPerch(speedvalue, perchvalue);
+    AllAnimals[i] -> setMove_maxangle(maxchangeanglevalue);
     
     /*------------------------------------------------------
      // Update location
