@@ -575,7 +575,7 @@ void SensorTest::TestGradientFromAngle(){
                      M_PI, //Call width - circular call (to make this easier!)
                      v6,  // move_angle,
                      v7); // IT
-     std::vector<std::vector<double>> caps = Sensor1.getCaptures();
+     std::vector<std::vector<double> > caps = Sensor1.getCaptures();
 
      
     for(int i=0; i<caps.size(); i++){
@@ -629,7 +629,7 @@ void SensorTest::TestGradientFromAngle(){
                         M_PI, //Call width - circular call (to make this easier!)
                         v6,  // move_angle,
                         v7); // IT
-     std::vector<std::vector<double>> caps = Sensor1.getCaptures();
+     std::vector<std::vector<double> > caps = Sensor1.getCaptures();
     loc1 =0; loc2 =0;
     for(int i=0; i<caps.size(); i++){
         if(caps[i].size()>0){
@@ -685,7 +685,7 @@ void SensorTest::TestGradientFromAngle(){
                         v7); // IT
     loc1 =0; loc2 =0;
 
-     std::vector<std::vector<double>> caps = Sensor1.getCaptures();
+     std::vector<std::vector<double> > caps = Sensor1.getCaptures();
     for(int i=0; i<caps.size(); i++){
         if(caps[i].size()>0){
             // The maximum number of captures possible for any 1 movement is 5
@@ -734,7 +734,7 @@ void SensorTest::Test_CapturesIntersection4(){
                         v6,  // move_angle,
                         v7); // IT
     int loc1 =0; int loc2 =0;
-    std::vector<std::vector<double>> caps = Sensor1.getCaptures();
+    std::vector<std::vector<double> > caps = Sensor1.getCaptures();
     for(int i=0; i<caps.size(); i++){
         if(caps[i].size()>0){
             // The maximum number of captures possible for any 1 movement is 5
@@ -780,7 +780,7 @@ void SensorTest::Test_CapturesIntersection4(){
                         v6,  // move_angle,
                         v7); // IT
     int loc1 =0; int loc2 =0;
-     std::vector<std::vector<double>> caps = Sensor1.getCaptures();
+     std::vector<std::vector<double> > caps = Sensor1.getCaptures();
 
     for(int i=0; i<caps.size(); i++){
         if(caps[i].size()>0){
@@ -827,7 +827,7 @@ void SensorTest::Test_CapturesIntersection4(){
                         v6,  // move_angle,
                         v7); // IT
     int loc1 =0; int loc2 =0;
-     std::vector<std::vector<double>> caps = Sensor1.getCaptures();
+     std::vector<std::vector<double> > caps = Sensor1.getCaptures();
     for(int i=0; i<caps.size(); i++){
         if(caps[i].size()>0){
             // The maximum number of captures possible for any 1 movement is 5
@@ -874,7 +874,7 @@ void SensorTest::Test_CapturesIntersection4(){
                         v6,  // move_angle,
                         v7); // IT
    int loc1 =0; int loc2 =0;
-     std::vector<std::vector<double>> caps = Sensor1.getCaptures();
+     std::vector<std::vector<double> > caps = Sensor1.getCaptures();
     for(int i=0; i<caps.size(); i++){
         if(caps[i].size()>0){
             // The maximum number of captures possible for any 1 movement is 5
@@ -921,7 +921,7 @@ void SensorTest::Test_CapturesIntersection4(){
                         v6,  // move_angle,
                         v7); // IT
     int loc1 =0; int loc2 =0;
-     std::vector<std::vector<double>> caps = Sensor1.getCaptures();
+     std::vector<std::vector<double> > caps = Sensor1.getCaptures();
     for(int i=0; i<caps.size(); i++){
         if(caps[i].size()>0){
             // The maximum number of captures possible for any 1 movement is 5
@@ -966,7 +966,7 @@ void SensorTest::Test_CapturesIntersection9(){
                         v6,  // move_angle,
                         v7); // IT
     int loc1 =0; int loc2 =0;
-     std::vector<std::vector<double>> caps = Sensor1.getCaptures();
+     std::vector<std::vector<double> > caps = Sensor1.getCaptures();
 
     for(int i=0; i<caps.size(); i++){
         if(caps[i].size()>0){
@@ -1009,7 +1009,7 @@ void SensorTest::Test_CapturesIntersection9(){
                         M_PI, //Call width - circular call (to make this easier!)
                         v6,  // move_angle,
                         v7); // IT
-     std::vector<std::vector<double>> caps = Sensor1.getCaptures();
+     std::vector<std::vector<double> > caps = Sensor1.getCaptures();
 
     for(int i=0; i<caps.size(); i++){
         if(caps[i].size()>0){

@@ -37,13 +37,13 @@ private:
     int vh_det1; // If the line describing detctor1 is vertical =1; horozonatl =2; else=0
     int vh_det2; // If the line describing detctor1 is vertical =1; horozonatl =2; else=0
         
-    std::vector<std::vector<double>> Captures;
+    std::vector<std::vector<double> > Captures;
     std::vector<double> myvector;
     
 public:
     Sensor();
     Sensor(int, double, double);
-    std::vector<std::vector<double>> getCaptures(){return Captures;};
+    std::vector<std::vector<double> > getCaptures(){return Captures;};
     
     void resetCaptures();
     

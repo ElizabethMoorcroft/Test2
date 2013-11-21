@@ -14,6 +14,7 @@
 #include <string>
 #include <sstream>
 
+
 //Header files
 #include "Animal.h"
 #include "AnimalTest.h"
@@ -21,6 +22,9 @@
 #include "Sensors.h"
 #include "SensorTest.h"
 #include "Parameters.h"
+#include "CheckSensor.h"
+#include "AnimalMovement.h"
+
 
 /*--------------------------------------------------------------------------------------------------
  //
@@ -49,6 +53,7 @@ std::string make_directory( const std::string& directory){
     int maxseed = NoOfIterations+Seed;
     std::ostringstream result;
     result  << directory
+            << "Perch"          << perch
             << ",Density="      << denistyCal
             << ",Speed="        << AnimalSpeed
             << ",Iterations="   << Seed << "-" << maxseed
@@ -59,7 +64,7 @@ std::string make_directory( const std::string& directory){
 };
 
 // Base name each file
-std::string SaveDirectory = make_directory("/Users/student/Documents/Bats/Simulations/Run23Oct2013Perch0.5");
+std::string SaveDirectory = make_directory("/Users/student/Documents/Bats/Simulations/Run23Oct2013");
 
 /// END OF FILE NAMES
 
@@ -77,7 +82,6 @@ int main(){
     //Calculates some values before the before the iteration of loop starts
     double area = (Sq_MaxX-Sq_MinX)*(Sq_MaxY-Sq_MinY);
     int NoAnimal = round(DensityAnimals*area);
-    int NoSensors = LengthSW*LengthSR;
     
     /*-------------------------------------------------------
      // Creates files for saving - Including headings
@@ -96,7 +100,8 @@ int main(){
     } else {Sensors << "Not saved";}
     
     //Creates file for Captures (CSV file) and writes in the header
-    std::ofstream Captures;
+    std::ofstream CapturesNotRef;
+    std::ofstream &Captures = CapturesNotRef;
     Captures.open(make_filename(SaveDirectory, ",Captures.csv" ).c_str());
     Captures << "AnimalNumber" <<
         "," << "Time_step" <<
@@ -111,7 +116,8 @@ int main(){
         "\n";
     
     //Creates file for Movement (CSV file) and writes in the header
-    std::ofstream Movement;
+    std::ofstream MovementNotRef;
+    std::ofstream &Movement = MovementNotRef;
     Movement.open(make_filename(SaveDirectory, ",Movement.csv" ).c_str());
    // if(SaveMovement==1){
         //Creates a header for the file
@@ -289,6 +295,11 @@ int main(){
          //     - Saves movement
          ---------------------------------------------------------*/
         for(int i=0; i<NoAnimal; i++){
+            double randomstart = RandomNumberStreamAnimalStart[i*NoAnimal];
+            double randommove = RandomNumberStreamAnimalMove[i*NoAnimal];
+            AnimalMovement::AnimalMovement( AllAnimals , AllSensors ,  Captures,  Movement, randomstart,  randommove, i, iterationnumber);
+            
+            /*
             //Print out animal number to screen
             //std::cout <<"Animal:" << i+1 <<"/" << NoAnimal << std::endl;
             RandNum RandomNumber1;
@@ -307,9 +318,9 @@ int main(){
             //  Inputs are: ID & Starts location (x,y) &  Initial angle
             AllAnimals[i] =new Animal(i, xlocation, ylocation, CurrentAngleTemp);
             
-            /*------------------------------------------------------
+            ------------------------------------------------------
             // Update location
-            ---------------------------------------------------------*/
+            ---------------------------------------------------------
             //Sets seed for a random number
             //Random number stream for the movemnet of the animal
             srand(RandomNumberStreamAnimalMove[i*NoAnimal]);
@@ -325,24 +336,29 @@ int main(){
             }; //End of j loop for Steps
             
             // Variables for calculating captures
-            double sensorx; double sensory; double sensorradius;
-            double disttosensorprevious; double disttosensorcurrent;
-            int capturecount;
+            //double sensorx; double sensory; double sensorradius;
+            //double disttosensorprevious; double disttosensorcurrent;
             
             // Creates a temp matrix for "all locations"
-            std::vector<std::vector<double>> TempAllLocations = AllAnimals[i]->getAllLocations();
+            std::vector<std::vector<double> > TempAllLocations = AllAnimals[i]->getAllLocations();
             
             int maxiteration=0;
             
             // Temp location file is written in csv file
             // Each location is a seperate row  - the number of rows = "TempAllLocations.size()"
             for(int stepcounter=0; stepcounter<TempAllLocations.size(); stepcounter++){
+                std::vector<double>  locations = TempAllLocations[stepcounter];
+                std::vector<double>  previouslocations = TempAllLocations[stepcounter-1];
+                if(TempAllLocations[stepcounter].size()>0){ maxiteration=stepcounter;};
+                CheckSensor::CheckSensor(locations, previouslocations, AllSensors, Movement, stepcounter, i, iterationnumber);
+                
+             
                 if(TempAllLocations[stepcounter].size()>0){
                     maxiteration=stepcounter;
                     
-                    double &currentx = TempAllLocations[stepcounter][2];
-                    double &currenty = TempAllLocations[stepcounter][3];
-                    double &currentangle = TempAllLocations[stepcounter][4];
+                    double currentx = TempAllLocations[stepcounter][2];
+                    double currenty = TempAllLocations[stepcounter][3];
+                    double currentangle = TempAllLocations[stepcounter][4];
                     
                     if(SaveMovement==1){
                         Movement<< TempAllLocations[stepcounter][0] << //1st column, row "stepcounter"
@@ -361,8 +377,8 @@ int main(){
                     
                     // for each step calcualte past location and current location, and direction when leaving past location
                     if(TempAllLocations[stepcounter][1]>0){
-                        double &previousx = TempAllLocations[stepcounter-1][2];
-                        double &previousy = TempAllLocations[stepcounter-1][3];
+                        double previousx = TempAllLocations[stepcounter-1][2];
+                        double previousy = TempAllLocations[stepcounter-1][3];
                         // Calcualtes whether the animal is captured
                         
                         // Only check for the capture if the start and end locations are with a given distance "checkforcapture"
@@ -384,12 +400,13 @@ int main(){
                                 for(int callsize=0; callsize<LengthCW; callsize++){
                                     //std::cout<< "CallWidth[callsize]: "<< CallWidth[callsize]<< std::endl;
 
-                                    capturecount = AllSensors[sensor] ->CapturesIntersection(currentx,currenty,previousx,previousy,i,CallWidth[callsize],currentangle,iterationnumber);
+                                    AllSensors[sensor] ->CapturesIntersection(currentx,currenty,previousx,previousy,i,CallWidth[callsize],currentangle,iterationnumber);
                                 }; // end of call loop
                             };// End of if distance close to sensor
                         }; // END of sensor for loop
                     }; // end of if not first step
                 };// END of check movement exists
+            
             }; // End of for step loop
             
             //std::cout<< TempAllLocations.size()<< std::endl;
@@ -407,13 +424,13 @@ int main(){
                 "\n";                                      // New line
 
             
-            /*------------------------------------------------------
+            ------------------------------------------------------
             // SAVING THE CAPTURES
-            ---------------------------------------------------------*/
+            ---------------------------------------------------------
             // Retreaves all of the captures
             //std::cout<<"getcaptures"<<std::endl;
             for(int sensor=0; sensor<NoSensors; sensor++){
-                std::vector<std::vector<double>> TempCaptures = AllSensors[sensor] -> getCaptures();
+                std::vector<std::vector<double> > TempCaptures = AllSensors[sensor] -> getCaptures();
 
                 //STarts looking dor the first entry
                 int stepcounter=0;
@@ -439,6 +456,8 @@ int main(){
                 AllSensors[sensor] -> ResetStepOn();
             }; //END OF FOR LOOP
             //std::cout<<"endcaptures"<<std::endl;
+            */
+            
         }; //End of Individual loop
         
         /*------------------------------------------------------

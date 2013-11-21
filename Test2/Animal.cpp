@@ -62,7 +62,7 @@ Animal::Animal(int a, double i, double j, double k) {
     //Entres the start location into the matrix
     LocationVector(Current_x,Current_y,0,1);
     
-    std::cout<<"Move speed " <<Move_speed<< std::endl;
+    //std::cout<<"Move speed " <<Move_speed<< std::endl;
 };
 
 

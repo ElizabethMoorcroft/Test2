@@ -50,17 +50,18 @@ const double SensorWidth[LengthSW] = {  0*M_PI/180,
                                       145*M_PI/180,155*M_PI/180,165*M_PI/180,175*M_PI/180,180*M_PI/180 };  // > 270 && <=360
 const int LengthSR(11);
 const double SensorRadius[LengthSR] = {1,2,5,10,15,20,25,30,50,100,500};
+const int NoSensors = LengthSW*LengthSR;
 
 
 //Movement parameters
-const double AnimalSpeed = 0.46;//0.46; // ms^-1
+const double AnimalSpeed = 0.00012;//0.46; // ms^-1
 const double StepLength = 5*60; //Length of each step in seconds
 const double CorrWalkMaxAngleChange = 0*M_PI/180; // In Radians. Half width. X°= X*pi/180rads
-const double perch=0.5; // Proportion of time spent 'perching'
+const double perch=0.0; // Proportion of time spent 'perching'
 
 //Call parameters
 const int LengthCW(1);
-const double CallWidth[LengthCW] = {180*M_PI/180};
+const double CallWidth[LengthCW] = {0*M_PI/180};
 
 // Total number of steps calculated from values above
 const int NoSteps = round(LengthMonitoring/StepLength);
