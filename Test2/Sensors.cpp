@@ -61,7 +61,7 @@ Sensor::Sensor(int Id, double sensorhalfangle, double sensorradius){
     if(g_detector2== 0 || g_detector2== M_PI|| g_detector2== 2*M_PI){vh_det2 = 1;} //Line is vertical
     else if(g_detector2 == M_PI/2 || g_detector2== 3*M_PI/2){vh_det2 = 2;} //Line is Horizontal
     
-    Captures.resize(round(DensityAnimals*((Sq_MaxX-Sq_MinX)*(Sq_MaxY-Sq_MinY)))*10);
+    Captures.resize(round(DensityAnimals*((Sq_MaxX-Sq_MinX)*(Sq_MaxY-Sq_MinY)))*1000);
     
 
     
@@ -794,7 +794,7 @@ int Sensor::SensorAndMovement(double& location_x_animal, double& location_y_anim
         
     }//--------END OF DIFFERENT ANGLE ANIMAL MOVEMENT ---------------//
     else{
-        std::cout<<"Something is very wrong with Sensor::SensorAndMovement " <<  std::endl;
+        std::cout<<"Something is very wrong with Sensor::SensorAndMovement " << "gradient of detector: " <<m_detector <<"gradient of animal: "<< m_animal << std::endl;
         exit (EXIT_FAILURE);
     };
     

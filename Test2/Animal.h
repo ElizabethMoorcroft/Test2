@@ -40,7 +40,7 @@ class Animal {
     int locationvectorcount;
     
     std::vector<double> mylocationvector;
-    std::vector<std::vector<double>> All_locations;
+    std::vector<std::vector<double> > All_locations;
 
 public:
     Animal();
@@ -68,7 +68,7 @@ public:
     double getNextX(){return NextX;};
     double getNextY(){return NextY;};
     
-    std::vector<std::vector<double>> getAllLocations(){return All_locations;};
+    std::vector<std::vector<double> > getAllLocations(){return All_locations;};
     
     // Calculations
     void NewLocation(double&, double&);

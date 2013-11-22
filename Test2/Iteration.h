@@ -8,8 +8,15 @@
 
 #ifndef __Test2__Iteration__
 #define __Test2__Iteration__
-
 #include <iostream>
+#include <cstdio>
+#include <math.h>
+#include <time.h>
+#include <vector>
+#include <fstream>
+#include <string>
+#include <sstream>
+
 #include "Animal.h"
 #include "AnimalMovement.h"
 #include "Sensors.h"

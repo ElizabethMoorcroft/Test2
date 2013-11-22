@@ -164,13 +164,13 @@ void  Animal::UpdateLocation (double seed){ // a is the number of seconds per st
         probofperch = Number1.AtoBUnif(RandomNumberMovement[100],0,1);
     };
     if(probofperch<(1-perch)){
-    //std::cout<<"NewLocation"<<std::endl;
+        //std::cout<<"NewLocation"<<std::endl;
         NewLocation(RandomNumberMovement[0], RandomNumberMovement[50]);
     }else{
         NextX= Current_x;
         NextY= Current_y;
         NextDist = 0;
-        NextAngle = Current_angle;
+        NextAngle = RangeAngle(Current_angle);
     }
     
     int tempcounter = 0;
@@ -186,7 +186,7 @@ void  Animal::UpdateLocation (double seed){ // a is the number of seconds per st
             Current_x = NextX;
             Current_y = NextY;
             Total_distance += NextDist;
-            Current_angle = NextAngle;
+            Current_angle = RangeAngle(NextAngle);
             
             //std::cout<< "If entered: " << Current_x<< " "<<Current_y << std::endl;
 
@@ -219,7 +219,21 @@ void  Animal::UpdateLocation (double seed){ // a is the number of seconds per st
             //then will exit either at Bottom or right boundary
             else if(NextAngle>=1.5*M_PI && NextAngle<2*M_PI){LeaveEnterWorld(Sq_MaxY, Sq_MinX ,Sq_MinY, Sq_MaxX);}
             // Produces error is the ANGLE is not between 0 and 360
-            else {std::cout << "ERROR - Movement angle: "<<NextAngle <<std::endl;};
+            else { //std::cout << "ERROR - Movement angle: "<<NextAngle <<std::endl;
+                std::cout<<identifier<< " "<<
+                    Current_x << " "<<
+                    Current_y <<" "<<
+                    Current_angle <<" "<<
+                    NextAngle <<" "<<
+                    Move_speed <<" "<<
+                    StepLengthDist <<" "<<
+                    step_number <<" "<<
+                    Total_distance <<" "<<
+                    Move_maxangle <<
+                std::endl;
+                
+                //break;
+            };
             
             // Produces error if the Next distance is less than zero
             // But exits loop and continues with the rest of the code

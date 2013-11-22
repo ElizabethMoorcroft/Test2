@@ -53,11 +53,10 @@ AnimalMovement::AnimalMovement( std::vector<Animal*> AllAnimals ,  std::vector<S
         stepcount = j*1000;
         //if(j==0){std::cout<<"NoAnimal: " <<i <<" RandomNumberCurrentAnimal[stepcount]: " <<RandomNumberCurrentAnimal[stepcount]<<std::endl;}
         AllAnimals[i] -> UpdateLocation(RandomNumberCurrentAnimal[stepcount]);
+        //std::cout<<"END UPDATE MOVEMENT " <<std::endl;
     }; //End of j loop for Steps
-    
-    // Variables for calculating captures
-    //double sensorx; double sensory; double sensorradius;
-    //double disttosensorprevious; double disttosensorcurrent;
+    //std::cout<<"finished no of steps"<<std::endl;
+
     
     // Creates a temp matrix for "all locations"
     std::vector<std::vector<double> > TempAllLocations = AllAnimals[i]->getAllLocations();
@@ -67,69 +66,21 @@ AnimalMovement::AnimalMovement( std::vector<Animal*> AllAnimals ,  std::vector<S
     // Temp location file is written in csv file
     // Each location is a seperate row  - the number of rows = "TempAllLocations.size()"
     for(int stepcounter=0; stepcounter<TempAllLocations.size(); stepcounter++){
+        //std::cout<<"stepcounter: "<< stepcounter<<std::endl;
         std::vector<double>  locations = TempAllLocations[stepcounter];
-        std::vector<double>  previouslocations = TempAllLocations[stepcounter-1];
-        if(TempAllLocations[stepcounter].size()>0){ maxiteration=stepcounter;};
-        CheckSensor::CheckSensor(locations, previouslocations, AllSensors, Movement, stepcounter, i, iterationnumber);
+        std::vector<double>  previouslocations;
+        if(stepcounter>0){previouslocations = TempAllLocations[stepcounter-1];}else{previouslocations = TempAllLocations[stepcounter];};
         
-        /*
-         if(TempAllLocations[stepcounter].size()>0){
-         maxiteration=stepcounter;
-         
-         double currentx = TempAllLocations[stepcounter][2];
-         double currenty = TempAllLocations[stepcounter][3];
-         double currentangle = TempAllLocations[stepcounter][4];
-         
-         if(SaveMovement==1){
-         Movement<< TempAllLocations[stepcounter][0] << //1st column, row "stepcounter"
-         "," << TempAllLocations[stepcounter][1] << //2nd column, row "stepcounter"
-         "," << currentx << //...
-         "," << currenty << //...
-         "," << currentangle << //...
-         "," << TempAllLocations[stepcounter][5] << //...
-         "," << TempAllLocations[stepcounter][6] << //...
-         "," << TempAllLocations[stepcounter][7] << //8th column, row "stepcounter"
-         "," << TempAllLocations[stepcounter][8] << //8th column, row "stepcounter"
-         "," << iterationnumber <<                  // itertaion number
-         "\n";                                      // New line
-         }; // END OF IF LOOP FOR SAVING
-         
-         
-         // for each step calcualte past location and current location, and direction when leaving past location
-         if(TempAllLocations[stepcounter][1]>0){
-         double previousx = TempAllLocations[stepcounter-1][2];
-         double previousy = TempAllLocations[stepcounter-1][3];
-         // Calcualtes whether the animal is captured
-         
-         // Only check for the capture if the start and end locations are with a given distance "checkforcapture"
-         double checkforcapture =StepLength*AnimalSpeed*2;
-         for(int sensor=0; sensor<NoSensors; sensor++){
-         //std::cout<<"Sensor: "<<sensor << "/" << NoSensors <<std::endl;
-         sensorx = AllSensors[sensor] -> getXloc();
-         sensory = AllSensors[sensor] -> getYloc();
-         sensorradius = AllSensors[sensor] -> getRadius();
-         double checkforcaptureplusradius =checkforcapture+sensorradius;
-         
-         
-         AllSensors[sensor] -> setStepOn(TempAllLocations[stepcounter][1]);
-         
-         disttosensorprevious = sqrt(pow(previousx - sensorx,2)+pow(previousy - sensory,2));
-         disttosensorcurrent = sqrt(pow(currentx - sensorx,2)+pow(currenty - sensory,2));
-         
-         if(disttosensorprevious<checkforcaptureplusradius  && disttosensorcurrent<checkforcaptureplusradius ){
-         for(int callsize=0; callsize<LengthCW; callsize++){
-         //std::cout<< "CallWidth[callsize]: "<< CallWidth[callsize]<< std::endl;
-         
-         AllSensors[sensor] ->CapturesIntersection(currentx,currenty,previousx,previousy,i,CallWidth[callsize],currentangle,iterationnumber);
-         }; // end of call loop
-         };// End of if distance close to sensor
-         }; // END of sensor for loop
-         }; // end of if not first step
-         };// END of check movement exists
-         */
+        if(TempAllLocations[stepcounter].size()>0){ maxiteration=stepcounter;};
+        //std::cout<<"check sensors: "<< stepcounter <<"/" <<TempAllLocations.size() <<std::endl;
+        CheckSensor(locations, previouslocations, AllSensors, Movement, stepcounter, i, iterationnumber);
+        
     }; // End of for step loop
     
     //std::cout<< TempAllLocations.size()<< std::endl;
+    
+    //std::cout<<"movement save"<<std::endl;
+
     
     Movement<< TempAllLocations[maxiteration][0] << //1st column, row "stepcounter"
     "," << TempAllLocations[maxiteration][1] << //2nd column, row "stepcounter"
@@ -161,12 +112,12 @@ AnimalMovement::AnimalMovement( std::vector<Animal*> AllAnimals ,  std::vector<S
             "," << TempCaptures[stepcounter][1] << //2nd column, row "stepcounter"
             "," << TempCaptures[stepcounter][2] << //...
             "," << TempCaptures[stepcounter][3] <<
-            // "," << TempCaptures[stepcounter][4] <<
-            // "," << TempCaptures[stepcounter][5] <<
-            // "," << TempCaptures[stepcounter][6] <<
-            // "," << TempCaptures[stepcounter][7] <<
+             "," << TempCaptures[stepcounter][4] <<
+             "," << TempCaptures[stepcounter][5] <<
+             "," << TempCaptures[stepcounter][6] <<
+         "," << TempCaptures[stepcounter][7] <<
             "," << TempCaptures[stepcounter][8] <<
-            // "," << TempCaptures[stepcounter][9] <<
+             "," << TempCaptures[stepcounter][9] <<
             "\n";                                  // New line
             
             stepcounter+=1;

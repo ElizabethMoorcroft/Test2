@@ -6,6 +6,16 @@
 //  Copyright (c) 2013 Elizabeth Moorcroft. All rights reserved.
 //
 
+#include <iostream>
+#include <cstdio>
+#include <math.h>
+#include <time.h>
+#include <vector>
+#include <fstream>
+#include <string>
+#include <sstream>
+
+
 #include "Iteration.h"
 #include "Animal.h"
 #include "AnimalMovement.h"
@@ -14,7 +24,6 @@
 #include "Animal.h"
 #include "RandNum.h"
 #include "Parameters.h"
-#include <vector>
 
 
 Iteration::Iteration(){};
@@ -84,9 +93,10 @@ Iteration::Iteration(std::vector<Sensor*> AllSensors, std::ofstream &Captures, s
      //     - Saves movement
      ---------------------------------------------------------*/
     for(int i=0; i<NoAnimal; i++){
+        std::cout<<"Animals numbers: " <<i+1<<"/" <<NoAnimal<<std::endl;
         double randomstart = RandomNumberStreamAnimalStart[i*NoAnimal];
         double randommove = RandomNumberStreamAnimalMove[i*NoAnimal];
-        AnimalMovement::AnimalMovement( AllAnimals , AllSensors ,  Captures,  Movement, randomstart,  randommove, i, iterationnumber, speedvalue, perchvalue,maxchangeanglevalue);
+        AnimalMovement( AllAnimals , AllSensors ,  Captures,  Movement, randomstart,  randommove, i, iterationnumber, speedvalue, perchvalue,maxchangeanglevalue);
         
     }; //End of Individual loop
     

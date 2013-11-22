@@ -47,26 +47,42 @@ CheckSensor::CheckSensor(std::vector<double> Locations, std::vector<double> prev
             // Only check for the capture if the start and end locations are with a given distance "checkforcapture"
             double checkforcapture =StepLength*AnimalSpeed*2;
             for(int sensor=0; sensor<NoSensors; sensor++){
-                //std::cout<<"Sensor: "<<sensor << "/" << NoSensors <<std::endl;
+                //std::cout<<"Sensor1: "<<sensor+1 << "/" << NoSensors <<std::endl;
                 double sensorx = AllSensors[sensor] -> getXloc();
                 double sensory = AllSensors[sensor] -> getYloc();
                 double sensorradius = AllSensors[sensor] -> getRadius();
                 double checkforcaptureplusradius =checkforcapture+sensorradius;
                 
-                
+                //if(sensor+1==NoSensors){
+                    //std::cout<<"Sensor2: "<<sensor+1 << "/" << NoSensors <<std::endl;
+                //}
+
                 AllSensors[sensor] -> setStepOn(Locations[1]);
+               // std::cout<<"Sensor3: "<<sensor+1 << "/" << NoSensors <<std::endl;
+
                 
                 double disttosensorprevious = sqrt(pow(previousx - sensorx,2)+pow(previousy - sensory,2));
                 double disttosensorcurrent = sqrt(pow(currentx - sensorx,2)+pow(currenty - sensory,2));
                 
+                //std::cout<<"Sensor4: "<<sensor+1 << "/" << NoSensors <<std::endl;
+
+                
                 if(disttosensorprevious<checkforcaptureplusradius  && disttosensorcurrent<checkforcaptureplusradius ){
-                    for(int callsize=0; callsize<LengthCW; callsize++){
-                        //std::cout<< "CallWidth[callsize]: "<< CallWidth[callsize]<< std::endl;
-                        
-                        AllSensors[sensor] ->CapturesIntersection(currentx,currenty,previousx,previousy,i,CallWidth[callsize],currentangle,iterationnumber);
-                    }; // end of call loop
+                    //std::cout<<"Sensor5: "<<sensor+1 << "/" << NoSensors <<std::endl;
+                    //if(sensor==219){std::cout<< "currentx " << currentx << " currenty " <<currenty <<
+                    //                         " previousx "<<previousx << " previousy "<< previousy <<
+                     //                       " i "<<i<< " CallWidth[0] "<<CallWidth[0] <<
+                    //                        " currentangle "<<currentangle <<" iterationnumber "<<iterationnumber<<std::endl;};
+                    AllSensors[sensor] ->CapturesIntersection(currentx,currenty,previousx,previousy,i,CallWidth[0],currentangle,iterationnumber);
+                    //std::cout<<"Sensor6: "<<sensor+1 << "/" << NoSensors <<std::endl;
                 };// End of if distance close to sensor
+                
+                //if(sensor+1==NoSensors){
+                   // std::cout<<"Sensor7: "<<sensor+1 << "/" << NoSensors <<std::endl;
+                //}
+
             }; // END of sensor for loop
         }; // end of if not first step
         };// END of check movement exists
+   // std::cout<<"Exit Sensor " <<std::endl;
 };
