@@ -73,7 +73,7 @@ Iteration::Iteration(std::vector<Sensor*> AllSensors, std::ofstream &Captures, s
     //Random number stream for choosing HR
     srand(RandomNumberStream[25]);
     std::vector<double> RandomNumberStreamAnimalStart(pow(NoAnimal,2));
-    for(int i=0; i<pow(NoAnimal,2); i++){ RandomNumberStreamAnimalStart[i]=double(rand()); };
+    for(int i=0; i<pow(NoAnimal,2); i++){RandomNumberStreamAnimalStart[i]=double(rand());};
     
     
     // Random number stream seed for the seed for the movement
@@ -93,7 +93,7 @@ Iteration::Iteration(std::vector<Sensor*> AllSensors, std::ofstream &Captures, s
      //     - Saves movement
      ---------------------------------------------------------*/
     for(int i=0; i<NoAnimal; i++){
-        std::cout<<"Animals numbers: " <<i+1<<"/" <<NoAnimal<<std::endl;
+        //std::cout<<"Animals numbers: " <<i+1<<"/" <<NoAnimal<<std::endl;
         double randomstart = RandomNumberStreamAnimalStart[i*NoAnimal];
         double randommove = RandomNumberStreamAnimalMove[i*NoAnimal];
         AnimalMovement( AllAnimals , AllSensors ,  Captures,  Movement, randomstart,  randommove, i, iterationnumber, speedvalue, perchvalue,maxchangeanglevalue);
@@ -104,5 +104,5 @@ Iteration::Iteration(std::vector<Sensor*> AllSensors, std::ofstream &Captures, s
      // Destructors - Destructs the vectors of pointers to classes
      ---------------------------------------------------------*/
     // Destructors For Animals
-    for(int i=0; i<NoAnimal; i++){delete AllAnimals[i];}
+    //for(int i=0; i<NoAnimal; i++){delete AllAnimals[i];std::cout<<"deleted animals"<<std::endl;}
 };

@@ -31,7 +31,7 @@ Simulation::Simulation(){};
 
 Simulation::Simulation(double perchvalue, double speedvalue,double maxchangeanglevalue){
     
-    std::string savevalue = make_directory("/Users/student/Documents/Bats/Simulations/Test", perchvalue, speedvalue, maxchangeanglevalue);
+    std::string savevalue = make_directory("/Users/student/Documents/Bats/Simulations/Run23Oct2013", perchvalue, speedvalue, maxchangeanglevalue);
     std::string returnvalue = make_directory("/Users/student/Dropbox/SimulationReached", perchvalue, speedvalue, maxchangeanglevalue);
     
     
@@ -131,7 +131,7 @@ Simulation::Simulation(double perchvalue, double speedvalue,double maxchangeangl
     //AnimalTest AT1;
     //AT1.RunAnimalTests();
     
-    std::cout<<"Passed all tests and checks"<< std::endl;
+    //std::cout<<"Passed all tests and checks"<< std::endl;
     //Clocks total run time
     
     //--------------------------------------------------------------------------------------------------
@@ -191,7 +191,8 @@ Simulation::Simulation(double perchvalue, double speedvalue,double maxchangeangl
     std::ofstream Return;
     Return.open(make_filename(returnvalue, ",finished.csv" ).c_str());
     Return.close();
-
+    
+    for(int i=0; i<NoSensors; i++) {delete AllSensors[i];};
 };
 
 //--------------------------------------------------------------------------------------------------

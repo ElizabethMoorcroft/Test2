@@ -77,31 +77,31 @@ public:
     
     // Range of angle between 0 and 2pi
     double RangeAngle(double);
-    double DistTwoPoints(double&, double&, double&, double&);
-    double AngleTwoPoints(double&, double&, double&, double&);
+    double DistTwoPoints(double, double, double, double);
+    double AngleTwoPoints(double, double, double, double);
     
-    bool approximatelyequal(double&, double);
+    bool approximatelyequal(double, double);
     
-    std::vector <double> AngleAndCircInteraction(double&, double&);
-    std::vector <double> VertAndCircInteraction(double&);
-    std::vector <double> HorzAndCircInteraction(double&, double&, double&, double&);
-    std::vector <double> AngleAndAngleInteraction(double&, double&, double&, double&);
-    double HorzAndAngleInteraction(double&, double&, double&);
-    double VertAndAngleInteraction(double&, double&, double&);
+    std::vector <double> AngleAndCircInteraction(double, double);
+    std::vector <double> VertAndCircInteraction(double);
+    std::vector <double> HorzAndCircInteraction(double, double, double, double);
+    std::vector <double> AngleAndAngleInteraction(double, double, double, double);
+    double HorzAndAngleInteraction(double, double, double);
+    double VertAndAngleInteraction(double, double, double);
 
     
     
-    std::vector <double> TimeAndAngleCal(double&, double&, double&, double&, double&);
-    double GradientFromAngle(double&);
-    void UpdateCaptures(int&,int&,double&,double&,double&,int&,double&,double&, double&);
+    std::vector <double> TimeAndAngleCal(double, double, double, double, double);
+    double GradientFromAngle(double);
+    void UpdateCaptures(int,int,double,double,double,int,double,double, double);
     int CapturesIndividual(double, double, int, double, double, int ,double ,int);
     
-    int CapturesIntersection(double&, double&, double&, double&, int&, double, double&, int&);
+    int CapturesIntersection(double, double, double, double, int, double, double, int);
     
-    int SensorAndMovement(double&, double&, double&, double&,  int&,  double&,   double&,
-                        int&, double&, double&, double&, double&, double&, int&, double&);
-    int SensorCircAndMovement(double&, double&, double&, double&, int&, double&, double&,
-                            int&, double&, double&, double& );
+    int SensorAndMovement(double, double, double, double,  int,  double,   double,
+                        int, double, double, double, double, double, int, double);
+    int SensorCircAndMovement(double, double, double, double, int, double, double,
+                            int, double, double, double );
 
     
 };

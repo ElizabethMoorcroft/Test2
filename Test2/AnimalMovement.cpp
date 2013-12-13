@@ -34,9 +34,9 @@ AnimalMovement::AnimalMovement( std::vector<Animal*> AllAnimals ,  std::vector<S
     
     // New animal given start locations - at the centre of the home range
     //  Inputs are: ID & Starts location (x,y) &  Initial angle
-    AllAnimals[i] =new Animal(i, xlocation, ylocation, CurrentAngleTemp);
-    AllAnimals[i] -> setAnimalspeedPerch(speedvalue, perchvalue);
-    AllAnimals[i] -> setMove_maxangle(maxchangeanglevalue);
+    Animal Animal1(i, xlocation, ylocation, CurrentAngleTemp);
+    Animal1.setAnimalspeedPerch(speedvalue, perchvalue);
+    Animal1.setMove_maxangle(maxchangeanglevalue);
     
     /*------------------------------------------------------
      // Update location
@@ -45,21 +45,22 @@ AnimalMovement::AnimalMovement( std::vector<Animal*> AllAnimals ,  std::vector<S
     //Random number stream for the movemnet of the animal
     srand(randommove);
     std::vector<double> RandomNumberCurrentAnimal(NoSteps*1000);
-    for(int j=0; j<NoSteps*1000; j++){RandomNumberCurrentAnimal[j]=double(rand());};
+    for(int j=0; j<NoSteps*1000; j++){ RandomNumberCurrentAnimal[j]=double(rand());};
     
     // For each step, Updates animal location
     double stepcount;
     for(int j=0; j<NoSteps; j++){
         stepcount = j*1000;
+        //std::cout<<"NoStep: "<<j<<"/"<<NoSteps <<std::endl;
         //if(j==0){std::cout<<"NoAnimal: " <<i <<" RandomNumberCurrentAnimal[stepcount]: " <<RandomNumberCurrentAnimal[stepcount]<<std::endl;}
-        AllAnimals[i] -> UpdateLocation(RandomNumberCurrentAnimal[stepcount]);
+        Animal1.UpdateLocation(RandomNumberCurrentAnimal[stepcount]);
         //std::cout<<"END UPDATE MOVEMENT " <<std::endl;
     }; //End of j loop for Steps
     //std::cout<<"finished no of steps"<<std::endl;
 
     
     // Creates a temp matrix for "all locations"
-    std::vector<std::vector<double> > TempAllLocations = AllAnimals[i]->getAllLocations();
+    std::vector<std::vector<double> > TempAllLocations = Animal1.getAllLocations();
     
     int maxiteration=0;
     
@@ -83,16 +84,16 @@ AnimalMovement::AnimalMovement( std::vector<Animal*> AllAnimals ,  std::vector<S
 
     
     Movement<< TempAllLocations[maxiteration][0] << //1st column, row "stepcounter"
-    "," << TempAllLocations[maxiteration][1] << //2nd column, row "stepcounter"
-    "," << TempAllLocations[maxiteration][2] << //...
-    "," << TempAllLocations[maxiteration][3] << //...
-    "," << TempAllLocations[maxiteration][4] << //...
-    "," << TempAllLocations[maxiteration][5] << //...
-    "," << TempAllLocations[maxiteration][6] << //...
-    "," << TempAllLocations[maxiteration][7] << //8th column, row "stepcounter"
-    "," << TempAllLocations[maxiteration][8] << //8th column, row "stepcounter"
-    "," << iterationnumber <<                  // itertaion number
-    "\n";                                      // New line
+        "," << TempAllLocations[maxiteration][1] << //2nd column, row "stepcounter"
+        "," << TempAllLocations[maxiteration][2] << //...
+        "," << TempAllLocations[maxiteration][3] << //...
+        "," << TempAllLocations[maxiteration][4] << //...
+        "," << TempAllLocations[maxiteration][5] << //...
+        "," << TempAllLocations[maxiteration][6] << //...
+        "," << TempAllLocations[maxiteration][7] << //8th column, row "stepcounter"
+        "," << TempAllLocations[maxiteration][8] << //8th column, row "stepcounter"
+        "," << iterationnumber <<                  // itertaion number
+        "\n";                                      // New line
     
     
     /*------------------------------------------------------
@@ -109,16 +110,16 @@ AnimalMovement::AnimalMovement( std::vector<Animal*> AllAnimals ,  std::vector<S
         while(TempCaptures[stepcounter].size()==10){
             //if(sensorr==5){std::cout<<"stepcounter" << stepcounter <<std::endl;}
             Captures<< TempCaptures[stepcounter][0] << //1st column, row
-            "," << TempCaptures[stepcounter][1] << //2nd column, row "stepcounter"
-            "," << TempCaptures[stepcounter][2] << //...
-            "," << TempCaptures[stepcounter][3] <<
-             "," << TempCaptures[stepcounter][4] <<
-             "," << TempCaptures[stepcounter][5] <<
-             "," << TempCaptures[stepcounter][6] <<
-         "," << TempCaptures[stepcounter][7] <<
-            "," << TempCaptures[stepcounter][8] <<
-             "," << TempCaptures[stepcounter][9] <<
-            "\n";                                  // New line
+                "," << TempCaptures[stepcounter][1] << //2nd column, row "stepcounter"
+                "," << TempCaptures[stepcounter][2] << //...
+                "," << TempCaptures[stepcounter][3] <<
+                "," << TempCaptures[stepcounter][4] <<
+                "," << TempCaptures[stepcounter][5] <<
+                "," << TempCaptures[stepcounter][6] <<
+                "," << TempCaptures[stepcounter][7] <<
+                "," << TempCaptures[stepcounter][8] <<
+                "," << TempCaptures[stepcounter][9] <<
+                "\n";                                  // New line
             
             stepcounter+=1;
         }; //End of step counter loop
@@ -127,5 +128,5 @@ AnimalMovement::AnimalMovement( std::vector<Animal*> AllAnimals ,  std::vector<S
         AllSensors[sensor] -> ResetStepOn();
     }; //END OF FOR LOOP
     //std::cout<<"endcaptures"<<std::endl;
-
+    //std::cout <<"Finished Animal:" << i+1 <<"/" << NoAnimal << std::endl;
 }

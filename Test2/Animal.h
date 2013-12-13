@@ -24,7 +24,8 @@ class Animal {
     double Move_speed;
     double Move_maxangle;
     double StepLengthDist;
-
+    double perchIndivid;
+    
         
     double Current_x;
     double Current_y;

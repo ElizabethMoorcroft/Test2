@@ -44,7 +44,6 @@ Animal::Animal(int a, double i, double j, double k) {
     Current_y = j;
     Current_angle = k;
     Current_angle= RangeAngle(Current_angle);
-    Move_speed = AnimalSpeed/(1-perch);
     StepLengthDist = StepLength*Move_speed;
     
     // When initialising the step number and the current distance travelled will always be set to zero
@@ -52,7 +51,6 @@ Animal::Animal(int a, double i, double j, double k) {
     Total_distance = 0;
     
     //Set up like this so in the future can be initalized as RV??
-    Move_maxangle = CorrWalkMaxAngleChange;
     
     // Updates the location vector
     All_locations.resize(10*NoSteps);
@@ -81,6 +79,7 @@ void Animal::setMove_speed(double a){
 void Animal::setAnimalspeedPerch(double a, double b){
     Move_speed = a/(1-b);
     StepLengthDist = StepLength*Move_speed;
+    perchIndivid=b;
 };
 
 
@@ -105,7 +104,7 @@ void Animal::LocationVector(double& locationx, double& locationy, int LeaveEntre
     mylocationvector[3] = locationy;
     mylocationvector[4] = NextAngle;
     mylocationvector[5] = Total_distance;
-    mylocationvector[6] = AnimalSpeed;
+    mylocationvector[6] = Move_speed;
     mylocationvector[7] = LeaveEntreCode;
     mylocationvector[8] = NextDist;
 
@@ -158,12 +157,12 @@ void  Animal::UpdateLocation (double seed){ // a is the number of seconds per st
     
     double probofperch=0;
     
-    if(perch!=0){
+    if(perchIndivid!=0){
         //std::cout<<"Perching"<<std::endl;
         RandNum Number1;
         probofperch = Number1.AtoBUnif(RandomNumberMovement[100],0,1);
     };
-    if(probofperch<(1-perch)){
+    if(probofperch<(1-perchIndivid)){
         //std::cout<<"NewLocation"<<std::endl;
         NewLocation(RandomNumberMovement[0], RandomNumberMovement[50]);
     }else{

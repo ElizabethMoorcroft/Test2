@@ -659,7 +659,6 @@ void SensorTest::TestGradientFromAngle(){
  
     int loc1 =0;
     int loc2 =0;
-    double temp;
     Sensor Sensor1;
     Sensor1 = Sensor(1, M_PI/4, 1);
      Sensor1.setXLoc(0); Sensor1.setYLoc(0);
@@ -673,7 +672,6 @@ void SensorTest::TestGradientFromAngle(){
     //  - Not at detector2 line  (X= ,Y= ,T= )
     //  - At Circle line (X=0 ,Y=1 ,T=1)
     //std::cout<<"Test CapInter: 3"<< std::endl;
-    temp= 1/sqrt(2);
      double v1 = 0; double v2 = 1; double v3 = -0.5; double v4 = 0.5;
      int v5 =1;
      double v6 =M_PI_4;

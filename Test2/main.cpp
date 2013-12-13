@@ -40,27 +40,37 @@ void simulatevalues(std::vector<double> Values){
 
 int main(){
     
-    double speedmatrix[2] = {0.15,0.31};
-    double anglematrix[4] = {0,45*M_PI/180,90*M_PI/180,180*M_PI/180};
+    double speedmatrix[2] = {0.15};
+    double anglematrix[4] = {0,45*M_PI/180,90*M_PI/180};
     
     
     for(int simulationnumber1=0; simulationnumber1<2; simulationnumber1++){
-        for(int simulationnumber2=0; simulationnumber2<4; simulationnumber2++){
+        for(int simulationnumber2=0; simulationnumber2<3; simulationnumber2++){
             
-            //std::cout<< "simulationnumber1: " <<simulationnumber1 <<" simulationnumber2: " <<simulationnumber2 <<std::endl;
+            std::cout<< "simulationnumber1: " <<simulationnumber1 <<" simulationnumber2: " <<simulationnumber2 <<std::endl;
             double speedvalue= speedmatrix[simulationnumber1];
             double maxchangeanglevalue = anglematrix[simulationnumber2];
         
             std::vector<double> Values1(3);
             Values1[0] = 0; Values1[1] = speedvalue; Values1[2] =  maxchangeanglevalue;
             simulatevalues(Values1);
+            //std::cout<< "finsihed  - simulationnumber1: " <<simulationnumber1 <<" simulationnumber2: " <<simulationnumber2 <<std::endl;
+
         };
+        std::cout<<"Finished" <<std::endl;
     };
     
+    std::cout<< "Extra1" <<std::endl;
     std::vector<double> Values1(3);
     Values1[0] = 0; Values1[1] = 0.00012; Values1[2] =  0;
     simulatevalues(Values1);
+    
+    std::cout<<  "Extra2" <<std::endl;
     Values1[0] = 0; Values1[1] = 0.46; Values1[2] =  0;
+    simulatevalues(Values1);
+    
+    std::cout<<  "Extra3" <<std::endl;
+    Values1[0] = 0; Values1[1] = 0.15; Values1[2] =  180*M_PI/180;
     simulatevalues(Values1);
     
     
