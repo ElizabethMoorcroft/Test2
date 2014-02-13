@@ -925,7 +925,7 @@ int Sensor::CapturesIndividual(double location_x_animal,
             double AngleFromSensor = AngleTwoPoints(location_x, currentlocx, location_y, currentlocy);
             double &AngleFromSensor_ref = AngleFromSensor;
             
-            double AngleFromSensorCentre = AngleFromSensor_ref - angle;
+            double AngleFromSensorCentre = AngleFromSensor_ref - angle; // the minus angle bit is to work out the angle from the centre
             if(AngleFromSensorCentre>M_PI){AngleFromSensorCentre-=2*M_PI;};
             // If the Sensor is a circle
             if(angle_HalfWidth == M_PI){
@@ -971,8 +971,8 @@ int Sensor::CapturesIndividual(double location_x_animal,
                 double AngleFromAnimal = AngleFromSensor_ref+M_PI;
                 // If greater than 2pi then correct (should not be less than zero!)
                 AngleFromAnimal = RangeAngle(AngleFromAnimal);
-                double AngleFromAnimalCentre = AngleFromAnimal;
-                if(AngleFromAnimalCentre>M_PI){AngleFromAnimalCentre-=2*M_PI;};
+                double AngleFromAnimalCentre = AngleFromAnimal - move_angle; // to calculate from animal centre
+                AngleFromAnimalCentre = RangeAngle(AngleFromAnimalCentre);
                 // initates values for min and max call angles
 
                 /*---------------------------------------------------------------------------------------------------------
