@@ -16,6 +16,7 @@ CheckSensor::CheckSensor(){};
 CheckSensor::CheckSensor(std::vector<double> Locations, std::vector<double> previousLocations,
                          std::vector<Sensor*> AllSensors,
                          std::ofstream &Movement,
+                         std::ofstream &Captures,
                          int stepcounter, int i, int iterationnumber){
     if(Locations.size()>0){
         
@@ -71,7 +72,7 @@ CheckSensor::CheckSensor(std::vector<double> Locations, std::vector<double> prev
                     //                         " previousx "<<previousx << " previousy "<< previousy <<
                     //                        " i "<<i<< " CallWidth[0] "<<CallWidth[0] <<
                     //                        " currentangle "<<currentangle <<" iterationnumber "<<iterationnumber<<std::endl;};
-                    AllSensors[sensor] ->CapturesIntersection(currentx,currenty,previousx,previousy,i,CallWidth[0],currentangle,iterationnumber);
+                    AllSensors[sensor] ->CapturesIntersection(currentx,currenty,previousx,previousy,i,CallWidth[0],currentangle,iterationnumber, Captures);
                     //if(sensor==209){std::cout<<"Sensor6: "<<sensor+1 << "/" << NoSensors <<std::endl;}
                 };// End of if distance close to sensor
                 

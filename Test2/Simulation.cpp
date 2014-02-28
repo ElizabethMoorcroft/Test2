@@ -31,7 +31,7 @@ Simulation::Simulation(){};
 
 Simulation::Simulation(double perchvalue, double speedvalue,double maxchangeanglevalue){
     
-    std::string savevalue = make_directory("/Users/student/Documents/Bats/Simulations/Run23Oct2013", perchvalue, speedvalue, maxchangeanglevalue);
+    std::string savevalue = make_directory("/Users/student/Documents/Bats/Simulations/Test", perchvalue, speedvalue, maxchangeanglevalue);
     std::string returnvalue = make_directory("/Users/student/Dropbox/SimulationReached", perchvalue, speedvalue, maxchangeanglevalue);
     
     

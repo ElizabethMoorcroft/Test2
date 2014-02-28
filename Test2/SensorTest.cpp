@@ -103,11 +103,11 @@ void SensorTest::RunSensorTests(){
 void SensorTest::SensorTest_CaptureIndividual1(){
     Sensor Sensor1;
     Sensor1 = Sensor(1, 0, 0);
-    
+    std::ofstream Sensors;
     int Estimate;
     //location_x_animal,location_y_animal,Individual_ID,call_halfwidth,move_angle,itnumber,time.
     Sensor1.setXLoc(0); Sensor1.setYLoc(0);
-    Estimate = Sensor1.CapturesIndividual(0,0,1,M_PI,0,0,0,0); // Animal directly above Sensor
+    Estimate = Sensor1.CapturesIndividual(0,0,1,M_PI,0,0,0,0,Sensors); // Animal directly above Sensor
     if(Estimate!=1){
         std::cout<<"Error! Failed Sensor test - TestCI: "<<"1" <<std::endl;
         exit (EXIT_FAILURE);
@@ -120,9 +120,10 @@ void SensorTest::SensorTest_CaptureIndividual2(){
     Sensor1 = Sensor(1, M_PI_2, 1);
     Sensor1.setXLoc(0); Sensor1.setYLoc(0); Sensor1.setAngle(0); Sensor1.setRadius(1);
     int Estimate;
+    std::ofstream Sensors;
     //double location_x_animal, double location_y_animal, int Individual_ID, double call_halfwidth, double move_angle, int itnumber, double time, int call
     Sensor1.setXLoc(0); Sensor1.setYLoc(0);
-    Estimate = Sensor1.CapturesIndividual(0,1,1,M_PI,M_PI,0,0,0); // Animal is on boundary and facing away
+    Estimate = Sensor1.CapturesIndividual(0,1,1,M_PI,M_PI,0,0,0, Sensors); // Animal is on boundary and facing away
     if(Estimate!=1){
         std::cout<<"Error! Failed Sensor test - TestCI: "<<"2" <<std::endl;
         exit (EXIT_FAILURE);
@@ -135,8 +136,9 @@ void SensorTest::SensorTest_CaptureIndividual2(){
     Sensor1 = Sensor(1, M_PI/2, 1);
     Sensor1.setXLoc(0); Sensor1.setYLoc(0);
     int Estimate;
+     std::ofstream Sensors;
     //Sensor1.setAngle(0); Sensor1.setHalfAngle(0);
-    Estimate = Sensor1.CapturesIndividual(0.5,0.5,1,M_PI,0,0,0,0); // Animal is on within boundary and facing towards Sensor 
+    Estimate = Sensor1.CapturesIndividual(0.5,0.5,1,M_PI,0,0,0,0, Sensors); // Animal is on within boundary and facing towards Sensor
     if(Estimate!=1){
         std::cout<<"Error! Failed Sensor test - TestCI: "<<"3" <<std::endl;
         exit (EXIT_FAILURE);
@@ -148,8 +150,9 @@ void SensorTest::SensorTest_CaptureIndividual2(){
     Sensor1 = Sensor(1, M_PI/4, 1);
     Sensor1.setXLoc(0); Sensor1.setYLoc(0);
     int Estimate;
+     std::ofstream Sensors;
     Sensor1.setAngle(0); Sensor1.setHalfAngle(M_PI_4);
-    Estimate = Sensor1.CapturesIndividual(sin(M_PI_4),cos(M_PI_4),1,M_PI/4,M_PI+M_PI_4,0,0,0);//Animal is on right edge and facing towards sensor
+    Estimate = Sensor1.CapturesIndividual(sin(M_PI_4),cos(M_PI_4),1,M_PI/4,M_PI+M_PI_4,0,0,0,Sensors);//Animal is on right edge and facing towards sensor
     if(Estimate!=1){
         std::cout<<"Error! Failed Sensor test - TestCI: "<<"4" <<std::endl;
         exit (EXIT_FAILURE);
@@ -161,8 +164,9 @@ void SensorTest::SensorTest_CaptureIndividual2(){
     Sensor1 = Sensor(1, M_PI/4, 1);
     Sensor1.setXLoc(0); Sensor1.setYLoc(0);
     int Estimate;
+     std::ofstream Sensors;
     Sensor1.setAngle(0); Sensor1.setHalfAngle(M_PI_4);
-    Estimate = Sensor1.CapturesIndividual(-sin(M_PI_4),cos(M_PI_4),1,M_PI/4,M_PI-M_PI_4,0,0,0);// Animal is on left edge and facing towards Sensor
+    Estimate = Sensor1.CapturesIndividual(-sin(M_PI_4),cos(M_PI_4),1,M_PI/4,M_PI-M_PI_4,0,0,0, Sensors);// Animal is on left edge and facing towards Sensor
     if(Estimate!=1){
         std::cout<<"Error! Failed Sensor test - TestCI: "<<"5" <<std::endl;
         exit (EXIT_FAILURE);
@@ -171,11 +175,12 @@ void SensorTest::SensorTest_CaptureIndividual2(){
  
  void SensorTest::SensorTest_CaptureIndividual6(){
     Sensor Sensor1;
+     std::ofstream Sensors;
     Sensor1 = Sensor(1, M_PI/4, 1);
     Sensor1.setXLoc(0); Sensor1.setYLoc(0);
     int Estimate;
     Sensor1.setAngle(0); Sensor1.setHalfAngle(M_PI_4);
-    Estimate = Sensor1.CapturesIndividual(0,-0.5,1,M_PI/4,0,0,0,0); // Animal is out of range
+    Estimate = Sensor1.CapturesIndividual(0,-0.5,1,M_PI/4,0,0,0,0,Sensors); // Animal is out of range
     if(Estimate!=0){
         std::cout<<"Error! Failed Sensor test - TestCI: "<<"6" <<std::endl;
         exit (EXIT_FAILURE);
@@ -556,7 +561,7 @@ void SensorTest::TestGradientFromAngle(){
     Sensor Sensor1;
     Sensor1 = Sensor(1, M_PI, 1);
      Sensor1.setXLoc(0); Sensor1.setYLoc(0);
-
+     std::ofstream Sensors;
  
     //-------------------------------------------------//
     // Vertical movement through the centre of sector
@@ -574,7 +579,8 @@ void SensorTest::TestGradientFromAngle(){
                      v5, // ID
                      M_PI, //Call width - circular call (to make this easier!)
                      v6,  // move_angle,
-                     v7); // IT
+                     v7,
+                                 Sensors); // IT
      std::vector<std::vector<double> > caps = Sensor1.getCaptures();
 
      
@@ -623,12 +629,12 @@ void SensorTest::TestGradientFromAngle(){
      int v5 =1;
      double v6 =M_PI/2;
      int v7 =1;
-
+     std::ofstream Sensors;
     Sensor1.CapturesIntersection(v1,v2,v3,v4, // Current x/y, previous x,y
                         v5, // ID
                         M_PI, //Call width - circular call (to make this easier!)
                         v6,  // move_angle,
-                        v7); // IT
+                        v7, Sensors); // IT
      std::vector<std::vector<double> > caps = Sensor1.getCaptures();
     loc1 =0; loc2 =0;
     for(int i=0; i<caps.size(); i++){
@@ -676,11 +682,12 @@ void SensorTest::TestGradientFromAngle(){
      int v5 =1;
      double v6 =M_PI_4;
      int v7 =1;
+     std::ofstream Sensors;
     Sensor1.CapturesIntersection(v1,v2,v3,v4,  // Current x/y, previous x,y
                         v5, // ID
                         M_PI, //Call width - circular call (to make this easier!)
                         v6,  // move_angle,
-                        v7); // IT
+                        v7, Sensors); // IT
     loc1 =0; loc2 =0;
 
      std::vector<std::vector<double> > caps = Sensor1.getCaptures();
@@ -713,6 +720,7 @@ void SensorTest::Test_CapturesIntersection4(){
     Sensor Sensor1;
     Sensor1 = Sensor(1, M_PI/4, 1);
     Sensor1.setXLoc(0); Sensor1.setYLoc(0);
+    std::ofstream Sensors;
 
     //-------------------------------------------------//
     // Horizontal movement through top of the sector, through both edges and the circle twice
@@ -730,7 +738,7 @@ void SensorTest::Test_CapturesIntersection4(){
                         v5, // ID
                         M_PI, //Call width - circular call (to make this easier!)
                         v6,  // move_angle,
-                        v7); // IT
+                        v7,Sensors); // IT
     int loc1 =0; int loc2 =0;
     std::vector<std::vector<double> > caps = Sensor1.getCaptures();
     for(int i=0; i<caps.size(); i++){
@@ -771,12 +779,12 @@ void SensorTest::Test_CapturesIntersection4(){
      int v5 =1;
      double v6 =M_PI_4;
      int v7 =1;
-     
+     std::ofstream Sensors;
     Sensor1.CapturesIntersection(temp,temp,v3,v4, // Current x/y, previous x,y
                         v5, // ID
                         M_PI, //Call width - circular call (to make this easier!)
                         v6,  // move_angle,
-                        v7); // IT
+                        v7,Sensors); // IT
     int loc1 =0; int loc2 =0;
      std::vector<std::vector<double> > caps = Sensor1.getCaptures();
 
@@ -806,7 +814,7 @@ void SensorTest::Test_CapturesIntersection4(){
      Sensor Sensor1;
      Sensor1 = Sensor(1, M_PI/4, 1);
      Sensor1.setXLoc(0); Sensor1.setYLoc(0);
-
+     
     //-------------------------------------------------//
     // Angle movement through on edge of sector
     //Angle Sensor and same-angle movement. Should get captured:
@@ -819,11 +827,12 @@ void SensorTest::Test_CapturesIntersection4(){
      int v5 =1;
      double v6 =7*M_PI_4;
      int v7 =1;
+     std::ofstream Sensors;
     Sensor1.CapturesIntersection(v1,v2,v3,v4, // Current x/y, previous x,y
                         v5, // ID
                         M_PI, //Call width - circular call (to make this easier!)
                         v6,  // move_angle,
-                        v7); // IT
+                        v7,Sensors); // IT
     int loc1 =0; int loc2 =0;
      std::vector<std::vector<double> > caps = Sensor1.getCaptures();
     for(int i=0; i<caps.size(); i++){
@@ -852,7 +861,7 @@ void SensorTest::Test_CapturesIntersection4(){
      Sensor1 = Sensor(1, M_PI/4, 1);
      Sensor1.setXLoc(0); Sensor1.setYLoc(0);
      Sensor1.setAngle(M_PI_4);
-
+     std::ofstream Sensors;
     //-------------------------------------------------//
     // Vert movement Vert Sensor
     // Vert movement Horz Sensor
@@ -870,7 +879,7 @@ void SensorTest::Test_CapturesIntersection4(){
                         v5, // ID
                         M_PI, //Call width - circular call (to make this easier!)
                         v6,  // move_angle,
-                        v7); // IT
+                        v7,Sensors); // IT
    int loc1 =0; int loc2 =0;
      std::vector<std::vector<double> > caps = Sensor1.getCaptures();
     for(int i=0; i<caps.size(); i++){
@@ -913,11 +922,12 @@ void SensorTest::Test_CapturesIntersection4(){
      int v5 =1;
      double v6 = M_PI_2;
      int v7 =1;
+     std::ofstream Sensors;
     Sensor1.CapturesIntersection(v1,v2,v3,v4, // Current x/y, previous x,y
                         v5, // ID
                         M_PI, //Call width - circular call (to make this easier!)
                         v6,  // move_angle,
-                        v7); // IT
+                        v7,Sensors); // IT
     int loc1 =0; int loc2 =0;
      std::vector<std::vector<double> > caps = Sensor1.getCaptures();
     for(int i=0; i<caps.size(); i++){
@@ -946,6 +956,7 @@ void SensorTest::Test_CapturesIntersection9(){
     Sensor1 = Sensor(1, M_PI/4, 1);
     Sensor1.setXLoc(0); Sensor1.setYLoc(0);
     Sensor1.setAngle(M_PI_4);
+    std::ofstream Sensors;
     //-------------------------------------------------//
     // Angle movement Vert Sensor
     // Angle movement Horz Sensor
@@ -962,7 +973,7 @@ void SensorTest::Test_CapturesIntersection9(){
                         v5, // ID
                         M_PI, //Call width - circular call (to make this easier!)
                         v6,  // move_angle,
-                        v7); // IT
+                        v7,Sensors); // IT
     int loc1 =0; int loc2 =0;
      std::vector<std::vector<double> > caps = Sensor1.getCaptures();
 
@@ -991,6 +1002,7 @@ void SensorTest::Test_CapturesIntersection9(){
     Sensor Sensor1;
     Sensor1 = Sensor(1, M_PI/4, 1);
      Sensor1.setXLoc(0); Sensor1.setYLoc(0);
+     std::ofstream Sensors;
     //-------------------------------------------------//
     // Angle movement not near Sensor
     //Angle Sensor and vertical movement. Should get NO captured:
@@ -1006,7 +1018,7 @@ void SensorTest::Test_CapturesIntersection9(){
                         v5, // ID
                         M_PI, //Call width - circular call (to make this easier!)
                         v6,  // move_angle,
-                        v7); // IT
+                        v7,Sensors); // IT
      std::vector<std::vector<double> > caps = Sensor1.getCaptures();
 
     for(int i=0; i<caps.size(); i++){

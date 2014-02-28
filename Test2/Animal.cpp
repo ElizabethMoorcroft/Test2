@@ -187,6 +187,14 @@ void  Animal::UpdateLocation (double seed){ // a is the number of seconds per st
             Total_distance += NextDist;
             Current_angle = RangeAngle(NextAngle);
             
+            /*if(identifier== 10 && step_number>98 && step_number<105){
+                std::cout<<std::endl;
+                std::cout<<"Movement, Step: " <<step_number <<std::endl;
+                std::cout<< "Current_x: "<<Current_x<< " Current_y: "<<Current_y<<std::endl;
+                std::cout<< "Total_distance: "<<Total_distance<< " Current_angle: "<<Current_angle<<std::endl;
+                std::cout<<std::endl;
+            };*/
+            
             //std::cout<< "If entered: " << Current_x<< " "<<Current_y << std::endl;
 
             
@@ -290,12 +298,12 @@ void Animal::LeaveEnterWorld(const double& YBoundExit, const double& XBoundExit,
    // std::cout <<"Entre LeaveEnterWorld"<<std::endl;
     
     // Caculate the V & H distances to the boudaries
-    double tempDistToTop = std::abs(YBoundExit-Current_y);
-    double tempDistToSide = std::abs(XBoundExit-Current_x);
+    double tempDistToTop = std::fabs(YBoundExit-Current_y);
+    double tempDistToSide = std::fabs(XBoundExit-Current_x);
     
     // Calculates the distnace the animal travels to the boudary
-    double tempDistToTopBoundary = std::abs(tempDistToTop/cos(NextAngle));
-    double tempDistToSideBoundary = std::abs(tempDistToSide/sin(NextAngle));
+    double tempDistToTopBoundary = std::fabs(tempDistToTop/cos(NextAngle));
+    double tempDistToSideBoundary = std::fabs(tempDistToSide/sin(NextAngle));
     //std::cout <<"Top: " << tempDistToTop<<" " <<tempDistToTopBoundary<<std::endl;
     //std::cout <<"Side: " << tempDistToSide<<" " <<tempDistToSideBoundary<<std::endl;
 

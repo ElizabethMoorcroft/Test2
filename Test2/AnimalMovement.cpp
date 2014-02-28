@@ -74,7 +74,7 @@ AnimalMovement::AnimalMovement( std::vector<Animal*> AllAnimals ,  std::vector<S
         
         if(TempAllLocations[stepcounter].size()>0){ maxiteration=stepcounter;};
         //std::cout<<"check sensors: "<< stepcounter <<"/" <<TempAllLocations.size() <<std::endl;
-        CheckSensor(locations, previouslocations, AllSensors, Movement, stepcounter, i, iterationnumber);
+        CheckSensor(locations, previouslocations, AllSensors, Movement, Captures, stepcounter, i, iterationnumber);
         
     }; // End of for step loop
     
@@ -101,6 +101,7 @@ AnimalMovement::AnimalMovement( std::vector<Animal*> AllAnimals ,  std::vector<S
      ---------------------------------------------------------*/
     // Retreaves all of the captures
     //std::cout<<"getcaptures"<<std::endl;
+    /*
     for(int sensor=0; sensor<NoSensors; sensor++){
         std::vector<std::vector<double> > TempCaptures = AllSensors[sensor] -> getCaptures();
         
@@ -127,6 +128,7 @@ AnimalMovement::AnimalMovement( std::vector<Animal*> AllAnimals ,  std::vector<S
         // This is done because the StepNo is changed for everytime step and needs to be reset to 0
         AllSensors[sensor] -> ResetStepOn();
     }; //END OF FOR LOOP
+    */
     //std::cout<<"endcaptures"<<std::endl;
     //std::cout <<"Finished Animal:" << i+1 <<"/" << NoAnimal << std::endl;
 }
