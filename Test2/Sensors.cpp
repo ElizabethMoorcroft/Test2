@@ -278,7 +278,8 @@ void Sensor::UpdateCaptures(int Individual_ID,int itnumber,double location_x_ani
              << time <<","
              << CamToAnimal <<","
              <<AnimalToCam <<","
-            << DistToCam ;
+            << DistToCam
+            << "\n";
 };
 
 
