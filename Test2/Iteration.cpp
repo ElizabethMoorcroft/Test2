@@ -93,7 +93,7 @@ Iteration::Iteration(std::vector<Sensor*> AllSensors, std::ofstream &Captures, s
      //     - Saves movement
      ---------------------------------------------------------*/
     for(int i=0; i<NoAnimal; i++){
-        std::cout<<"Animals numbers: " <<i+1<<"/" <<NoAnimal<<std::endl;
+        //std::cout<<"Animals numbers: " <<i+1<<"/" <<NoAnimal<<std::endl;
         double randomstart = RandomNumberStreamAnimalStart[i*NoAnimal];
         double randommove = RandomNumberStreamAnimalMove[i*NoAnimal];
         AnimalMovement( AllAnimals , AllSensors ,  Captures,  Movement, randomstart,  randommove, i, iterationnumber, speedvalue, perchvalue,maxchangeanglevalue);

@@ -17,7 +17,8 @@ CheckSensor::CheckSensor(std::vector<double> Locations, std::vector<double> prev
                          std::vector<Sensor*> AllSensors,
                          std::ofstream &Movement,
                          std::ofstream &Captures,
-                         int stepcounter, int i, int iterationnumber){
+                         int stepcounter, int i, int iterationnumber,
+                         double perchvalue, double speedvalue){
     if(Locations.size()>0){
         
         double currentx = Locations[2];
@@ -46,7 +47,7 @@ CheckSensor::CheckSensor(std::vector<double> Locations, std::vector<double> prev
             // Calcualtes whether the animal is captured
             
             // Only check for the capture if the start and end locations are with a given distance "checkforcapture"
-            double checkforcapture =StepLength*0.46*2;
+            double checkforcapture =StepLength*(speedvalue/(1-perchvalue))*2;
             for(int sensor=0; sensor<NoSensors; sensor++){
                // if(sensor==209){std::cout<<"Sensor1: "<<sensor+1 << "/" << NoSensors <<std::endl;}
                 double sensorx = AllSensors[sensor] -> getXloc();

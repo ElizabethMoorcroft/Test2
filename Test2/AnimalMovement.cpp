@@ -74,7 +74,7 @@ AnimalMovement::AnimalMovement( std::vector<Animal*> AllAnimals ,  std::vector<S
         
         if(TempAllLocations[stepcounter].size()>0){ maxiteration=stepcounter;};
         //std::cout<<"check sensors: "<< stepcounter <<"/" <<TempAllLocations.size() <<std::endl;
-        CheckSensor(locations, previouslocations, AllSensors, Movement, Captures, stepcounter, i, iterationnumber);
+        CheckSensor(locations, previouslocations, AllSensors, Movement, Captures, stepcounter, i, iterationnumber,perchvalue,speedvalue);
         
     }; // End of for step loop
     

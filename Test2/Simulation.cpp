@@ -31,7 +31,7 @@ Simulation::Simulation(){};
 
 Simulation::Simulation(double perchvalue, double speedvalue,double maxchangeanglevalue){
     
-    std::string savevalue = make_directory("/Users/student/Documents/Bats/Simulations/Test", perchvalue, speedvalue, maxchangeanglevalue);
+    std::string savevalue = make_directory("/Users/student/Documents/Bats/Simulations/Run23Oct2013", perchvalue, speedvalue, maxchangeanglevalue);
     std::string returnvalue = make_directory("/Users/student/Dropbox/SimulationReached", perchvalue, speedvalue, maxchangeanglevalue);
     
     
@@ -222,7 +222,7 @@ std::string Simulation::make_directory( const std::string& directory,double perc
     int maxseed = NoOfIterations+Seed;
     std::ostringstream result;
     result  << directory
-    << "Perch"          << perchvalue
+    << "movie,Perch"          << perchvalue
     << ",Density="      << denistyCal
     << ",Speed="        << speedvalue
     << ",Iterations="   << Seed << "-" << maxseed

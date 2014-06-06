@@ -525,6 +525,19 @@ int Sensor::CapturesIntersection(double location_x_animal, double location_y_ani
     double c_animal  = currentlocy-currentlocx*m_animal;
     
     if(angle_HalfWidth < M_PI){ // If the Sensor width is 360˚ then the straight line edges are not important
+        
+        // Checks the beginning of the step
+        captured += CapturesIndividual(previouslocx,previouslocy,
+                                       Individual_ID,
+                                       call_halfwidth,
+                                       move_angle,
+                                       itnumber,
+                                       0,
+                                       0,
+                                       Captures
+                                       );
+        
+        
         /*---------------------------------------------------------------------------------------------------------
          // Check for specific case of interest
         if(Sensor_identifier == 0 && Individual_ID== 10 && Sensor_StepOn>98 && Sensor_StepOn<105){
