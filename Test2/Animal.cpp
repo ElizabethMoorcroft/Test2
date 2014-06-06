@@ -25,6 +25,7 @@
 #include "RandNum.h"
 #include "Parameters.h"
 #include "Sensors.h"
+#include "CheckSensor.h"
 
 
 /*--------------------------------------------------------------------------------------------------------
@@ -34,7 +35,7 @@
  --------------------------------------------------------------------------------------------------------*/
 Animal::Animal(){};
 
-Animal::Animal(int a, double i, double j, double k) {
+Animal::Animal(int a, double i, double j, double k, std::ofstream &Movement, std::vector<Sensor*> AllSensors , std::ofstream &Captures, int iterationnumber) {
     
     //std::cout <<"Inside Animals"<< std::endl;
     
@@ -58,7 +59,7 @@ Animal::Animal(int a, double i, double j, double k) {
     locationvectorcount =0;
     
     //Entres the start location into the matrix
-    LocationVector(Current_x,Current_y,0,1);
+    LocationVector(Current_x,Current_y,Current_x,Current_y,0,1, Movement, AllSensors , Captures, iterationnumber);
     
     //std::cout<<"Move speed " <<Move_speed<< std::endl;
 };
@@ -96,22 +97,34 @@ void Animal::setAnimalspeedPerch(double a, double b){
  // Updates the vectors which contain the movement
  // of the animals
  ----------------------------------------------*/
-void Animal::LocationVector(double& locationx, double& locationy, int LeaveEntreCode, int End){
+void Animal::LocationVector(double& locationx, double& locationy, double pLocationx, double pLocationy, int LeaveEntreCode, int End, std::ofstream &Movement, std::vector<Sensor*> AllSensors , std::ofstream &Captures, int iterationnumber){
     //Records exit of the world
-    mylocationvector[0] = identifier;
-    mylocationvector[1] = step_number;
-    mylocationvector[2] = locationx;
-    mylocationvector[3] = locationy;
-    mylocationvector[4] = NextAngle;
-    mylocationvector[5] = Total_distance;
-    mylocationvector[6] = Move_speed;
-    mylocationvector[7] = LeaveEntreCode;
-    mylocationvector[8] = NextDist;
 
-    All_locations[locationvectorcount]= mylocationvector;
-    locationvectorcount+=1;
+    if(SaveMovement==1 || iterationnumber==NoOfIterations){
+        Movement<< identifier << //1st column, row "stepcounter"
+        "," << step_number << //2nd column, row "stepcounter"
+        "," << locationx << //...
+        "," << locationy << //...
+        "," << NextAngle << //...
+        "," << Total_distance << //...
+        "," << Move_speed << //...
+        "," << LeaveEntreCode << //8th column, row "stepcounter"
+        "," << NextDist << //8th column, row "stepcounter"
+        "," << iterationnumber <<                  // itertaion number
+        "\n";
+    };
     
-    //if(All_locations.size()>2*NoSteps){std::cout <<"id: " << identifier << " step no: " <<step_number << std::endl;};
+    CheckSensor(locationx, locationy, NextAngle,
+                pLocationx, pLocationy,
+                AllSensors,
+                Movement,
+                Captures,
+                step_number,
+                identifier,
+                iterationnumber,
+                perchIndivid,
+                Move_speed);
+    
 };
 
 //Needs test
@@ -144,27 +157,35 @@ double Animal::RangeAngle(double angle){
  // The cover that governs the updating of the 
  // movement of a given animal
  ----------------------------------------------*/
-void  Animal::UpdateLocation (double seed){ // a is the number of seconds per step, b is the random seed
+void  Animal::UpdateLocation (double seed, std::ofstream &Movement, std::vector<Sensor*> AllSensors , std::ofstream &Captures, int iterationnumber){ // a is the number of seconds per step, b is the random seed
     
     //std::cout <<"Inside Update locations: "<< seed<< std::endl;
+    
+    double previousx = Current_x;
+    double previousy = Current_y;
     
     // This starts a stream of random numbers used twice
     //  -> To start a new stream of RandNum for the update of movement
     //  -> To start a new stream of RandNum for the probability of changing states in 2 state corr walk (MoveType==2)
     srand(seed);
-    std::vector<double> RandomNumberMovement(101);
-    for(int i=0; i<101; i++){RandomNumberMovement[i] = double(rand());};
+    double seed1, seed2, seed3, temp;
+    for(int i=0; i<101; i++){
+        if(i==0){seed1=double(rand());}
+        else if(i==50){seed2=double(rand());}
+        else if(i==100){seed3=double(rand());}
+        else {temp=double(rand());};
+    };
     
     double probofperch=0;
     
     if(perchIndivid!=0){
         //std::cout<<"Perching"<<std::endl;
         RandNum Number1;
-        probofperch = Number1.AtoBUnif(RandomNumberMovement[100],0,1);
+        probofperch = Number1.AtoBUnif(seed3,0,1);
     };
     if(probofperch<(1-perchIndivid)){
         //std::cout<<"NewLocation"<<std::endl;
-        NewLocation(RandomNumberMovement[0], RandomNumberMovement[50]);
+        NewLocation(seed1, seed2);
     }else{
         NextX= Current_x;
         NextY= Current_y;
@@ -187,19 +208,9 @@ void  Animal::UpdateLocation (double seed){ // a is the number of seconds per st
             Total_distance += NextDist;
             Current_angle = RangeAngle(NextAngle);
             
-            /*if(identifier== 10 && step_number>98 && step_number<105){
-                std::cout<<std::endl;
-                std::cout<<"Movement, Step: " <<step_number <<std::endl;
-                std::cout<< "Current_x: "<<Current_x<< " Current_y: "<<Current_y<<std::endl;
-                std::cout<< "Total_distance: "<<Total_distance<< " Current_angle: "<<Current_angle<<std::endl;
-                std::cout<<std::endl;
-            };*/
-            
-            //std::cout<< "If entered: " << Current_x<< " "<<Current_y << std::endl;
-
             
             //Add to the all locations
-            LocationVector(Current_x,Current_y,0,1);
+            LocationVector(Current_x,Current_y, previousx, previousy, 0,1, Movement, AllSensors , Captures, iterationnumber);
             //std::cout<< "Vectors done" << std::endl;
                 
             // The end of movement is in the world so
@@ -215,16 +226,16 @@ void  Animal::UpdateLocation (double seed){ // a is the number of seconds per st
             //std::cout<< "Leaves environment"<<std::endl;
             // If angle between 0 and 90 degrees
             // Then will exit either at top or right boundary
-            if(NextAngle>=0 && NextAngle<M_PI/2){LeaveEnterWorld(Sq_MaxY, Sq_MaxX ,Sq_MinY, Sq_MinX); }
+            if(NextAngle>=0 && NextAngle<M_PI/2){LeaveEnterWorld(Sq_MaxY, Sq_MaxX ,Sq_MinY, Sq_MinX, Movement, AllSensors , Captures, iterationnumber, previousx, previousy); }
             // If angle between 90 and 180 degrees
             // Then will exit either at Bottom or right boundary
-            else if(NextAngle>=M_PI/2 && NextAngle<M_PI){LeaveEnterWorld(Sq_MinY, Sq_MaxX ,Sq_MaxY, Sq_MinX);}
+            else if(NextAngle>=M_PI/2 && NextAngle<M_PI){LeaveEnterWorld(Sq_MinY, Sq_MaxX ,Sq_MaxY, Sq_MinX, Movement, AllSensors , Captures, iterationnumber, previousx, previousy);}
             // If angle between 180 and 270 degrees
             //then will exit either at Bottom or right boundary
-            else if(NextAngle>=M_PI && NextAngle<1.5*M_PI){LeaveEnterWorld(Sq_MinY, Sq_MinX ,Sq_MaxY, Sq_MaxX);}
+            else if(NextAngle>=M_PI && NextAngle<1.5*M_PI){LeaveEnterWorld(Sq_MinY, Sq_MinX ,Sq_MaxY, Sq_MaxX, Movement, AllSensors , Captures, iterationnumber, previousx, previousy);}
             // If angle between 270 and 360 degrees
             //then will exit either at Bottom or right boundary
-            else if(NextAngle>=1.5*M_PI && NextAngle<2*M_PI){LeaveEnterWorld(Sq_MaxY, Sq_MinX ,Sq_MinY, Sq_MaxX);}
+            else if(NextAngle>=1.5*M_PI && NextAngle<2*M_PI){LeaveEnterWorld(Sq_MaxY, Sq_MinX ,Sq_MinY, Sq_MaxX, Movement, AllSensors , Captures, iterationnumber, previousx, previousy);}
             // Produces error is the ANGLE is not between 0 and 360
             else { //std::cout << "ERROR - Movement angle: "<<NextAngle <<std::endl;
                 std::cout<<identifier<< " "<<
@@ -293,7 +304,7 @@ void Animal::NewLocation (double& seed, double& seed2){
  --------------------------------------------------------------------------------------------------------*/
 
 
-void Animal::LeaveEnterWorld(const double& YBoundExit, const double& XBoundExit, const double& YBoundEnter, const double& XBoundEnter){
+void Animal::LeaveEnterWorld(const double& YBoundExit, const double& XBoundExit, const double& YBoundEnter, const double& XBoundEnter, std::ofstream &Movement, std::vector<Sensor*> AllSensors , std::ofstream &Captures, int iterationnumber, double pLocationx, double pLocationy){
     
    // std::cout <<"Entre LeaveEnterWorld"<<std::endl;
     
@@ -361,8 +372,8 @@ void Animal::LeaveEnterWorld(const double& YBoundExit, const double& XBoundExit,
     //std::cout<<"NextDist: " <<NextDist <<std::endl;
 
     //Updates the location vector with the EXIT location
-    LocationVector(tempExitsX,tempExitsY,0,0);
+    LocationVector(tempExitsX,tempExitsY,pLocationx,pLocationy,0,0, Movement, AllSensors , Captures, iterationnumber);
     // Updates the location vector with the RE-ENTRY location
-    LocationVector(Current_x,Current_y,1,0);
+    LocationVector(Current_x,Current_y,pLocationx,pLocationy,1,0, Movement, AllSensors , Captures, iterationnumber);
     
 };

@@ -125,14 +125,6 @@ Simulation::Simulation(double perchvalue, double speedvalue,double maxchangeangl
         std::cout<<"No steps, Increase Length of monitoring"<< std::endl; exit (EXIT_FAILURE);
     };
     
-    //Tests
-    //SensorTest ST1;
-    //ST1.RunSensorTests();
-    //AnimalTest AT1;
-    //AT1.RunAnimalTests();
-    
-    //std::cout<<"Passed all tests and checks"<< std::endl;
-    //Clocks total run time
     
     //--------------------------------------------------------------------------------------------------
      //                                          Creating sensors
@@ -222,7 +214,7 @@ std::string Simulation::make_directory( const std::string& directory,double perc
     int maxseed = NoOfIterations+Seed;
     std::ostringstream result;
     result  << directory
-    << "movie,Perch"          << perchvalue
+    << "RTESTcompare,Perch"          << perchvalue
     << ",Density="      << denistyCal
     << ",Speed="        << speedvalue
     << ",Iterations="   << Seed << "-" << maxseed

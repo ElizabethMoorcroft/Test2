@@ -10,6 +10,7 @@
 #include "Animal.h"
 #include "Parameters.h"
 
+/*
 void AnimalTest::RunAnimalTests(){
     
     test_totaldistance(4);
@@ -248,7 +249,7 @@ void AnimalTest::test_changeangle(double a){
 /*------------------------------------------------------------------------------*/
 //          Next location
 /*------------------------------------------------------------------------------*/
-
+/*
 void AnimalTest::test_CalNext_X1(){
     // Set up new animal
     Animal Animal1;
@@ -438,7 +439,7 @@ void AnimalTest::test_CalNext_Y6(){
 /*------------------------------------------------------------------------------*/
 //         Angles +ve && within range
 /*------------------------------------------------------------------------------*/
-
+/*
 void AnimalTest::test_RangeAngle1(){
     // Set up new animal
     Animal Animal1;
@@ -488,7 +489,7 @@ void AnimalTest::test_RangeAngle4(){
 /*------------------------------------------------------------------------------*/
 //         Entering and leaving world
 /*------------------------------------------------------------------------------*/
-
+/*
 void AnimalTest::test_LeaveEnterWorld1(){
     
     const double maxx = 1000; const double minx = 0;
@@ -605,11 +606,11 @@ void AnimalTest::test_LeaveEnterWorld4(){
     };
     
 };
-
+*/
 /*------------------------------------------------------------------------------*/
 //         New locations
 /*------------------------------------------------------------------------------*/
-
+/*
 void AnimalTest::test_NewLocation1(){
     // Set up new animal
     Animal Animal1;
@@ -705,5 +706,5 @@ void AnimalTest::test_NewLocation2(){
     
 };
 
-
+*/
 

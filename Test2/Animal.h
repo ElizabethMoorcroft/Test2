@@ -10,6 +10,8 @@
 #include <math.h>
 #include <time.h>
 #include <vector>
+#include "Sensors.h"
+#include "CheckSensor.h"
 
 #ifndef Test2_Animal_h
 #define Test2_Animal_h
@@ -45,7 +47,7 @@ class Animal {
 
 public:
     Animal();
-    Animal(int, double, double, double);
+    Animal(int, double, double, double, std::ofstream &Movement, std::vector<Sensor*> AllSensors , std::ofstream &Captures, int iterationnumber);
     
     //Set functions
     void setMove_speed(double a);
@@ -73,9 +75,9 @@ public:
     
     // Calculations
     void NewLocation(double&, double&);
-    void LeaveEnterWorld(const double&, const double&, const double&, const double&);
-    void UpdateLocation (double);
-    void LocationVector(double&, double&, int, int);
+    void LeaveEnterWorld(const double&, const double&, const double&, const double&, std::ofstream &Movement, std::vector<Sensor*> AllSensors , std::ofstream &Captures, int iterationnumber, double, double);
+    void UpdateLocation (double, std::ofstream &Movement, std::vector<Sensor*> AllSensors , std::ofstream &Captures, int iterationnumber);
+    void LocationVector(double&, double&, double, double, int, int, std::ofstream &Movement, std::vector<Sensor*> AllSensors , std::ofstream &Captures, int iterationnumber);
     double CalNext_X(double);
     double CalNext_Y(double);
     double RangeAngle(double);

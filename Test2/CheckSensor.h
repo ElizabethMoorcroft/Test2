@@ -18,7 +18,7 @@ class CheckSensor {
 
 public:
     CheckSensor();
-    CheckSensor(std::vector<double>, std::vector<double>, std::vector<Sensor*>, std::ofstream &Movement, std::ofstream &Captures , int, int, int, double,double);
+    CheckSensor(double currentx,double currenty, double currentangle, double previousx,double previousy, std::vector<Sensor*>, std::ofstream &Movement, std::ofstream &Captures , int, int, int, double,double);
 };
 
 #endif /* defined(__Test2__CheckSensor__) */

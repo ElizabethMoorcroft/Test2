@@ -38,15 +38,17 @@ Iteration::Iteration(std::vector<Sensor*> AllSensors, std::ofstream &Captures, s
      // This is started with the iteration number
      // This makes each run completely replicable
      //
-     // This stream of numbers 4 other streams
-     //  - RandomNumberStreamHR (Finding HR locations)
-     //  - RandomNumberStreamAnimalHR (matching Animal and HR)
-     //  - RandomNumberStreamAnimalAngle (random direction)
+     // This stream of numbers 2 other streams
+     //  - RandomNumberStreamAnimalStart (start location)
      //  - RandomNumberStreamAnimalMove (Seed for movement)
      --------------------------------------------------------*/
     srand(iterationnumber);
-    std::vector<double> RandomNumberStream(101);
-    for(int i=0; i<101; i++){RandomNumberStream[i] = double (rand());};
+    double seedstart, seedmove, temp;
+    for(int i=0; i<76; i++){
+        if(i==25){seedstart=double(rand());}
+        else if(i==75){seedmove=double(rand());}
+        else {temp=double(rand());};
+    };
     
     /*------------------------------------------------------
      //              Creation of animals and movement
@@ -71,13 +73,13 @@ Iteration::Iteration(std::vector<Sensor*> AllSensors, std::ofstream &Captures, s
     //Uses RandomNumberStream as a seed for the stream
     //Creates 1 Random number for the seed each Animal for the following
     //Random number stream for choosing HR
-    srand(RandomNumberStream[25]);
+    srand(seedstart);
     std::vector<double> RandomNumberStreamAnimalStart(pow(NoAnimal,2));
     for(int i=0; i<pow(NoAnimal,2); i++){RandomNumberStreamAnimalStart[i]=double(rand());};
     
     
     // Random number stream seed for the seed for the movement
-    srand(RandomNumberStream[75]);
+    srand(seedmove);
     std::vector<double> RandomNumberStreamAnimalMove(pow(NoAnimal,2));
     for(int i=0; i<pow(NoAnimal,2); i++){RandomNumberStreamAnimalMove[i]=double(rand());};
     
@@ -100,9 +102,4 @@ Iteration::Iteration(std::vector<Sensor*> AllSensors, std::ofstream &Captures, s
         
     }; //End of Individual loop
     
-    /*------------------------------------------------------
-     // Destructors - Destructs the vectors of pointers to classes
-     ---------------------------------------------------------*/
-    // Destructors For Animals
-    //for(int i=0; i<NoAnimal; i++){delete AllAnimals[i];std::cout<<"deleted animals"<<std::endl;}
 };
