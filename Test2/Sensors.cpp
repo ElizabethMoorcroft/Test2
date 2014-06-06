@@ -247,7 +247,7 @@ double Sensor::GradientFromAngle(double angle){
 /*-------------------------------------------------
  // Updates captures vectors with new captures
 -------------------------------------------------*/
-void Sensor::UpdateCaptures(int Individual_ID,int itnumber,double location_x_animal,double location_y_animal,double time, int call, double CamToAnimal, double AnimalToCam , double DistToCam,  std::ofstream &Captures){
+void Sensor::UpdateCaptures(int Individual_ID,int itnumber,double location_x_animal,double location_y_animal, double time, double CamToAnimal, double AnimalToCam , double DistToCam,  std::ofstream &Captures){
     
     /*---------------------------------------------------------------------------------------------------------
      // Check for specific case of interest
@@ -331,7 +331,7 @@ std::vector <double> Sensor::AngleAndAngleInteraction(double m1_Angle, double c1
     double Coordinate2 = m1_Angle*Coordinate1 +c1_Angle;
     //if(Sensor_identifier==209){std::cout<<"Coordinate2 "<<Coordinate2  <<std::endl;}
     
-    std::vector <double> Coord(4);
+    std::vector <double> Coord(2);
     Coord[0] = Coordinate1;
     Coord[1] = Coordinate2;
      
@@ -514,7 +514,6 @@ void Sensor::CapturesIntersection(double location_x_animal, double location_y_an
                                    move_angle,
                                    itnumber,
                                    0,
-                                   0,
                                    Captures
                                    );
     
@@ -537,8 +536,8 @@ void Sensor::CapturesIntersection(double location_x_animal, double location_y_an
                                   itnumber,
                                   m_animal,c_animal,
                                   m_detector2, c_detector2,g_detector2,vh_det2,
-                                      disttotal,
-                                      Captures);
+                                disttotal,
+                                Captures);
     };
     // Checks for crossing the boundaries for circular edge of detector
     SensorCircAndMovement(currentlocx,currentlocy,
@@ -555,7 +554,6 @@ void Sensor::CapturesIntersection(double location_x_animal, double location_y_an
                                    move_angle,
                                    itnumber,
                                    1,
-                                   0,
                                    Captures);
 };
 
@@ -590,7 +588,8 @@ void Sensor::SensorCircAndMovement(double location_x_animal, double location_y_a
     // TandA is for the Time and Angle of the intercept value
     // XandY are the 2 solutions to where the line passes through the circle: (x1,y1,x2,y2)
     std::vector<double> TandA(2);
-    std::vector<double> XandY(4); 
+    std::vector<double> XandY(4);
+    double X,Y;
     
     //Animal has vertical movement
     if(location_x_animal == previous_x_animal){ //std::cout<<"Circ, Vert move"<<std::endl;
@@ -607,6 +606,8 @@ void Sensor::SensorCircAndMovement(double location_x_animal, double location_y_a
         XandY = AngleAndCircInteraction(m_animal, c_animal);
     }//END OF ANGLE ANIMAL MOVEMENT
     
+    
+    
    /*---------------------------------------------------------------------------------------------------------
      // Check for specific case of interest
     // if(Individual_ID== 0 && Sensor_StepOn>17654 && Sensor_StepOn<17656){
@@ -618,9 +619,10 @@ void Sensor::SensorCircAndMovement(double location_x_animal, double location_y_a
     //--------- CHECK IN "CapturesIndividual" FOR CAPTURE ---------------//
     //Looking at both possible solutions for the line and the circle
     //For each sucessful capture adds a 1 to the "captured" value
-    for(int v=0; v<2; v++){ 
+    for(int v=0; v<2; v++){
+        X=XandY[v*2];Y=XandY[(v*2)+1];
         //time and angle of the interscept
-        TandA = TimeAndAngleCal(XandY[(v*2)+1], XandY[v*2], previous_y_animal, previous_x_animal, disttotal);
+        TandA = TimeAndAngleCal(Y, X, previous_y_animal, previous_x_animal, disttotal);
         
         double time = TandA[0]; double angle = TandA[1];
         // The time has to be less than the total distance away form starting location
@@ -628,14 +630,8 @@ void Sensor::SensorCircAndMovement(double location_x_animal, double location_y_a
         // It the start location is captured then the time and angle are both zero
         if(((time<=1 || approximatelyequal(time,1)) && approximatelyequal(angle,move_angle))
            ||(time==0 && angle==0)){
-            //std::cout<<"V: "<< v <<std::endl;
-            CapturesIndividual(XandY[v*2], XandY[(v*2)+1],
-                                           Individual_ID,
-                                           move_angle,
-                                           itnumber,
-                                           time,
-                                           0,
-                                           Captures);
+            std::cout<<"time: "<< time <<std::endl;
+            CapturesIndividual(X, Y, Individual_ID, move_angle, itnumber, time,Captures);
         }; // END OF IF LOOP
     }; // END OF FOR v loop
     //--------- END OF CHECK FOR CAPTURE ---------------//
@@ -679,7 +675,7 @@ void Sensor::SensorAndMovement(double location_x_animal, double location_y_anima
     // XandY is an initialised vector for the possible coordinates of capture
     
     std::vector<double> renameXandY(4);
-    double X1, X2, Y1, Y2;
+    double X1, Y1;
     
     std::vector<double> renameTandA(4);
 
@@ -697,12 +693,12 @@ void Sensor::SensorAndMovement(double location_x_animal, double location_y_anima
     if(currentlocx == previouslocx){
         //if(Sensor_identifier==209){std::cout<<"currentlocx == previouslocx "<<std::endl;}
         //Horzontal detector - then the solution is simply the y coord from horzontal line and the x coord from the vertical line
-        if(det==2){ X1 = previous_x_animal; X2 = location_y; } // END IF DET==2
+        if(det==2){ X1 = previous_x_animal; Y1 = location_y; } // END IF DET==2
         // Vertical detector it HAS to have the same x-position as the movement
         // Then the x location is simply the value from both vertical lines
         // The y location is earliest location that the two lines overlap.
         else if(det==1 && location_x==previouslocx){
-            renameXandY[0] = previous_x_animal;
+            X1 = previous_x_animal;
             // If the detector is facing up then the min-value = Sensor_loc and the max-value = Sensor_loc+radius
             // otherwise the the min-value = Sensor_loc-radius and the max-value = Sensor_loc
             if(approximatelyequal(g_detector,M_PI)){mindect = location_x-radius; maxdect = location_x;}
@@ -712,13 +708,13 @@ void Sensor::SensorAndMovement(double location_x_animal, double location_y_anima
             // If the animal is moving down then I want the maxumum value which both detector and movement has:
             // There for I want the min. value of the max. movement and min. detector
             // => Animal moving down
-            if(approximatelyequal(move_angle,M_PI)){renameXandY[1] = std::min(previouslocy,maxdect);}
+            if(approximatelyequal(move_angle,M_PI)){Y1 = std::min(previouslocy,maxdect);}
             // => Animal moving up
-            else{renameXandY[1] = std::max(previouslocy,mindect);};
+            else{Y1 = std::max(previouslocy,mindect);};
         } // END IF DET==1
         // Detector at angle
         // The solution is the vertical line, and the y-coord can be calulated using *VertAndAngleInteraction*
-        else{renameXandY[0] = currentlocx; renameXandY[1] = VertAndAngleInteraction(currentlocx, m_detector, c_detector);};// END ELSE
+        else{X1 = currentlocx; Y1 = VertAndAngleInteraction(currentlocx, m_detector, c_detector);};// END ELSE
     }//--------END OF VERTICAL ANIMAL MOVEMENT ---------------//
     
     //Animal has horizontal movement
@@ -728,21 +724,21 @@ void Sensor::SensorAndMovement(double location_x_animal, double location_y_anima
         // Therefore they must both share the same y-coord
         if(det==2 && location_y== previouslocy){
             // The y-coord is simly the value of the y-coord of the animal movement
-            renameXandY[1] = previouslocy;
+            Y1 = previouslocy;
             // I need to idenfy the max. and min. x-value of the detector 
             if(approximatelyequal(g_detector,M_PI/2)){mindect=location_y; maxdect=location_y+radius;}
             else{mindect = location_y-radius; maxdect = location_y;};
             // if the movement is to the left then I want the max. of the min. animal location and the min. detector location
             // if the movement is the right then I need the min. of the max. animal location and the max. detector location
-            if(approximatelyequal(move_angle,M_PI/2)){renameXandY[0] = std::max(previouslocx,mindect);}
-            else{renameXandY[0] = std::min(previouslocx,maxdect);};
+            if(approximatelyequal(move_angle,M_PI/2)){X1 = std::max(previouslocx,mindect);}
+            else{X1 = std::min(previouslocx,maxdect);};
         } // END OF IF DET ==2
         // Vertical detector
         // The x-coord of the intercept is the x-coord of the detector, the y-coord of the movement
-        else if(det==1){renameXandY[0] = location_x; renameXandY[1] = previouslocy;} // END OF IF DET ==1
+        else if(det==1){X1 = location_x; Y1= previouslocy;} // END OF IF DET ==1
         // Detector at angle
         // The y-coord of the movement, and the x-coord is calculated by HorzAndAngleInteraction
-        else { renameXandY[0] = HorzAndAngleInteraction(currentlocy, m_detector, c_detector); renameXandY[1] = currentlocy;};// END ELSE
+        else { X1 = HorzAndAngleInteraction(currentlocy, m_detector, c_detector); Y1 = currentlocy;};// END ELSE
     }//--------END OF HORZONTAL ANIMAL MOVEMENT ---------------//
     
     
@@ -755,8 +751,8 @@ void Sensor::SensorAndMovement(double location_x_animal, double location_y_anima
         else{mindect = location_x+radius*sin(g_detector); maxdect = location_x;};
         // if the movement is to the left then I want the max. of the min. animal location and the min. detector location
         // if the movement is the right then I need the min. of the max. animal location and the max. detector location
-        if(move_angle<M_PI){renameXandY[0] = std::max(previouslocx,mindect);}
-        else{renameXandY[0] = std::min(previouslocx,maxdect);};
+        if(move_angle<M_PI){X1 = std::max(previouslocx,mindect);}
+        else{X1 = std::min(previouslocx,maxdect);};
         
         // Calculation of y location
         // The min./max. value of the detector is calculated
@@ -764,25 +760,26 @@ void Sensor::SensorAndMovement(double location_x_animal, double location_y_anima
         else{mindect = location_y+radius*cos(g_detector); maxdect = location_y;};
         // if the movement is up then I want the max. of the min. animal location and the min. detector location
         // if the movement is down then I need the min. of the max. animal location and the max. detector location
-        if(move_angle<M_PI/2 ||move_angle>3*M_PI/2 ){ renameXandY[1] = std::max(previouslocy,mindect);}
-        else{renameXandY[1] = std::min(previouslocy,maxdect);};
+        if(move_angle<M_PI/2 ||move_angle>3*M_PI/2 ){ Y1 = std::max(previouslocy,mindect);}
+        else{Y1 = std::min(previouslocy,maxdect);};
     }//--------END OF SAME ANGLE ANIMAL MOVEMENT ---------------//
     
     else if(approximatelyequal(m_detector,m_animal) && c_detector!=c_animal){
         // Calculation of x location
         // The min./max. value of the detector is calculated
-        renameXandY[0] = NAN;
-        renameXandY[1] = NAN;
+        X1 = NAN;
+        Y1 = NAN;
     }
     
     else if(m_detector != m_animal){
         //Horzontal detector
-        if(det==2){ renameXandY[0] = HorzAndAngleInteraction(location_y, m_animal, c_animal); renameXandY[1] = location_y;} //END OF IF DET==2
+        if(det==2){ X1 = HorzAndAngleInteraction(location_y, m_animal, c_animal); Y1 = location_y;} //END OF IF DET==2
         // Vertical detector
-        else if(det==1){renameXandY[0] = location_x; renameXandY[1] = VertAndAngleInteraction(location_x, m_animal, c_animal);} //END OF IF DET==1
+        else if(det==1){X1 = location_x; Y1 = VertAndAngleInteraction(location_x, m_animal, c_animal);} //END OF IF DET==1
         // Angle detctor
         else{
             renameXandY =AngleAndAngleInteraction(m_detector, c_detector, m_animal, c_animal);
+            X1 = renameXandY[0];Y1 = renameXandY[1];
         };
         
     }//--------END OF DIFFERENT ANGLE ANIMAL MOVEMENT ---------------//
@@ -795,14 +792,15 @@ void Sensor::SensorAndMovement(double location_x_animal, double location_y_anima
     //--------- CHECK IN "CapturesIndividual" FOR CAPTURE ---------------//
     // Inputting into the capture inidvidual function
     //Calucaltes time and angle of the interscept
-    renameTandA = TimeAndAngleCal(renameXandY[1], renameXandY[0], previouslocy, previouslocx, disttotal);
+    renameTandA = TimeAndAngleCal(Y1, X1, previouslocy, previouslocx, disttotal);
     double time = renameTandA[0]; double angle = renameTandA[1];
 
     
     // The time has to be less than the total distance away form starting location
     // the angle of movement from the start location to the capture location has to be the same as the movement angle.
     if((time<=1 && approximatelyequal(angle,move_angle))||(time==0 && angle==0)){
-       CapturesIndividual(time,  angle, Individual_ID, move_angle, itnumber,time, 0, Captures);
+        std::cout<<"time: "<< time <<std::endl;
+       CapturesIndividual(X1,  Y1, Individual_ID, move_angle, itnumber,time, Captures);
     }; //--------- END OF CAPTURE CHECK ---------------//
 
 }; // END OF FUNCTION
@@ -822,32 +820,22 @@ void Sensor::CapturesIndividual(double location_x_animal,
                                    double move_angle,
                                    int itnumber,
                                    double time,
-                                   int call,
                                     std::ofstream &Captures
                                    ){
     //if(Individual_ID== 471 && Sensor_StepOn>212 && Sensor_StepOn<214){std::cout<<"InCap, radius" << radius <<std::endl;//};
     double &currentlocx =location_x_animal;
     double &currentlocy =location_y_animal;
 
-    int captured=0;
     
     // If on the exact same spot as the Sensor assume it will be captured
     if(approximatelyequal(currentlocx,location_x) && approximatelyequal(currentlocy,location_y)){
         double zero =0;
-        UpdateCaptures(Individual_ID,itnumber,currentlocx,currentlocy,time,call,zero,zero,zero,Captures);
-        captured = 1;
+        UpdateCaptures(Individual_ID,itnumber,currentlocx,currentlocy,time,zero,zero,zero,Captures);
     }
     // If not at the exact same location then check whether it is
     else{
         // Calculates the distance between the Sensor and the animal
         double diff_animal_Sensor = DistTwoPoints(currentlocx,location_x, currentlocy, location_y);
-        
-        /*---------------------------------------------------------------------------------------------------------
-         // Check for specific case of interest
-         //if(Individual_ID== 0 && Sensor_StepOn>17654 && Sensor_StepOn<17656){
-            std::cout<<"Distance between animal & Sensor: "<<diff_animal_Sensor <<", Radius: "<<radius <<std::endl;
-         //};
-        // ----------------------------------------------------------------------------------------------------------*/
         
         // If the animal is less than a radius distance away from the detector then it is enters the if statement
         if(approximatelyequal(diff_animal_Sensor,radius)|| diff_animal_Sensor<=radius){
@@ -867,7 +855,7 @@ void Sensor::CapturesIndividual(double location_x_animal,
                 double AngleFromAnimalCentre = RangeAngle(AngleFromSensor+M_PI - movementcorrection);
                 AngleFromAnimalCentre = RangeAngleMinus(AngleFromAnimalCentre);
                 //AngleFromAnimalCentre = RangeAngle(AngleFromAnimalCentre);
-                UpdateCaptures(Individual_ID,itnumber,currentlocx,currentlocy,time,call,AngleFromSensorCentre,AngleFromAnimalCentre,diff_animal_Sensor,Captures);
+                UpdateCaptures(Individual_ID,itnumber,currentlocx,currentlocy,time,AngleFromSensorCentre,AngleFromAnimalCentre,diff_animal_Sensor,Captures);
             };
         
             // If the angle is between min and max possible angle
@@ -900,7 +888,7 @@ void Sensor::CapturesIndividual(double location_x_animal,
                 // in this case we can say it's captures as it is in the sensor range
 
                 // Call the update captures function and let captured ==1.
-                UpdateCaptures(Individual_ID,itnumber,currentlocx,currentlocy,time,call,AngleFromSensorCentre, AngleFromAnimalCentre,diff_animal_Sensor, Captures);
+                UpdateCaptures(Individual_ID,itnumber,currentlocx,currentlocy,time,AngleFromSensorCentre, AngleFromAnimalCentre,diff_animal_Sensor, Captures);
             }; //End of IF - "in width of detector"
         }; //End of "radius" IF
     }; //END of else - not directly on same spot as Sensor
