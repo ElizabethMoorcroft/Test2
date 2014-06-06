@@ -26,11 +26,8 @@ double RandNum::PositiveNormal (double seed, double Mean, double SD){
     //Does the follwing while RV_1 is less than 0
      while(RV_1<=0){
         srand(seed);
-         //double startseed, temp;
         std::vector<double> RandomNumberStreamTemp(count*100);
         for(int i=0; i<(count*100); i++){
-            //if(i==(count*100)-1){startseed =double (rand());}
-            //else {temp =double (rand());}
              RandomNumberStreamTemp[i] =double (rand());
         };
         // set random seed for the varaibles
