@@ -26,12 +26,15 @@ double RandNum::PositiveNormal (double seed, double Mean, double SD){
     //Does the follwing while RV_1 is less than 0
      while(RV_1<=0){
         srand(seed);
-        std::vector<double> RandomNumberStreamTemp(count*100);
+        double startseed, temp;
+        //std::vector<double> RandomNumberStreamTemp(count*100);
         for(int i=0; i<(count*100); i++){
-             RandomNumberStreamTemp[i] =double (rand());
+            // RandomNumberStreamTemp[i] =double (rand());
+            if(i==(count*100)-1){startseed =double (rand());}
+            else {temp =double (rand());}
         };
         // set random seed for the varaibles
-        srand(RandomNumberStreamTemp[count*100-1]);
+        srand(startseed);
         
         //To generate from a normal distribution we use the following:
         // U~Unif(0,1)

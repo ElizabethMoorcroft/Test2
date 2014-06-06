@@ -22,15 +22,21 @@ AnimalMovement::AnimalMovement( std::vector<Animal*> AllAnimals ,  std::vector<S
     //std::cout <<"Animal:" << i+1 <<"/" << NoAnimal << std::endl;
     RandNum RandomNumber1;
     srand(randomstart);
-    std::vector<double> RandomNumberStreamAnimalStartLoc(151);
-    for(int j=0; j<151; j++){RandomNumberStreamAnimalStartLoc[j]=double(rand());};
-    double xlocation = RandomNumber1.AtoBUnif(RandomNumberStreamAnimalStartLoc[50],Sq_MinX,Sq_MaxX);
-    double ylocation = RandomNumber1.AtoBUnif(RandomNumberStreamAnimalStartLoc[100],Sq_MinY,Sq_MaxY);
+    double seed1, seed2, seed3, temp;
+    for(int i=0; i<151; i++){
+        if(i==50){seed1=double(rand());}
+        else if(i==100){seed2=double(rand());}
+        else if(i==150){seed3=double(rand());}
+        else {temp=double(rand());};
+    };
+    
+    double xlocation = RandomNumber1.AtoBUnif(seed1,Sq_MinX,Sq_MaxX);
+    double ylocation = RandomNumber1.AtoBUnif(seed2,Sq_MinY,Sq_MaxY);
     
     
     // To choose a start angle, sets up a random number class
     // Uses a radom number from stream RandomNumberStreamAnimalAngle for a random seed
-    double CurrentAngleTemp = RandomNumber1.AtoBUnif(RandomNumberStreamAnimalStartLoc[150],0,(2*M_PI));
+    double CurrentAngleTemp = RandomNumber1.AtoBUnif(seed3,0,(2*M_PI));
     
     // New animal given start locations - at the centre of the home range
     //  Inputs are: ID & Starts location (x,y) &  Initial angle
