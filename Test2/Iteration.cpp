@@ -74,14 +74,20 @@ Iteration::Iteration(std::vector<Sensor*> AllSensors, std::ofstream &Captures, s
     //Creates 1 Random number for the seed each Animal for the following
     //Random number stream for choosing HR
     srand(seedstart);
-    std::vector<double> RandomNumberStreamAnimalStart(pow(NoAnimal,2));
-    for(int i=0; i<pow(NoAnimal,2); i++){RandomNumberStreamAnimalStart[i]=double(rand());};
+    std::vector<double> RandomNumberStreamAnimalStart(NoAnimal);
+    for(int i=0; i<NoAnimal; i++){
+        RandomNumberStreamAnimalStart[i]=double(rand());
+        for(int j=0; j<NoAnimal;j++){temp=double(rand());}
+    };
     
     
     // Random number stream seed for the seed for the movement
     srand(seedmove);
-    std::vector<double> RandomNumberStreamAnimalMove(pow(NoAnimal,2));
-    for(int i=0; i<pow(NoAnimal,2); i++){RandomNumberStreamAnimalMove[i]=double(rand());};
+    std::vector<double> RandomNumberStreamAnimalMove(NoAnimal);
+    for(int i=0; i<NoAnimal; i++){
+        RandomNumberStreamAnimalMove[i]=double(rand());
+        for(int j=0; j<NoAnimal;j++){temp=double(rand());}
+    };
     
     /*------------------------------------------------------
      // Creating  animals and animal movement
@@ -95,9 +101,10 @@ Iteration::Iteration(std::vector<Sensor*> AllSensors, std::ofstream &Captures, s
      //     - Saves movement
      ---------------------------------------------------------*/
     for(int i=0; i<NoAnimal; i++){
-        //std::cout<<"Animals numbers: " <<i+1<<"/" <<NoAnimal<<std::endl;
-        double randomstart = RandomNumberStreamAnimalStart[i*NoAnimal];
-        double randommove = RandomNumberStreamAnimalMove[i*NoAnimal];
+        std::cout<<"Animals numbers: " <<i+1<<"/" <<NoAnimal <<" Random number "<< RandomNumberStreamAnimalMove[i] <<std::endl;
+        double randomstart = RandomNumberStreamAnimalStart[i];
+        double randommove = RandomNumberStreamAnimalMove[i];
+        
         AnimalMovement( AllAnimals , AllSensors ,  Captures,  Movement, randomstart,  randommove, i, iterationnumber, speedvalue, perchvalue,maxchangeanglevalue);
         
     }; //End of Individual loop

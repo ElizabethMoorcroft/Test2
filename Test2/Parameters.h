@@ -66,10 +66,6 @@ const int NoSensors = LengthSW*LengthSR;
 //Movement parameters
 const double StepLength =   1; //Length of each step in seconds *60
 
-//Call parameters
-const int LengthCW(1);
-const double CallWidth[LengthCW] = {180*M_PI/180};
-
 // Total number of steps calculated from values above
 const int NoSteps = round(LengthMonitoring/StepLength);
 

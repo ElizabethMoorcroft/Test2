@@ -11,7 +11,7 @@
 
 
 ////// Sensor::Sensor(int Id, double sensorhalfangle, double sensorradius) /////
-
+/*
 void SensorTest::RunSensorTests(){
     
     //std::cout<<"Hello"<<std::endl;
@@ -596,7 +596,7 @@ void SensorTest::TestGradientFromAngle(){
             /*if(caps[i][6]<0 || caps[i][6]>1){
                 std::cout<<"Possible Error! Failed Sensor test - TestCapturesIntersection: "<<"1b" <<std::endl;
                 std::cout<<"Time of capture, less than 0 or greater than 1: "<< caps[i][6] <<std::endl;
-            };*/
+            };*//*
         };
     };
     //std::cout<<"loc1: "<< loc1<<", loc2: "<< loc1<< std::endl;
@@ -650,7 +650,7 @@ void SensorTest::TestGradientFromAngle(){
             /*if(caps[i][6]<0 || caps[i][6]>1){
                 std::cout<<"Possible Error! Failed Sensor test - TestCapturesIntersection: "<<"2b" <<std::endl;
                 std::cout<<"Time of capture, less than 0 or greater than 1: "<< caps[i][6] <<std::endl;
-            };*/
+            };*//*
         };
     };
     //std::cout<<"loc1: "<< loc1<<", loc2: "<< loc2<< std::endl;
@@ -702,7 +702,7 @@ void SensorTest::TestGradientFromAngle(){
             /*if(caps[i][6]<0 || caps[i][6]>1){
                 std::cout<<"Possible Error! Failed Sensor test - TestCapturesIntersection: "<<"3b" <<std::endl;
                 std::cout<<"Time of capture, less than 0 or greater than 1: "<< caps[i][6] <<std::endl;
-            };*/
+            };*//*
         };
     };
 
@@ -753,7 +753,7 @@ void SensorTest::Test_CapturesIntersection4(){
             /*if(caps[i][6]<0 || caps[i][6]>1){
                 std::cout<<"Possible Error! Failed Sensor test - TestCapturesIntersection: "<<"4b" <<std::endl;
                 std::cout<<"Time of capture, less than 0 or greater than 1: "<< caps[i][6] <<std::endl;
-            };*/
+            };*//*
         };
     };
     //std::cout<<"loc1: "<< loc1<<", loc2: "<< loc2<< std::endl;
@@ -799,7 +799,7 @@ void SensorTest::Test_CapturesIntersection4(){
             /*if(caps[i][6]<0 || caps[i][6]>1){
                     std::cout<<"Possible Error! Failed Sensor test - TestCapturesIntersection: "<<"5b" <<std::endl;
                     std::cout<<"Time of capture, less than 0 or greater than 1: "<< caps[i][6] <<std::endl;
-            };*/
+            };*//*
         };
     };
 
@@ -846,7 +846,7 @@ void SensorTest::Test_CapturesIntersection4(){
             /*if(caps[i][6]<0 || caps[i][6]>1){
                 std::cout<<"Possible Error! Failed Sensor test - TestCapturesIntersection: "<<"6b" <<std::endl;
                 std::cout<<"Time of capture, less than 0 or greater than 1: "<< caps[i][6] <<std::endl;
-            };*/
+            };*//*
         };
     };
     //std::cout<<"loc1: "<< loc1<<", loc2: "<< loc2<< std::endl;
@@ -893,7 +893,7 @@ void SensorTest::Test_CapturesIntersection4(){
             /*if(caps[i][6]<0 || caps[i][6]>1){
                 std::cout<<"Possible Error! Failed Sensor test - TestCapturesIntersection: "<<"7b" <<std::endl;
                 std::cout<<"Time of capture, less than 0 or greater than 1: "<< caps[i][6] <<std::endl;
-            };*/
+            };*//*
         };
     };
     //std::cout<<"loc1: "<< loc1<<", loc2: "<< loc2<< std::endl;
@@ -941,7 +941,7 @@ void SensorTest::Test_CapturesIntersection4(){
             /*if(caps[i][6]<0 || caps[i][6]>1){
                 std::cout<<"Possible Error! Failed Sensor test - TestCapturesIntersection: "<<"8b" <<std::endl;
                 std::cout<<"Time of capture, less than 0 or greater than 1: "<< caps[i][6] <<std::endl;
-            };*/
+            };*//*
         };
     };
     //std::cout<<"loc1: "<< loc1<<", loc2: "<< loc2<< std::endl;
@@ -988,7 +988,7 @@ void SensorTest::Test_CapturesIntersection9(){
             /*if(caps[i][6]<0 || caps[i][6]>1){
                 std::cout<<"Possible Error! Failed Sensor test - TestCapturesIntersection: "<<"9b" <<std::endl;
                 std::cout<<"Time of capture, less than 0 or greater than 1: "<< caps[i][6] <<std::endl;
-            };*/
+            };*//*
         };
     };
     //std::cout<<"loc1: "<< loc1<<", loc2: "<< loc2<< std::endl;
