@@ -237,21 +237,7 @@ void  Animal::UpdateLocation (double seed, std::ofstream &Movement, std::vector<
             //then will exit either at Bottom or right boundary
             else if(NextAngle>=1.5*M_PI && NextAngle<2*M_PI){LeaveEnterWorld(Sq_MaxY, Sq_MinX ,Sq_MinY, Sq_MaxX, Movement, AllSensors , Captures, iterationnumber, previousx, previousy);}
             // Produces error is the ANGLE is not between 0 and 360
-            else { //std::cout << "ERROR - Movement angle: "<<NextAngle <<std::endl;
-                std::cout<<identifier<< " "<<
-                    Current_x << " "<<
-                    Current_y <<" "<<
-                    Current_angle <<" "<<
-                    NextAngle <<" "<<
-                    Move_speed <<" "<<
-                    StepLengthDist <<" "<<
-                    step_number <<" "<<
-                    Total_distance <<" "<<
-                    Move_maxangle <<
-                std::endl;
-                
-                //break;
-            };
+            else {std::cout << "ERROR - Movement angle: "<<NextAngle <<std::endl;  exit(EXIT_FAILURE);};
             
             // Produces error if the Next distance is less than zero
             // But exits loop and continues with the rest of the code
@@ -273,15 +259,12 @@ void  Animal::UpdateLocation (double seed, std::ofstream &Movement, std::vector<
  ----------------------------------------------*/
 void Animal::NewLocation (double& seed, double& seed2){
     
-    //std::cout<<"Seed: "<<seed <<", StepLengthDist: " << StepLengthDist <<std::endl;
-    
     //set up a random number
     RandNum Number1;
     //Correlated random walk
     // Calculate a distance value
     NextDist = Number1.PositiveNormal(seed,StepLengthDist,StepLengthDist/10);
     
-    //std::cout<<"NextDist: "<<NextDist <<std::endl;
     //calculates a new random angle of movement
     NextAngle = Number1.AtoRangeBUnif(seed2,Current_angle,Move_maxangle);
     //Sometimes the angle becomes greater than 360 or less than 0
@@ -291,7 +274,6 @@ void Animal::NewLocation (double& seed, double& seed2){
     //Based on polar coordinates updates the temp x/y location
     NextX = CalNext_X(NextDist);
     NextY = CalNext_Y(NextDist);
-    //std::cout<<"Next X & Y & Angle: "<<NextX <<" "<<NextY <<" "<< NextAngle <<std::endl;
     
     
 };
@@ -306,8 +288,6 @@ void Animal::NewLocation (double& seed, double& seed2){
 
 void Animal::LeaveEnterWorld(const double& YBoundExit, const double& XBoundExit, const double& YBoundEnter, const double& XBoundEnter, std::ofstream &Movement, std::vector<Sensor*> AllSensors , std::ofstream &Captures, int iterationnumber, double pLocationx, double pLocationy){
     
-   // std::cout <<"Entre LeaveEnterWorld"<<std::endl;
-    
     // Caculate the V & H distances to the boudaries
     double tempDistToTop = std::fabs(YBoundExit-Current_y);
     double tempDistToSide = std::fabs(XBoundExit-Current_x);
@@ -315,18 +295,15 @@ void Animal::LeaveEnterWorld(const double& YBoundExit, const double& XBoundExit,
     // Calculates the distnace the animal travels to the boudary
     double tempDistToTopBoundary = std::fabs(tempDistToTop/cos(NextAngle));
     double tempDistToSideBoundary = std::fabs(tempDistToSide/sin(NextAngle));
-    //std::cout <<"Top: " << tempDistToTop<<" " <<tempDistToTopBoundary<<std::endl;
-    //std::cout <<"Side: " << tempDistToSide<<" " <<tempDistToSideBoundary<<std::endl;
+
 
     
     double tempExitsY =0;
     double tempExitsX =0;
     
-    //double tempdisttrav=0;
     
     if(tempDistToSideBoundary>tempDistToTopBoundary | tempDistToSideBoundary ==0 ){
     
-        //std::cout <<"Top: " << tempDistToTop<<" " <<tempDistToTopBoundary<<std::endl;
         //This means that it exits the world at maximum value of y and at the corresponding x value
         tempExitsY = YBoundExit;
         tempExitsX = CalNext_X(tempDistToTopBoundary);
@@ -341,11 +318,9 @@ void Animal::LeaveEnterWorld(const double& YBoundExit, const double& XBoundExit,
         NextDist -=tempDistToTopBoundary;
         // The current distance travelled
         Total_distance += tempDistToTopBoundary;
-
         
     }// end of exit by the top/bottom of the world 
     else{
-        //std::cout <<"Side"<<std::endl;
         //This means that it exits the world at maximum value of y and at the corresponding x value
         tempExitsX = XBoundExit;
         tempExitsY = CalNext_Y(tempDistToSideBoundary);
@@ -355,22 +330,17 @@ void Animal::LeaveEnterWorld(const double& YBoundExit, const double& XBoundExit,
         Current_x = XBoundEnter;
         Current_angle = NextAngle;
         
-        //tempdisttrav = tempDistToSideBoundary;
-
         // The distance left to travel
         NextDist -=tempDistToSideBoundary;
         // The current distance travelled
         Total_distance += tempDistToSideBoundary;
-        //std::cout <<"leaves Side"<<std::endl;
+
     }; // end of exit by the side of world
 
-    //std::cout <<"vect1 done"<<std::endl;
     //New end locations after the re-entry
     NextX = CalNext_X(NextDist);
     NextY = CalNext_Y(NextDist);
     
-    //std::cout<<"NextDist: " <<NextDist <<std::endl;
-
     //Updates the location vector with the EXIT location
     LocationVector(tempExitsX,tempExitsY,pLocationx,pLocationy,0,0, Movement, AllSensors , Captures, iterationnumber);
     // Updates the location vector with the RE-ENTRY location

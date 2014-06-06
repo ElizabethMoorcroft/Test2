@@ -60,13 +60,8 @@ Sensor::Sensor(int Id, double sensorhalfangle, double sensorradius){
     
     if(g_detector2== 0 || g_detector2== M_PI|| g_detector2== 2*M_PI){vh_det2 = 1;} //Line is vertical
     else if(g_detector2 == M_PI/2 || g_detector2== 3*M_PI/2){vh_det2 = 2;} //Line is Horizontal
-    
-    Captures.resize(round(DensityAnimals*((Sq_MaxX-Sq_MinX)*(Sq_MaxY-Sq_MinY)))*3);
-    
 
-    
-    capturecount=0;
-    myvector.resize(10);
+
 };
 
 
@@ -81,11 +76,6 @@ void Sensor::Add1StepOn(){Sensor_StepOn=Sensor_StepOn+1;};
 
 void Sensor::ResetStepOn(){Sensor_StepOn=0;};
 
-void Sensor::resetCaptures(){
-    capturecount =0;
-    Captures.clear();
-    Captures.resize(round(DensityAnimals*((Sq_MaxX-Sq_MinX)*(Sq_MaxY-Sq_MinY)))*3);
-};
 
 void Sensor::setXLoc(double a){
     location_x = a;
@@ -248,27 +238,7 @@ double Sensor::GradientFromAngle(double angle){
  // Updates captures vectors with new captures
 -------------------------------------------------*/
 void Sensor::UpdateCaptures(int Individual_ID,int itnumber,double location_x_animal,double location_y_animal, double time, double CamToAnimal, double AnimalToCam , double DistToCam,  std::ofstream &Captures){
-    
-    /*---------------------------------------------------------------------------------------------------------
-     // Check for specific case of interest
-    if(Sensor_identifier == 3 && Individual_ID== 0 && Sensor_StepOn>430 && Sensor_StepOn<432){
-    std::cout<<"Caught!"<<std::endl; //<<Sensor_StepOn << " time: "<< time <<std::endl;
-     };
-     //----------------------------------------------------------------------------------------------------------*/
-    
-    //std::cout<<"Caught! "<< capturecount <<"/"<< Captures.size() <<" " << Sensor_identifier<<std::endl;
-    myvector[0] = Individual_ID;
-    myvector[1] = Sensor_StepOn;
-    myvector[2] = Sensor_identifier;
-    myvector[3] = itnumber;
-    myvector[4] = location_x_animal;
-    myvector[5] = location_y_animal;
-    myvector[6] = time;
-    myvector[7] = CamToAnimal;
-    myvector[8] = AnimalToCam;
-    myvector[9] = DistToCam;
-    //Captures[capturecount]=myvector;
-    //capturecount+=1;
+
     Captures << Individual_ID <<","
              << Sensor_StepOn <<","
              << Sensor_identifier <<","
@@ -606,15 +576,6 @@ void Sensor::SensorCircAndMovement(double location_x_animal, double location_y_a
         XandY = AngleAndCircInteraction(m_animal, c_animal);
     }//END OF ANGLE ANIMAL MOVEMENT
     
-    
-    
-   /*---------------------------------------------------------------------------------------------------------
-     // Check for specific case of interest
-    // if(Individual_ID== 0 && Sensor_StepOn>17654 && Sensor_StepOn<17656){
-        std::cout<<"XandY[0]: "<<XandY[0]<<", XandY[1]: "<<XandY[1]<<std::endl;
-        std::cout<<"XandY[2]: "<<XandY[2]<<", XandY[3]: "<<XandY[3]<<std::endl;
-     //};
-     //----------------------------------------------------------------------------------------------------------*/
     
     //--------- CHECK IN "CapturesIndividual" FOR CAPTURE ---------------//
     //Looking at both possible solutions for the line and the circle
