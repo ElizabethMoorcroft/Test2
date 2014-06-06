@@ -214,7 +214,7 @@ std::string Simulation::make_directory( const std::string& directory,double perc
     int maxseed = NoOfIterations+Seed;
     std::ostringstream result;
     result  << directory
-    << "RTEST,Perch"          << perchvalue
+    << "RTESTcompare,Perch"          << perchvalue
     << ",Density="      << denistyCal
     << ",Speed="        << speedvalue
     << ",Iterations="   << Seed << "-" << maxseed

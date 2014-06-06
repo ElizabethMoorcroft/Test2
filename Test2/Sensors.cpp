@@ -425,7 +425,7 @@ std::vector <double> Sensor::AngleAndCircInteraction(double m_Angle, double c_An
 // to make sure that the movement is in the right direction (forward instead of backwards)
 std::vector <double> Sensor::TimeAndAngleCal(double Y, double X, double previous_y_animal, double previous_x_animal, double disttotal){
     
-    std::vector <double> returnvalues(4);
+    std::vector <double> returnvalues(2);
 
     double distedge = DistTwoPoints(X,previous_x_animal,Y,previous_y_animal);
     double time = distedge/disttotal;
@@ -630,7 +630,7 @@ void Sensor::SensorCircAndMovement(double location_x_animal, double location_y_a
         // It the start location is captured then the time and angle are both zero
         if(((time<=1 || approximatelyequal(time,1)) && approximatelyequal(angle,move_angle))
            ||(time==0 && angle==0)){
-            std::cout<<"time: "<< time <<std::endl;
+            //std::cout<<"time: "<< time <<std::endl;
             CapturesIndividual(X, Y, Individual_ID, move_angle, itnumber, time,Captures);
         }; // END OF IF LOOP
     }; // END OF FOR v loop
@@ -673,11 +673,9 @@ void Sensor::SensorAndMovement(double location_x_animal, double location_y_anima
     // Initates a count for the number of captures
     // TandA is Time and Angle
     // XandY is an initialised vector for the possible coordinates of capture
-    
-    std::vector<double> renameXandY(4);
+    std::vector<double> renameXandY(2);
     double X1, Y1;
-    
-    std::vector<double> renameTandA(4);
+    std::vector<double> renameTandA(2);
 
     // Assuming that there is one possible interaction for 2 lines
     // If the lines are exactly on top of each other then the "capture" occurs
@@ -686,12 +684,9 @@ void Sensor::SensorAndMovement(double location_x_animal, double location_y_anima
     double mindect;
     double maxdect;
     
-    //if(Sensor_identifier==209){std::cout<<"Hello"<<std::endl;}
-
     
     //Animal has vertical movement
     if(currentlocx == previouslocx){
-        //if(Sensor_identifier==209){std::cout<<"currentlocx == previouslocx "<<std::endl;}
         //Horzontal detector - then the solution is simply the y coord from horzontal line and the x coord from the vertical line
         if(det==2){ X1 = previous_x_animal; Y1 = location_y; } // END IF DET==2
         // Vertical detector it HAS to have the same x-position as the movement
@@ -799,7 +794,6 @@ void Sensor::SensorAndMovement(double location_x_animal, double location_y_anima
     // The time has to be less than the total distance away form starting location
     // the angle of movement from the start location to the capture location has to be the same as the movement angle.
     if((time<=1 && approximatelyequal(angle,move_angle))||(time==0 && angle==0)){
-        std::cout<<"time: "<< time <<std::endl;
        CapturesIndividual(X1,  Y1, Individual_ID, move_angle, itnumber,time, Captures);
     }; //--------- END OF CAPTURE CHECK ---------------//
 
@@ -849,7 +843,6 @@ void Sensor::CapturesIndividual(double location_x_animal,
             AngleFromSensorCentre = RangeAngle(AngleFromSensorCentre);
             // If the Sensor is a circle
             if(angle_HalfWidth == M_PI){
-                //if(Sensor_identifier==0){std::cout<<"ello"<<std::endl;}
                 double movementcorrection;
                 if(move_angle>M_PI){movementcorrection=move_angle-2*M_PI;}else{movementcorrection=move_angle;};
                 double AngleFromAnimalCentre = RangeAngle(AngleFromSensor+M_PI - movementcorrection);
