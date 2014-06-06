@@ -50,14 +50,17 @@ AnimalMovement::AnimalMovement( std::vector<Animal*> AllAnimals ,  std::vector<S
     //Sets seed for a random number
     //Random number stream for the movemnet of the animal
     srand(randommove);
-    std::vector<double> RandomNumberCurrentAnimal(NoSteps*1000);
-    for(int j=0; j<NoSteps*1000; j++){ RandomNumberCurrentAnimal[j]=double(rand());};
+    std::vector<double> RandomNumberCurrentAnimal(NoSteps);
+    for(int j=0; j<NoSteps; j++){
+        RandomNumberCurrentAnimal[j]=double(rand());
+        for(int extra=0; extra<999; extra++){temp=double(rand());};
+    };
     
     // For each step, Updates animal location
-    double stepcount;
+    //double stepcount;
     for(int j=0; j<NoSteps; j++){
-        stepcount = j*1000;
-        Animal1.UpdateLocation(RandomNumberCurrentAnimal[stepcount], Movement ,  AllSensors , Captures, iterationnumber);
+        //stepcount = j*1000;
+        Animal1.UpdateLocation(RandomNumberCurrentAnimal[j], Movement ,  AllSensors , Captures, iterationnumber);
     }; //End of j loop for Steps
 
     
