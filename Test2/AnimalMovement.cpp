@@ -57,29 +57,27 @@ AnimalMovement::AnimalMovement( std::vector<Animal*> AllAnimals ,  std::vector<S
     };
     
     // For each step, Updates animal location
-    //double stepcount;
     for(int j=0; j<NoSteps; j++){
-        //stepcount = j*1000;
         Animal1.UpdateLocation(RandomNumberCurrentAnimal[j], Movement ,  AllSensors , Captures, iterationnumber);
     }; //End of j loop for Steps
 
     
     // Creates a temp matrix for "all locations"
-    std::vector<std::vector<double> > TempAllLocations = Animal1.getAllLocations();
+    //std::vector<std::vector<double> > TempAllLocations = Animal1.getAllLocations();
     
-    int maxiteration=0;
+    //int maxiteration=0;
     
     // Temp location file is written in csv file
     // Each location is a seperate row  - the number of rows = "TempAllLocations.size()"
-    for(int stepcounter=0; stepcounter<TempAllLocations.size(); stepcounter++){
-        std::vector<double>  locations = TempAllLocations[stepcounter];
-        std::vector<double>  previouslocations;
-        if(stepcounter>0){previouslocations = TempAllLocations[stepcounter-1];}else{previouslocations = TempAllLocations[stepcounter];};
-        
-        if(TempAllLocations[stepcounter].size()>0){ maxiteration=stepcounter;};
+    //for(int stepcounter=0; stepcounter<TempAllLocations.size(); stepcounter++){
+    //    std::vector<double>  locations = TempAllLocations[stepcounter];
+    //    std::vector<double>  previouslocations;
+   //     if(stepcounter>0){previouslocations = TempAllLocations[stepcounter-1];}else{previouslocations = TempAllLocations[stepcounter];};
+   //
+    //    if(TempAllLocations[stepcounter].size()>0){ maxiteration=stepcounter;};
         //CheckSensor(locations, previouslocations, AllSensors, Movement, Captures, stepcounter, i, iterationnumber,perchvalue,speedvalue);
         
-    }; // End of for step loop
+   // }; // End of for step loop
     
     
 
