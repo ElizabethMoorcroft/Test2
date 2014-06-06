@@ -27,20 +27,12 @@ CheckSensor::CheckSensor(double currentx,double currenty, double currentangle, d
         double sensory = AllSensors[sensor] -> getYloc();
         double sensorradius = AllSensors[sensor] -> getRadius();
         double checkforcaptureplusradius =checkforcapture+sensorradius;
-                
-        AllSensors[sensor] -> setStepOn(stepcounter);
-
         double disttosensorprevious = sqrt(pow(previousx - sensorx,2)+pow(previousy - sensory,2));
         double disttosensorcurrent = sqrt(pow(currentx - sensorx,2)+pow(currenty - sensory,2));
                 
-                
         if(disttosensorprevious<checkforcaptureplusradius  && disttosensorcurrent<checkforcaptureplusradius ){
-
-            AllSensors[sensor] ->CapturesIntersection(currentx,currenty,previousx,previousy,i,currentangle,iterationnumber, Captures);
-
+            AllSensors[sensor] ->CapturesIntersection(currentx,currenty,previousx,previousy,i,currentangle,iterationnumber, Captures, stepcounter);
         };// End of if distance close to sensor
-                
-
 
     }; // END of sensor for loop
 };

@@ -27,12 +27,10 @@ Sensor::Sensor(int Id, double sensorhalfangle, double sensorradius){
     
     location_x = (Sq_MaxX- Sq_MinX)/2 + Sq_MinX;
     location_y = (Sq_MaxY- Sq_MinY)/2 + Sq_MinY;
-    //location_x = 1000;
-    //location_y = 6000;
+
     
     //angle_HalfWidth = SensorWidth;
     angle = 0;// If the turn may wish to change Sensor angles to random directions
-    //angle = RangeAngle(angle); // For use  when angle changes
     Sensor_StepOn = 0; // The Sensors are on at all steps!!
     
     // Detector 1 is line represneting the left hand slide of the detector range
@@ -41,7 +39,6 @@ Sensor::Sensor(int Id, double sensorhalfangle, double sensorradius){
     //  - intercpet would be: y-mx=c (where y and x are known)
     g_detector1 = angle-angle_HalfWidth;
     g_detector2 = angle+angle_HalfWidth;
-
     g_detector1= RangeAngle(g_detector1);
     g_detector2= RangeAngle(g_detector2);
 
@@ -206,15 +203,13 @@ double Sensor::AngleTwoPoints(double X1, double X2, double Y1, double Y2){
     // Don't want always want theta, I want the baring from north
     double diffx = (X2-X1);
     double diffy = (Y2-Y1);
-   // if(Sensor_identifier==0 && Sensor_StepOn>17654 && Sensor_StepOn<17656){std::cout<< "diffx: " <<diffx <<", diffy: " <<diffy <<std::endl;}
     // Gives the angle from north
     double theta = atan(diffx/diffy);// - M_PI_2;
-   // if(Sensor_identifier==0 && Sensor_StepOn>17654 && Sensor_StepOn<17656){std::cout<< "theta: " <<theta  <<std::endl;}
 
-    if(diffy<0){theta+= M_PI; }//if(diffy>0){theta+= M_PI;};}
-    //if(diffy<0){theta-= M_PI/2;}
+    if(diffy<0){theta+= M_PI; }
     //Gets rid of negative values
     theta = RangeAngle(theta);
+    
     return theta;
 };
 
@@ -237,10 +232,10 @@ double Sensor::GradientFromAngle(double angle){
 /*-------------------------------------------------
  // Updates captures vectors with new captures
 -------------------------------------------------*/
-void Sensor::UpdateCaptures(int Individual_ID,int itnumber,double location_x_animal,double location_y_animal, double time, double CamToAnimal, double AnimalToCam , double DistToCam,  std::ofstream &Captures){
+void Sensor::UpdateCaptures(int Individual_ID,int itnumber,double location_x_animal,double location_y_animal, double time, double CamToAnimal, double AnimalToCam , double DistToCam,  std::ofstream &Captures, int stepnumber){
 
     Captures << Individual_ID <<","
-             << Sensor_StepOn <<","
+             << stepnumber <<","
              << Sensor_identifier <<","
              << itnumber << ","
              << location_x_animal <<","
@@ -255,6 +250,8 @@ void Sensor::UpdateCaptures(int Individual_ID,int itnumber,double location_x_ani
 
 ///////////////////////
 ///////////////////////
+
+
 
 /*----------------------------------------------
  // Intersection between two straight line:
@@ -461,7 +458,8 @@ void Sensor::CapturesIntersection(double location_x_animal, double location_y_an
                                   int Individual_ID,                                    // Animal ID
                                   double move_angle,                                    // Call direction & width
                                   int itnumber,                                         // Iteration number
-                                  std::ofstream &Captures){
+                                  std::ofstream &Captures,
+                                  int stepnumber){
     
     double currentlocx =location_x_animal;
     double currentlocy =location_y_animal;
@@ -484,8 +482,8 @@ void Sensor::CapturesIntersection(double location_x_animal, double location_y_an
                                    move_angle,
                                    itnumber,
                                    0,
-                                   Captures
-                                   );
+                                   Captures,
+                                    stepnumber);
     
     if(angle_HalfWidth < M_PI){ // If the Sensor width is 360˚ then the straight line edges are not important
         // Checks for crossing the boundaries for detector 1
@@ -497,7 +495,7 @@ void Sensor::CapturesIntersection(double location_x_animal, double location_y_an
                                   m_animal,c_animal,
                                   m_detector1, c_detector1, g_detector1, vh_det1,
                                   disttotal,
-                                 Captures);
+                                 Captures,stepnumber);
         // Checks for crossing the boundaries for detector 2
        SensorAndMovement(currentlocx,currentlocy,
                                   previouslocx ,previouslocy,
@@ -507,7 +505,7 @@ void Sensor::CapturesIntersection(double location_x_animal, double location_y_an
                                   m_animal,c_animal,
                                   m_detector2, c_detector2,g_detector2,vh_det2,
                                 disttotal,
-                                Captures);
+                                Captures,stepnumber);
     };
     // Checks for crossing the boundaries for circular edge of detector
     SensorCircAndMovement(currentlocx,currentlocy,
@@ -517,14 +515,14 @@ void Sensor::CapturesIntersection(double location_x_animal, double location_y_an
                                       itnumber,
                                       m_animal, c_animal,
                                       disttotal,
-                                      Captures);
+                                      Captures,stepnumber);
     // Checks for crossing the boundaries for circular edge of detector
     CapturesIndividual(currentlocx,currentlocy,
                                    Individual_ID,
                                    move_angle,
                                    itnumber,
                                    1,
-                                   Captures);
+                                   Captures,stepnumber);
 };
 
 
@@ -549,7 +547,7 @@ void Sensor::SensorCircAndMovement(double location_x_animal, double location_y_a
                                   int itnumber,                                             // Iteration number
                                   double m_animal, double c_animal,                         // Gradient/intercept of animal
                                   double disttotal,
-                                  std::ofstream &Captures){                                        // Total distance moved
+                                  std::ofstream &Captures, int stepnumber){                                        // Total distance moved
     
     //std::cout<<"SensorCircAndMovement " << "move_angle "<< move_angle<<std::endl;
     
@@ -592,7 +590,7 @@ void Sensor::SensorCircAndMovement(double location_x_animal, double location_y_a
         if(((time<=1 || approximatelyequal(time,1)) && approximatelyequal(angle,move_angle))
            ||(time==0 && angle==0)){
             //std::cout<<"time: "<< time <<std::endl;
-            CapturesIndividual(X, Y, Individual_ID, move_angle, itnumber, time,Captures);
+            CapturesIndividual(X, Y, Individual_ID, move_angle, itnumber, time,Captures, stepnumber);
         }; // END OF IF LOOP
     }; // END OF FOR v loop
     //--------- END OF CHECK FOR CAPTURE ---------------//
@@ -623,7 +621,7 @@ void Sensor::SensorAndMovement(double location_x_animal, double location_y_anima
                                   int itnumber,
                                   double m_animal,double c_animal,
                                   double m_detector, double c_detector,double g_detector, int det,
-                                  double disttotal,std::ofstream &Captures){
+                                  double disttotal,std::ofstream &Captures, int stepnumber){
     
     //if(Sensor_identifier==209){std::cout<<"SensorAndMovement, m_detector: " << m_detector<<" m_animal: " << m_animal <<std::endl;}
     double currentlocx =location_x_animal;
@@ -755,7 +753,7 @@ void Sensor::SensorAndMovement(double location_x_animal, double location_y_anima
     // The time has to be less than the total distance away form starting location
     // the angle of movement from the start location to the capture location has to be the same as the movement angle.
     if((time<=1 && approximatelyequal(angle,move_angle))||(time==0 && angle==0)){
-       CapturesIndividual(X1,  Y1, Individual_ID, move_angle, itnumber,time, Captures);
+       CapturesIndividual(X1,  Y1, Individual_ID, move_angle, itnumber,time, Captures, stepnumber);
     }; //--------- END OF CAPTURE CHECK ---------------//
 
 }; // END OF FUNCTION
@@ -775,9 +773,9 @@ void Sensor::CapturesIndividual(double location_x_animal,
                                    double move_angle,
                                    int itnumber,
                                    double time,
-                                    std::ofstream &Captures
+                                    std::ofstream &Captures,
+                                int stepnumber
                                    ){
-    //if(Individual_ID== 471 && Sensor_StepOn>212 && Sensor_StepOn<214){std::cout<<"InCap, radius" << radius <<std::endl;//};
     double &currentlocx =location_x_animal;
     double &currentlocy =location_y_animal;
 
@@ -785,7 +783,7 @@ void Sensor::CapturesIndividual(double location_x_animal,
     // If on the exact same spot as the Sensor assume it will be captured
     if(approximatelyequal(currentlocx,location_x) && approximatelyequal(currentlocy,location_y)){
         double zero =0;
-        UpdateCaptures(Individual_ID,itnumber,currentlocx,currentlocy,time,zero,zero,zero,Captures);
+        UpdateCaptures(Individual_ID,itnumber,currentlocx,currentlocy,time,zero,zero,zero,Captures, stepnumber);
     }
     // If not at the exact same location then check whether it is
     else{
@@ -809,7 +807,7 @@ void Sensor::CapturesIndividual(double location_x_animal,
                 double AngleFromAnimalCentre = RangeAngle(AngleFromSensor+M_PI - movementcorrection);
                 AngleFromAnimalCentre = RangeAngleMinus(AngleFromAnimalCentre);
                 //AngleFromAnimalCentre = RangeAngle(AngleFromAnimalCentre);
-                UpdateCaptures(Individual_ID,itnumber,currentlocx,currentlocy,time,AngleFromSensorCentre,AngleFromAnimalCentre,diff_animal_Sensor,Captures);
+                UpdateCaptures(Individual_ID,itnumber,currentlocx,currentlocy,time,AngleFromSensorCentre,AngleFromAnimalCentre,diff_animal_Sensor,Captures, stepnumber);
             };
         
             // If the angle is between min and max possible angle
@@ -842,7 +840,7 @@ void Sensor::CapturesIndividual(double location_x_animal,
                 // in this case we can say it's captures as it is in the sensor range
 
                 // Call the update captures function and let captured ==1.
-                UpdateCaptures(Individual_ID,itnumber,currentlocx,currentlocy,time,AngleFromSensorCentre, AngleFromAnimalCentre,diff_animal_Sensor, Captures);
+                UpdateCaptures(Individual_ID,itnumber,currentlocx,currentlocy,time,AngleFromSensorCentre, AngleFromAnimalCentre,diff_animal_Sensor, Captures, stepnumber);
             }; //End of IF - "in width of detector"
         }; //End of "radius" IF
     }; //END of else - not directly on same spot as Sensor

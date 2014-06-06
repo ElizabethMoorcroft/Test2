@@ -94,15 +94,15 @@ public:
     
     std::vector <double> TimeAndAngleCal(double, double, double, double, double);
     double GradientFromAngle(double);
-    void UpdateCaptures(int,int,double,double,double,double,double, double, std::ofstream &);
-    void CapturesIndividual(double, double, int, double, int, double, std::ofstream &);
+    void UpdateCaptures(int,int,double,double,double,double,double, double, std::ofstream &, int);
+    void CapturesIndividual(double, double, int, double, int, double, std::ofstream &, int);
     
-    void CapturesIntersection(double, double, double, double, int, double, int, std::ofstream &);
+    void CapturesIntersection(double, double, double, double, int, double, int, std::ofstream &, int);
     
     void SensorAndMovement(double, double, double, double,  int,  double,
-                        int, double, double, double, double, double, int, double, std::ofstream &);
+                        int, double, double, double, double, double, int, double, std::ofstream &, int);
     void SensorCircAndMovement(double, double, double, double, int, double,
-                            int, double, double, double, std::ofstream & );
+                            int, double, double, double, std::ofstream &, int );
 
     
 };

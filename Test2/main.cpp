@@ -44,7 +44,7 @@ int main(){
     t = clock();
     
     std::vector<double> Values1(3);
-    Values1[0] = 0; Values1[1] = 0.01; Values1[2] =  0*M_PI/180;
+    Values1[0] = 0; Values1[1] = 0.46; Values1[2] =  0*M_PI/180;
     simulatevalues(Values1);
     std::cout<<"Finished" <<std::endl;
     t2 = clock();

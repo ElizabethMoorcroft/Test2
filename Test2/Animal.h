@@ -39,11 +39,7 @@ class Animal {
     double NextY;
     double NextAngle;
     double NextDist;
-        
-    int locationvectorcount;
     
-    std::vector<double> mylocationvector;
-    std::vector<std::vector<double> > All_locations;
 
 public:
     Animal();
@@ -59,7 +55,6 @@ public:
     void setCurrentY(double a){Current_y = a;};
     void setNextX(double a){Current_x = a;};
     void setNextY(double a){Current_y = a;};
-    void setlargelocationvector(double a){All_locations.resize(10*a);}
     
     // Get functions
     double getCurrentX(){return  Current_x;};
@@ -71,7 +66,6 @@ public:
     double getNextX(){return NextX;};
     double getNextY(){return NextY;};
     
-    std::vector<std::vector<double> > getAllLocations(){return All_locations;};
     
     // Calculations
     void NewLocation(double&, double&);

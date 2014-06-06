@@ -51,17 +51,9 @@ Animal::Animal(int a, double i, double j, double k, std::ofstream &Movement, std
     step_number = 0;
     Total_distance = 0;
     
-    //Set up like this so in the future can be initalized as RV??
-    
-    // Updates the location vector
-    All_locations.resize(10*NoSteps);
-    mylocationvector.resize(9);
-    locationvectorcount =0;
-    
     //Entres the start location into the matrix
     LocationVector(Current_x,Current_y,Current_x,Current_y,0,1, Movement, AllSensors , Captures, iterationnumber);
     
-    //std::cout<<"Move speed " <<Move_speed<< std::endl;
 };
 
 
