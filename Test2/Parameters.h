@@ -26,8 +26,8 @@ const int SaveMovement = 0; // Saves the movement of the animals for all simulat
 const int SaveSensor = 1; // Saves the Sensor locations (constant throughout all simulations) // 1-saves; 0-doesn't save
 
 //Simulation values - #Animals, #Iterations
-const double DensityAnimals = 70*pow(10,-6); // XX*10^-6 Density/m^2  => XX Density/KM^2
-const int NoOfIterations = 10; // No of iterations with the settings
+const double DensityAnimals = 0.5*pow(10,-6); // XX*10^-6 Density/m^2  => XX Density/KM^2
+const int NoOfIterations = 1; // No of iterations with the settings
 
 //Random number seed
 const int Seed =1; // initail start seed - becuase this is set makes result repilicable
@@ -59,12 +59,12 @@ const int LengthSW(1);
 const double SensorWidth[LengthSW] = {60*M_PI/180};  // > 270 && <=360 , 100*M_PI/180
 
 const int LengthSR(1);
-const double SensorRadius[LengthSR] = {100};
+const double SensorRadius[LengthSR] = {500};
 const int NoSensors = LengthSW*LengthSR;
 
 
 //Movement parameters
-const double StepLength =   15*60; //Length of each step in seconds *60
+const double StepLength =   5*60; //Length of each step in seconds *60
 
 // Total number of steps calculated from values above
 const int NoSteps = round(LengthMonitoring/StepLength);

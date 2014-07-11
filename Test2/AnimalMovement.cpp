@@ -19,7 +19,7 @@ AnimalMovement::AnimalMovement(){};
 AnimalMovement::AnimalMovement( std::vector<Animal*> AllAnimals ,  std::vector<Sensor*> AllSensors , std::ofstream &Captures, std::ofstream &Movement, double randomstart, double randommove, int i, int iterationnumber, double speedvalue, double perchvalue, double maxchangeanglevalue){
     
     //Print out animal number to screen
-    //std::cout <<"Animal:" << i+1 <<"/" << NoAnimal << std::endl;
+    std::cout <<"Animal:" << i+1 <<"/" << NoAnimal << std::endl;
     RandNum RandomNumber1;
     srand(randomstart);
     double seed1, seed2, seed3, temp;
