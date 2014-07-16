@@ -16,6 +16,10 @@
 
 AnimalMovement::AnimalMovement(){};
 
+// Updates the movement
+//  - Sets random location/angle
+//  - Sets movement values
+//  - Updates movement 
 AnimalMovement::AnimalMovement( std::vector<Animal*> AllAnimals ,  std::vector<Sensor*> AllSensors , std::ofstream &Captures, std::ofstream &Movement, double randomstart, double randommove, int i, int iterationnumber, double speedvalue, double perchvalue, double maxchangeanglevalue){
     
     //Print out animal number to screen
@@ -30,6 +34,7 @@ AnimalMovement::AnimalMovement( std::vector<Animal*> AllAnimals ,  std::vector<S
         else {temp=double(rand());};
     };
     
+    //sets random location
     double xlocation = RandomNumber1.AtoBUnif(seed1,Sq_MinX,Sq_MaxX);
     double ylocation = RandomNumber1.AtoBUnif(seed2,Sq_MinY,Sq_MaxY);
     
@@ -60,7 +65,5 @@ AnimalMovement::AnimalMovement( std::vector<Animal*> AllAnimals ,  std::vector<S
     for(int j=0; j<NoSteps; j++){
         Animal1.UpdateLocation(RandomNumberCurrentAnimal[j], Movement ,  AllSensors , Captures, iterationnumber);
     }; //End of j loop for Steps
-
-    
 
 }

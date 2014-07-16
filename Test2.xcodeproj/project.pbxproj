@@ -382,6 +382,7 @@
 				3F6029431949DF8800AF4908 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		AD0D145216D909A60052980A /* Build configuration list for PBXProject "Test2" */ = {
 			isa = XCConfigurationList;
