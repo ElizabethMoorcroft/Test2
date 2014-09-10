@@ -14,25 +14,40 @@
 
 //Calcaulte a random variable that is normally distribtued
 //But if the value is negative them it recalculates it until +ve
-long double RandNum::PositiveNormal (double seed,double Mean,double SD){
+double RandNum::PositiveNormal (double seed, double Mean, double SD){
     
     
-    long double RV_1;
+    double RV_1=0;
     
+<<<<<<< HEAD
 
+=======
+    //std::cout<<"Seed inside: " << seed <<std::endl;
+>>>>>>> bats
     
     int count=2;
     
     //Does the follwing while RV_1 is less than 0
+<<<<<<< HEAD
     while(RV_1<=0){
         
         srand(seed);
         std::vector<double> RandomNumberStreamTemp(count);
         for(int i=0; i<count; i++){
             RandomNumberStreamTemp[i] =double (rand());
+=======
+     while(RV_1<=0){
+        srand(seed);
+        double startseed, temp;
+        //std::vector<double> RandomNumberStreamTemp(count*100);
+        for(int i=0; i<(count*100); i++){
+            // RandomNumberStreamTemp[i] =double (rand());
+            if(i==(count*100)-1){startseed =double (rand());}
+            else {temp =double (rand());}
+>>>>>>> bats
         };
         // set random seed for the varaibles
-        srand(RandomNumberStreamTemp[count]);
+        srand(startseed);
         
         //To generate from a normal distribution we use the following:
         // U~Unif(0,1)
@@ -76,7 +91,7 @@ long double RandNum::PositiveNormal (double seed,double Mean,double SD){
 //a is the seed value
 //b is the current angle
 //c is the +/- range
-long double RandNum::AtoRangeBUnif (double a,double b,double c){
+double RandNum::AtoRangeBUnif (double& a,double b,double c){
     
     double Seed= a;
     
@@ -84,7 +99,7 @@ long double RandNum::AtoRangeBUnif (double a,double b,double c){
     srand(Seed);
     
     // Uniform 0 - 1 random number
-    long double v1 = ((long double) rand()/RAND_MAX);
+    double v1 = ((long double) rand()/RAND_MAX);
     
     // Uniform -1 - 1 random number
     v1 = (v1-0.5)*2;
@@ -106,18 +121,13 @@ long double RandNum::AtoRangeBUnif (double a,double b,double c){
 //a is the seed value
 //b is the Min value
 //c is the Max value
-long double RandNum::AtoBUnif (double a,double b,double c){
-    
-    //Rename variables
-    double Seed= a;
-    double Min= b;
-    double Max= c;
+double RandNum::AtoBUnif (double& Seed,double Min,double Max){
     
     //Sets seed for a random number
     srand(Seed);
     
     // Uniform 0 - 1 random number
-    long double v1 = ((long double) rand()/RAND_MAX);
+    double v1 = ((double) rand()/RAND_MAX);
     
     double range = Max - Min;
     

@@ -13,27 +13,22 @@
 #include <fstream>
 #include <string>
 #include <sstream>
+
+
 //Header files
 #include "Animal.h"
+#include "AnimalTest.h"
 #include "RandNum.h"
-#include "HomeRange.h"
-#include "CameraTraps.h"
+#include "Sensors.h"
+#include "SensorTest.h"
 #include "Parameters.h"
+#include "CheckSensor.h"
+#include "AnimalMovement.h"
+#include "Iteration.h"
+#include "Simulation.h"
 
-/////////////////////////////////////////////////////////////////////////////////////////////////////////
-//                                              FILE NAMES                                            ///
-//                                                                                                    ///
-// 3 functions which are used to create dynamic file names in order to save files.                    ///
-// Code needs tiding up a bit                                                                         ///
-/////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// Function for creating a dynamic file names for settings
-std::string make_filename( const std::string& directory ,const std::string& basename){
-    std::ostringstream result;
-    result << directory <<basename;
-    return result.str();
-};
-
+<<<<<<< HEAD
 // Function for creating the directory/Basename of the file
 // The directory is the input - but this part of the code automatically
 // updates the name with the type of boundaries, type of movement, and density
@@ -113,88 +108,30 @@ int main(){
         "," << "Angle from bat to camera" <<
         "," << "Distance from animal to camera" <<
         "\n";
-    
-    //Creates file for Movement (CSV file) and writes in the header
-    std::ofstream Movement;
-    Movement.open(make_filename(SaveDirectory, ",Movement.csv" ).c_str());
-    if(SaveMovement==1){
-        //Creates a header for the file
-        //This is not necessary but helps
-        Movement << "AnimalNumber" <<
-            "," << "StepNumber" <<
-            "," << "Xlocation" <<
-            "," << "Ylocation" <<
-            "," << "Angle" <<
-            "," << "TotalDistance" <<
-            "," << "Speed" <<
-            "," << "Re-enterWorld" <<
-            "," << "Iternation number" <<
-            "\n";
-    } else {Movement << "Not saved";}
-    
-    //Creates file for HomeRange (CSV file) and writes in the header
-    std::ofstream HomeRangefile;
-    HomeRangefile.open(make_filename(SaveDirectory, ",HomeRange.csv").c_str());
-    if(SaveHR==1){
-        HomeRangefile   <<"Iternation number" <<
-                    "," <<"HomeRangeID" <<
-                    "," << "XLocation" <<
-                    "," << "YLocation" <<
-                    "," << "Size" <<
-                    "\n";
-    } else {HomeRangefile << "Not saved";}
-    
-    // Saves the settings used
-    std::ofstream Settings;
-    Settings.open(make_filename(SaveDirectory,",Settings.csv").c_str());
-    //Simulation values - #Animals, #Steps, #HR, #CT
-    Settings << "DensityAnimals" << ","<< DensityAnimals << "\n"
-             << "NoOfAnimals" << "," << NoAnimal << "\n"
-             << "Area"<< "," << area << "\n"
-             << "LengthMonitoring" << "," << LengthMonitoring << "\n"
-             << "AverageSizeHR" << "," << AverageSizeHR << "\n"
-             << "NoRunIn" << "," <<  NoRunIn << "\n"
-             << "NoOfIterations" << "," << NoOfIterations << "\n"
-             << "NoSteps"   << "," << NoSteps << "\n"
-             << "Seed" << "," << Seed << "\n"
-             << "Sq_MinX" << ","<<  Sq_MinX << "\n"
-             << "Sq_MaxX" << ","<<  Sq_MaxX << "\n"
-             << "Sq_MinY" << ","<<  Sq_MinY << "\n"
-             << "Sq_MaxY" << ","<<  Sq_MaxY << "\n"
-             << "CameraWidth" << "," << CameraWidth<< "\n"
-             << "HR_AverageRadius" << ","<< HR_AverageRadius << "\n"
-             << "HR_SolidBoundaries"  << ","<< HR_SolidBoundaries << "\n"
-             << "StepLength" << ","<< StepLength << "\n"
-             << "CorrWalkMaxAngleChange" << ","<<   CorrWalkMaxAngleChange<< "\n"
-             << "AnimalSpeed" << ","<< AnimalSpeed<< "\n"
-             << "ProbChangeMoveState" << ","<< ProbChangeMoveState<< "\n"
-             << "Call_halfwidth" << ","<< Call_halfwidth << "\n"
-             << "DetectorRadius"<<","<<DetectorRadius<<"\n";
-    //Closes file
-    Settings.close();
-    
-    ///////////////////////////////////////////////////////////////////////////////////////
-    ///                                 !!! WARNINGS!!!                                 ///
-    /// Will automatically stop the simulation if certain conditions they               ///
-    /// aren't satisfied.                                                               ///
-    /// Includes a limited number of tests on the following functions:                  ///
-    ///         *CapturesIndividual                                                     ///
-    ///////////////////////////////////////////////////////////////////////////////////////
-   
-    //Number of animals needs to be greater than zero
-    if(NoAnimal<=0){
-        std::cout<<"No of Animals = "<<NoAnimal<< ", Increase density"<< std::endl; exit (EXIT_FAILURE);
-    };
-    
-    //Number of Home ranges needs to be greater than zero
-    if(NoHR<=0){
-        std::cout<<"No of roosts = "<<NoHR<< ", Decrease number of bats per roost"<< std::endl; exit (EXIT_FAILURE);
-    };
-    
-    if(DetectorRadius>200){
-        std::cout<<"Improbable camera radius. Radius= "<<DetectorRadius<< ". Check input"<< std::endl; exit (EXIT_FAILURE);
-    };
+=======
+void simulatevalues(std::vector<double> Values){
+    Simulation(Values[0],Values[1],Values[2]);
+};
 
+/*--------------------------------------------------------------------------------------------------
+//                                                                                             
+//                                         Main code starts                                            
+//                                                                                             
+---------------------------------------------------------------------------------------------------*/
+
+int main(){
+    
+    clock_t t;  clock_t t2;
+    t = clock();
+>>>>>>> bats
+    
+    std::vector<double> Values1(3);
+    Values1[0] = 0; Values1[1] = 0.46; Values1[2] =  0*M_PI/180;
+    simulatevalues(Values1);
+    std::cout<<"Finished" <<std::endl;
+    t2 = clock();
+
+<<<<<<< HEAD
     // No steps
     if(NoSteps==0){
         std::cout<<"No steps, Increase Length of monitoring"<< std::endl; exit (EXIT_FAILURE);
@@ -576,6 +513,10 @@ int main(){
     
     // Destructors For Camera Traps
     for(int i=0; i<NoCameraTraps; i++){delete All_CT[i];}
+=======
+    double seconds = difftime(t2,t);
+    std::cout<<"mins " <<seconds/CLOCKS_PER_SEC/60 <<std::endl;
+>>>>>>> bats
     
     std::cout<<"Finished" <<std::endl;
     t = clock()- t;

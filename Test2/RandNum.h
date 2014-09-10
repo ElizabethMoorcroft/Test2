@@ -13,9 +13,9 @@
 
 class RandNum {
     public:
-    long double PositiveNormal(double,double,double);
-    long double AtoRangeBUnif(double,double,double);
-    long double AtoBUnif(double,double,double);
+    double PositiveNormal(double,double,double);
+    double AtoRangeBUnif(double&,double,double);
+    double AtoBUnif(double&,double,double);
 };
 
 #endif

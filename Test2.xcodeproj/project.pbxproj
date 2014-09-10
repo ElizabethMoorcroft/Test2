@@ -7,12 +7,27 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		3F601EB4180BE48E008D346D /* SensorTest.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3F601EB2180BE48E008D346D /* SensorTest.cpp */; };
+		3F83E673183E047F00DA193D /* CheckSensor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3F83E671183E047F00DA193D /* CheckSensor.cpp */; };
+		3F83E676183E0C0600DA193D /* AnimalMovement.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3F83E674183E0C0600DA193D /* AnimalMovement.cpp */; };
+		3F83E679183E10B500DA193D /* Iteration.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3F83E677183E10B500DA193D /* Iteration.cpp */; };
+		3F83E67F183E30DE00DA193D /* Simulation.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3F83E67D183E30DE00DA193D /* Simulation.cpp */; };
+		3FD5A9A218167B1100D1F88D /* AnimalTest.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3FD5A9A018167B1100D1F88D /* AnimalTest.cpp */; };
 		AD0D145B16D909A60052980A /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AD0D145A16D909A60052980A /* main.cpp */; };
 		AD0D146516D909D70052980A /* Animal.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AD0D146416D909D70052980A /* Animal.cpp */; };
-		AD2402CB17219B8500795C0B /* CameraTraps.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AD2402CA17219B8500795C0B /* CameraTraps.cpp */; };
+		AD2402CB17219B8500795C0B /* Sensors.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AD2402CA17219B8500795C0B /* Sensors.cpp */; };
 		AD95C86116DA861300D1DE25 /* RandNum.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AD95C86016DA861300D1DE25 /* RandNum.cpp */; };
-		AD95C86416DAA48D00D1DE25 /* HomeRange.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AD95C86316DAA48D00D1DE25 /* HomeRange.cpp */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		3F6029401949DF8800AF4908 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = AD0D144F16D909A60052980A /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = AD0D145616D909A60052980A;
+			remoteInfo = Test2;
+		};
+/* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
 		AD0D145516D909A60052980A /* CopyFiles */ = {
@@ -27,20 +42,38 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		3F601EB2180BE48E008D346D /* SensorTest.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SensorTest.cpp; sourceTree = "<group>"; };
+		3F601EB3180BE48E008D346D /* SensorTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SensorTest.h; sourceTree = "<group>"; };
+		3F6029331949DF8800AF4908 /* Test2 Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Test2 Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		3F83E671183E047F00DA193D /* CheckSensor.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CheckSensor.cpp; sourceTree = "<group>"; };
+		3F83E672183E047F00DA193D /* CheckSensor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CheckSensor.h; sourceTree = "<group>"; };
+		3F83E674183E0C0600DA193D /* AnimalMovement.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AnimalMovement.cpp; sourceTree = "<group>"; };
+		3F83E675183E0C0600DA193D /* AnimalMovement.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AnimalMovement.h; sourceTree = "<group>"; };
+		3F83E677183E10B500DA193D /* Iteration.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Iteration.cpp; sourceTree = "<group>"; };
+		3F83E678183E10B500DA193D /* Iteration.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Iteration.h; sourceTree = "<group>"; };
+		3F83E67D183E30DE00DA193D /* Simulation.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Simulation.cpp; sourceTree = "<group>"; };
+		3F83E67E183E30DE00DA193D /* Simulation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Simulation.h; sourceTree = "<group>"; };
+		3FD5A9A018167B1100D1F88D /* AnimalTest.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AnimalTest.cpp; sourceTree = "<group>"; };
+		3FD5A9A118167B1100D1F88D /* AnimalTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AnimalTest.h; sourceTree = "<group>"; };
 		3FF77E6E174E132D00EE48BC /* Parameters.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Parameters.h; sourceTree = "<group>"; };
-		AD0448E117043D0F005A63B8 /* CameraTraps.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CameraTraps.h; sourceTree = "<group>"; };
+		AD0448E117043D0F005A63B8 /* Sensors.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Sensors.h; sourceTree = "<group>"; };
 		AD0D145716D909A60052980A /* Test2 */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = Test2; sourceTree = BUILT_PRODUCTS_DIR; };
 		AD0D145A16D909A60052980A /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		AD0D146316D909B80052980A /* Animal.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Animal.h; sourceTree = "<group>"; };
 		AD0D146416D909D70052980A /* Animal.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Animal.cpp; sourceTree = "<group>"; };
-		AD2402CA17219B8500795C0B /* CameraTraps.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CameraTraps.cpp; sourceTree = "<group>"; };
+		AD2402CA17219B8500795C0B /* Sensors.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Sensors.cpp; sourceTree = "<group>"; };
 		AD95C85F16DA85FD00D1DE25 /* RandNum.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RandNum.h; sourceTree = "<group>"; };
 		AD95C86016DA861300D1DE25 /* RandNum.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = RandNum.cpp; sourceTree = "<group>"; };
-		AD95C86216DAA47A00D1DE25 /* HomeRange.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = HomeRange.h; sourceTree = "<group>"; };
-		AD95C86316DAA48D00D1DE25 /* HomeRange.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = HomeRange.cpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		3F6029301949DF8800AF4908 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		AD0D145416D909A60052980A /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -63,6 +96,7 @@
 			isa = PBXGroup;
 			children = (
 				AD0D145716D909A60052980A /* Test2 */,
+				3F6029331949DF8800AF4908 /* Test2 Tests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -71,15 +105,25 @@
 			isa = PBXGroup;
 			children = (
 				AD0D145A16D909A60052980A /* main.cpp */,
+				3F83E67E183E30DE00DA193D /* Simulation.h */,
+				3F83E67D183E30DE00DA193D /* Simulation.cpp */,
+				3F83E678183E10B500DA193D /* Iteration.h */,
+				3F83E677183E10B500DA193D /* Iteration.cpp */,
+				AD0448E117043D0F005A63B8 /* Sensors.h */,
+				AD2402CA17219B8500795C0B /* Sensors.cpp */,
+				3F83E675183E0C0600DA193D /* AnimalMovement.h */,
+				3F83E674183E0C0600DA193D /* AnimalMovement.cpp */,
 				AD0D146316D909B80052980A /* Animal.h */,
 				AD0D146416D909D70052980A /* Animal.cpp */,
+				3F83E672183E047F00DA193D /* CheckSensor.h */,
+				3F83E671183E047F00DA193D /* CheckSensor.cpp */,
 				3FF77E6E174E132D00EE48BC /* Parameters.h */,
 				AD95C85F16DA85FD00D1DE25 /* RandNum.h */,
 				AD95C86016DA861300D1DE25 /* RandNum.cpp */,
-				AD95C86216DAA47A00D1DE25 /* HomeRange.h */,
-				AD95C86316DAA48D00D1DE25 /* HomeRange.cpp */,
-				AD0448E117043D0F005A63B8 /* CameraTraps.h */,
-				AD2402CA17219B8500795C0B /* CameraTraps.cpp */,
+				3F601EB3180BE48E008D346D /* SensorTest.h */,
+				3F601EB2180BE48E008D346D /* SensorTest.cpp */,
+				3FD5A9A118167B1100D1F88D /* AnimalTest.h */,
+				3FD5A9A018167B1100D1F88D /* AnimalTest.cpp */,
 			);
 			path = Test2;
 			sourceTree = "<group>";
@@ -87,6 +131,24 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		3F6029321949DF8800AF4908 /* Test2 Tests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 3F6029441949DF8800AF4908 /* Build configuration list for PBXNativeTarget "Test2 Tests" */;
+			buildPhases = (
+				3F60292F1949DF8800AF4908 /* Sources */,
+				3F6029301949DF8800AF4908 /* Frameworks */,
+				3F6029311949DF8800AF4908 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				3F6029411949DF8800AF4908 /* PBXTargetDependency */,
+			);
+			name = "Test2 Tests";
+			productName = "Test2 Tests";
+			productReference = 3F6029331949DF8800AF4908 /* Test2 Tests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 		AD0D145616D909A60052980A /* Test2 */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = AD0D146016D909A60052980A /* Build configuration list for PBXNativeTarget "Test2" */;
@@ -112,6 +174,11 @@
 			attributes = {
 				LastUpgradeCheck = 0460;
 				ORGANIZATIONNAME = "Elizabeth Moorcroft";
+				TargetAttributes = {
+					3F6029321949DF8800AF4908 = {
+						TestTargetID = AD0D145616D909A60052980A;
+					};
+				};
 			};
 			buildConfigurationList = AD0D145216D909A60052980A /* Build configuration list for PBXProject "Test2" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -126,26 +193,111 @@
 			projectRoot = "";
 			targets = (
 				AD0D145616D909A60052980A /* Test2 */,
+				3F6029321949DF8800AF4908 /* Test2 Tests */,
 			);
 		};
 /* End PBXProject section */
 
+/* Begin PBXResourcesBuildPhase section */
+		3F6029311949DF8800AF4908 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
+		3F60292F1949DF8800AF4908 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		AD0D145316D909A60052980A /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3F83E676183E0C0600DA193D /* AnimalMovement.cpp in Sources */,
+				3F601EB4180BE48E008D346D /* SensorTest.cpp in Sources */,
 				AD0D145B16D909A60052980A /* main.cpp in Sources */,
 				AD0D146516D909D70052980A /* Animal.cpp in Sources */,
+				3F83E679183E10B500DA193D /* Iteration.cpp in Sources */,
+				3F83E673183E047F00DA193D /* CheckSensor.cpp in Sources */,
+				3F83E67F183E30DE00DA193D /* Simulation.cpp in Sources */,
 				AD95C86116DA861300D1DE25 /* RandNum.cpp in Sources */,
-				AD95C86416DAA48D00D1DE25 /* HomeRange.cpp in Sources */,
-				AD2402CB17219B8500795C0B /* CameraTraps.cpp in Sources */,
+				AD2402CB17219B8500795C0B /* Sensors.cpp in Sources */,
+				3FD5A9A218167B1100D1F88D /* AnimalTest.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
+/* Begin PBXTargetDependency section */
+		3F6029411949DF8800AF4908 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = AD0D145616D909A60052980A /* Test2 */;
+			targetProxy = 3F6029401949DF8800AF4908 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
 /* Begin XCBuildConfiguration section */
+		3F6029421949DF8800AF4908 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(DEVELOPER_FRAMEWORKS_DIR)",
+					"$(inherited)",
+				);
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "Test2 Tests/Test2 Tests-Prefix.pch";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				INFOPLIST_FILE = "Test2 Tests/Test2 Tests-Info.plist";
+				MACOSX_DEPLOYMENT_TARGET = 10.9;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = xctest;
+			};
+			name = Debug;
+		};
+		3F6029431949DF8800AF4908 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				ENABLE_NS_ASSERTIONS = NO;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(DEVELOPER_FRAMEWORKS_DIR)",
+					"$(inherited)",
+				);
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "Test2 Tests/Test2 Tests-Prefix.pch";
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				INFOPLIST_FILE = "Test2 Tests/Test2 Tests-Info.plist";
+				MACOSX_DEPLOYMENT_TARGET = 10.9;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = xctest;
+			};
+			name = Release;
+		};
 		AD0D145E16D909A60052980A /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -163,7 +315,7 @@
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
-				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_OPTIMIZATION_LEVEL = 3;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
 					"$(inherited)",
@@ -196,6 +348,7 @@
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_OPTIMIZATION_LEVEL = 3;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
@@ -222,6 +375,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		3F6029441949DF8800AF4908 /* Build configuration list for PBXNativeTarget "Test2 Tests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				3F6029421949DF8800AF4908 /* Debug */,
+				3F6029431949DF8800AF4908 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		AD0D145216D909A60052980A /* Build configuration list for PBXProject "Test2" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
