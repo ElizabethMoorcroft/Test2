@@ -105,7 +105,7 @@ Iteration::Iteration(std::vector<Sensor*> AllSensors, std::ofstream &Captures, s
         double randomstart = RandomNumberStreamAnimalStart[i];
         double randommove = RandomNumberStreamAnimalMove[i];
         
-        AnimalMovement( AllAnimals , AllSensors ,  Captures,  Movement, randomstart,  randommove, i, iterationnumber, speedvalue, perchvalue,maxchangeanglevalue);
+        AnimalMovement( AllAnimals , AllSensors ,  Captures,  Movement, randomstart,  randommove, i, iterationnumber, speedvalue, perchvalue, maxchangeanglevalue);
         
     }; //End of Individual loop
     

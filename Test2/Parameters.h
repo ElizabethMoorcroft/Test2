@@ -26,14 +26,14 @@ const int SaveMovement = 0; // Saves the movement of the animals for all simulat
 const int SaveSensor = 1; // Saves the Sensor locations (constant throughout all simulations) // 1-saves; 0-doesn't save
 
 //Simulation values - #Animals, #Iterations
-const double DensityAnimals = 0.5*pow(10,-6); // XX*10^-6 Density/m^2  => XX Density/KM^2
-const int NoOfIterations = 1; // No of iterations with the settings
+const double DensityAnimals = 70*pow(10,-6); // XX*10^-6 Density/m^2  => XX Density/KM^2
+const int NoOfIterations = 100; // No of iterations with the settings
 
 //Random number seed
 const int Seed =1; // initail start seed - becuase this is set makes result repilicable
 
 // Length of simulation
-   const double LengthMonitoring =   10*24*(60*60); //Length of monitoring in seconds. XX*(60*60)secs => XX hrs
+   const double LengthMonitoring =   352*24*(60*60); //Length of monitoring in seconds. XX*(60*60)secs => XX hrs
 //const double LengthMonitoring = 2*(60*60); //Length of monitoring in seconds. XX*(60*60)secs => XX hrs
 
 
@@ -50,21 +50,21 @@ const int NoAnimal = round(DensityAnimals*area);
 // Sensor width/Radius
 //const int LengthSW(7);
 //const double SensorWidth[LengthSW] = {  20*M_PI/180, 40*M_PI/180,    // <= 90
-//                                        60*M_PI/180, 80*M_PI/180,// >  90 && <=180
-//                                        100*M_PI/180 ,   // > 180 && <=270
-//                                        160*M_PI/180, 180*M_PI/180 };  // > 270 && <=360
+  //                                      60*M_PI/180, 80*M_PI/180,// >  90 && <=180
+  //                                      100*M_PI/180 ,   // > 180 && <=270
+  //                                      160*M_PI/180, 180*M_PI/180 };  // > 270 && <=360
 
  //Sensor width/Radius
-const int LengthSW(1);
-const double SensorWidth[LengthSW] = {60*M_PI/180};  // > 270 && <=360 , 100*M_PI/180
+const int LengthSW(2);
+ const double SensorWidth[LengthSW] = {60*M_PI/180,100*M_PI/180};  // > 270 && <=360 , 100*M_PI/180
 
 const int LengthSR(1);
-const double SensorRadius[LengthSR] = {500};
+const double SensorRadius[LengthSR] = {10};
 const int NoSensors = LengthSW*LengthSR;
 
 
 //Movement parameters
-const double StepLength =   5*60; //Length of each step in seconds *60
+const double StepLength =   15*60; //Length of each step in seconds *60
 
 // Total number of steps calculated from values above
 const int NoSteps = round(LengthMonitoring/StepLength);

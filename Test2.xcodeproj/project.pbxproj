@@ -361,6 +361,7 @@
 		AD0D146116D909A60052980A /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				DEBUG_INFORMATION_FORMAT = dwarf;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
