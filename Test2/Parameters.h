@@ -33,7 +33,7 @@ const int NoOfIterations = 100; // No of iterations with the settings
 const int Seed =1; // initail start seed - becuase this is set makes result repilicable
 
 // Length of simulation
-   const double LengthMonitoring =   352*24*(60*60); //Length of monitoring in seconds. XX*(60*60)secs => XX hrs
+   const double LengthMonitoring =   150*24*(60*60); //Length of monitoring in seconds. XX*(60*60)secs => XX hrs
 //const double LengthMonitoring = 2*(60*60); //Length of monitoring in seconds. XX*(60*60)secs => XX hrs
 
 
