@@ -32,7 +32,6 @@ Simulation::Simulation(){};
 Simulation::Simulation(double perchvalue, double speedvalue,double maxchangeanglevalue){
     
     std::string savevalue = make_directory("/Users/student/Documents/Bats/Simulations/REFSComments", perchvalue, speedvalue, maxchangeanglevalue);
-    std::string returnvalue = make_directory("/Users/student/Dropbox/SimulationReached", perchvalue, speedvalue, maxchangeanglevalue);
     
     
     //-------------------------------------------------------
@@ -180,9 +179,6 @@ Simulation::Simulation(double perchvalue, double speedvalue,double maxchangeangl
     CapturesNotRef.close();
     MovementNotRef.close();
     
-    std::ofstream Return;
-    Return.open(make_filename(returnvalue, ",finished.csv" ).c_str());
-    Return.close();
     
     for(int i=0; i<NoSensors; i++) {delete AllSensors[i];};
 };
